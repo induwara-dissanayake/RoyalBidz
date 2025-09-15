@@ -1,0 +1,428 @@
+{
+  "info": {
+    "name": "RoyalBidz API Collection",
+    "description": "Complete API collection for RoyalBidz jewelry auction platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwt_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://localhost:7071",
+      "type": "string"
+    },
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login - Buyer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('jwt_token', response.token);",
+                  "    pm.test('Login successful', () => {",
+                  "        pm.expect(response.token).to.not.be.undefined;",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"buyer@royalbidz.com\",\n  \"password\": \"Buyer123!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login - Seller",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"seller@royalbidz.com\",\n  \"password\": \"Seller123!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login - Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@royalbidz.com\",\n  \"password\": \"Admin123!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Register New User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"New\",\n  \"lastName\": \"User\",\n  \"email\": \"newuser@test.com\",\n  \"password\": \"Password123!\",\n  \"role\": \"Buyer\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Jewelry Management",
+      "item": [
+        {
+          "name": "Get All Jewelry",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/jewelry",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jewelry"]
+            }
+          }
+        },
+        {
+          "name": "Get Jewelry by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/jewelry/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jewelry", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Jewelry Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Emerald Necklace\",\n  \"description\": \"Beautiful emerald necklace with gold chain\",\n  \"type\": \"Necklace\",\n  \"primaryMaterial\": \"Emerald\",\n  \"brand\": \"Luxury Brand\",\n  \"weight\": 25.5,\n  \"condition\": \"Excellent\",\n  \"estimatedValue\": 12000.00,\n  \"images\": [\n    {\n      \"imageUrl\": \"/images/emerald-necklace.jpg\",\n      \"isPrimary\": true,\n      \"displayOrder\": 1\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/jewelry",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jewelry"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auction Management",
+      "item": [
+        {
+          "name": "Get Active Auctions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/auctions/active",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auctions", "active"]
+            }
+          }
+        },
+        {
+          "name": "Get Auction by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/auctions/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auctions", "1"]
+            }
+          }
+        },
+        {
+          "name": "Search Auctions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/auctions?page=1&pageSize=10&sortBy=endTime",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auctions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "endTime"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Auction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Vintage Diamond Ring Auction\",\n  \"description\": \"A rare vintage diamond ring from the 1960s\",\n  \"jewelryItemId\": 1,\n  \"startingBid\": 2000.00,\n  \"bidIncrement\": 100.00,\n  \"startTime\": \"2024-01-20T10:00:00Z\",\n  \"endTime\": \"2024-01-27T18:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auctions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auctions"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bidding",
+      "item": [
+        {
+          "name": "Place Bid",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"auctionId\": 1,\n  \"amount\": 5200.00,\n  \"isAutomaticBid\": false\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/bids",
+              "host": ["{{base_url}}"],
+              "path": ["api", "bids"]
+            }
+          }
+        },
+        {
+          "name": "Place Auto Bid",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"auctionId\": 1,\n  \"amount\": 5300.00,\n  \"isAutomaticBid\": true,\n  \"maxAutoBidAmount\": 8000.00\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/bids",
+              "host": ["{{base_url}}"],
+              "path": ["api", "bids"]
+            }
+          }
+        },
+        {
+          "name": "Get My Bids",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/bids/my-bids",
+              "host": ["{{base_url}}"],
+              "path": ["api", "bids", "my-bids"]
+            }
+          }
+        },
+        {
+          "name": "Get Auction Bids",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/bids/auction/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "bids", "auction", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Create Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"auctionId\": 1,\n  \"amount\": 5200.00,\n  \"method\": \"CreditCard\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/payments",
+              "host": ["{{base_url}}"],
+              "path": ["api", "payments"]
+            }
+          }
+        },
+        {
+          "name": "Process Payment",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/payments/1/process",
+              "host": ["{{base_url}}"],
+              "path": ["api", "payments", "1", "process"]
+            }
+          }
+        },
+        {
+          "name": "Get My Payments",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/payments/my-payments",
+              "host": ["{{base_url}}"],
+              "path": ["api", "payments", "my-payments"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Reports",
+      "item": [
+        {
+          "name": "Dashboard Data",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/reports/dashboard",
+              "host": ["{{base_url}}"],
+              "path": ["api", "reports", "dashboard"]
+            }
+          }
+        },
+        {
+          "name": "Auction Report",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/reports/auction-report?fromDate=2024-01-01&toDate=2024-12-31",
+              "host": ["{{base_url}}"],
+              "path": ["api", "reports", "auction-report"],
+              "query": [
+                {
+                  "key": "fromDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "toDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Popular Items",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/reports/popular-items?topCount=5",
+              "host": ["{{base_url}}"],
+              "path": ["api", "reports", "popular-items"],
+              "query": [
+                {
+                  "key": "topCount",
+                  "value": "5"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
