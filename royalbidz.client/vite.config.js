@@ -34,8 +34,8 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
     }
 }
 
-const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` :
-    env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'https://localhost:7006';
+// Use HTTP backend since HTTPS is not working
+const target = 'http://localhost:5242';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -47,6 +47,26 @@ export default defineConfig({
     },
     server: {
         proxy: {
+            // Proxy all API calls to the backend server
+            '^/api': {
+                target,
+                secure: false,
+                changeOrigin: true
+            },
+            // Proxy SignalR hub
+            '^/auctionHub': {
+                target,
+                secure: false,
+                changeOrigin: true,
+                ws: true // Enable WebSocket proxying for SignalR
+            },
+            // Proxy Swagger
+            '^/swagger': {
+                target,
+                secure: false,
+                changeOrigin: true
+            },
+            // Keep the original weatherforecast proxy for backward compatibility
             '^/weatherforecast': {
                 target,
                 secure: false
