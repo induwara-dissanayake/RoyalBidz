@@ -11,6 +11,7 @@ import Register from './pages/Register';
 import Users from './pages/Users';
 import Navbar from './components/Navbar';
 import './App.css';
+import ContactUs from './pages/ContactUs';
 
 function App() {
     return (
@@ -29,6 +30,7 @@ function App() {
                             <Route path="/payments" element={<Payments />} />
                             <Route path="/users" element={<Users />} />
                             <Route path="/profile" element={<Profile />} />
+                            <Route path="/ContactUs" element={<ContactUs/>}/>
                         </Routes>
                     </main>
                 </div>
