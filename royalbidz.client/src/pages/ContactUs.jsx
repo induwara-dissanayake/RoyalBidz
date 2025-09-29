@@ -1,21 +1,22 @@
 import React from 'react';
 import './ContactUs.css'; 
 import { AlignLeft } from 'lucide-react';
+import image1 from '../images/ContactImg.png';
+
 
 const ContactUs = () => {
   return (
     <div className="contact-us-page">
      {/* Hero Section with Contact Us Title */}
       <section className="hero-section">
-        <img src="path/to/jewellery1.jpg" alt="Jewellery" className="hero-image left" />
-        <h1>CONTACT US</h1>
-        <img src="path/to/jewellery2.jpg" alt="Jewellery" className="hero-image right" />
+        <img src={image1} alt="Description of Image 1" className="new-image-class" />
+            <h1>CONTACT US</h1>
       </section>
 
       {/* Main Content Area */}
       <main className="contact-content">
         <div className="get-in-touch-section">
-          <h2><AlignLeft>Get in Touch</AlignLeft></h2>
+          <h2>Get in Touch</h2>
           <p>We are always happy to hear from you and address any questions or concerns you might have. Our team is dedicated to providing you with the best support and information possible. Please don't hesitate to reach out. Your satisfaction is our priority, and we're here to help with anything you need.</p>
         </div>
 
@@ -24,7 +25,7 @@ const ContactUs = () => {
             <h2>Connect with our Team</h2>
             <p>Our team is happy to answer your questions.</p>
             <h3>Head Office - Homagama</h3>
-            <p>Address: NSBM Green university of Sri Lanka.</p>
+            <p>Address: NSBM Green University of Sri Lanka.</p>
             <p>Tel: +94xxxxxxxxx</p>
             <p>Email: info@royalbidz.com</p>
             <div className="social-icons">
