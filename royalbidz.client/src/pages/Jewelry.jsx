@@ -17,21 +17,24 @@ const Jewelry = () => {
     try {
       setLoading(true);
       const response = await axios.get('/api/jewelry');
-      setJewelry(response.data);
+      setJewelry(Array.isArray(response.data) ? response.data : []);
       setError('');
     } catch (error) {
       console.error('Error loading jewelry:', error);
       setError('Failed to load jewelry items. Please check if the backend server is running.');
+      setJewelry([]); // Ensure jewelry is always an array
     } finally {
       setLoading(false);
     }
   };
 
   const getConditionBadgeClass = (condition) => {
-    switch (condition?.toLowerCase()) {
-      case 'new': return 'badge-active';
-      case 'excellent': case 'verygood': return 'badge-completed';
-      case 'good': return 'badge-pending';
+    // Handle both string and integer enum values
+    const conditionStr = typeof condition === 'string' ? condition : String(condition);
+    switch (conditionStr?.toLowerCase()) {
+      case 'new': case '0': return 'badge-active';
+      case 'excellent': case '1': case 'verygood': case '2': return 'badge-completed';
+      case 'good': case '3': return 'badge-pending';
       default: return 'badge-inactive';
     }
   };
@@ -106,8 +109,8 @@ const Jewelry = () => {
         </div>
       ) : (
         <div className="grid grid-3">
-          {jewelry.map((item) => (
-            <div key={item.id} className="card">
+          {jewelry.map((item, index) => (
+            <div key={item?.id ? `jewelry-${item.id}` : `jewelry-item-${index}`} className="card">
               <div style={{ marginBottom: '15px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
                   <h3 style={{ color: '#2d3748', margin: 0, flex: 1 }}>

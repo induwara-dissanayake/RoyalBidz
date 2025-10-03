@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RoyalBidz.Server.DTOs;
 using RoyalBidz.Server.Services.Interfaces;
+using System.Security.Claims;
 
 namespace RoyalBidz.Server.Controllers
 {
@@ -41,16 +42,34 @@ namespace RoyalBidz.Server.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register([FromBody] CreateUserDto createUserDto)
+        public async Task<ActionResult<LoginResponseDto>> Register([FromBody] CreateUserDto createUserDto)
         {
             try
             {
                 var user = await _authService.RegisterAsync(createUserDto);
                 
-                // Send welcome email
-                await _notificationService.SendWelcomeEmailAsync(user.Email, $"{user.FirstName} {user.LastName}");
+                // Generate JWT token for the new user
+                var token = await _authService.GenerateJwtToken(user);
+                var expiresAt = DateTime.UtcNow.AddHours(24);
                 
-                return CreatedAtAction(nameof(Register), new { id = user.Id }, user);
+                var loginResponse = new LoginResponseDto
+                {
+                    Token = token,
+                    User = user,
+                    ExpiresAt = expiresAt
+                };
+                
+                // Send welcome email (don't block registration if this fails)
+                try
+                {
+                    await _notificationService.SendWelcomeEmailAsync(user.Email, $"{user.FirstName} {user.LastName}");
+                }
+                catch (Exception emailEx)
+                {
+                    _logger.LogWarning(emailEx, "Failed to send welcome email to {Email}", user.Email);
+                }
+                
+                return CreatedAtAction(nameof(Register), new { id = user.Id }, loginResponse);
             }
             catch (InvalidOperationException ex)
             {
@@ -69,7 +88,17 @@ namespace RoyalBidz.Server.Controllers
         {
             try
             {
-                var userId = int.Parse(User.FindFirst("sub")?.Value ?? User.FindFirst("id")?.Value ?? "0");
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ?? User.FindFirst("sub") ?? User.FindFirst("id");
+                if (userIdClaim == null)
+                {
+                    return BadRequest(new { message = "Invalid token - no user ID found" });
+                }
+
+                if (!int.TryParse(userIdClaim.Value, out int userId))
+                {
+                    return BadRequest(new { message = "Invalid user ID in token" });
+                }
+
                 var result = await _authService.ChangePasswordAsync(userId, changePasswordDto);
                 
                 if (result)

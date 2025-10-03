@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RoyalBidz.Server.DTOs;
 using RoyalBidz.Server.Models;
 using RoyalBidz.Server.Services.Interfaces;
+using System.Security.Claims;
 
 namespace RoyalBidz.Server.Controllers
 {
@@ -18,6 +19,37 @@ namespace RoyalBidz.Server.Controllers
         {
             _userService = userService;
             _logger = logger;
+        }
+
+        [HttpGet("me")]
+        public async Task<ActionResult<UserDto>> GetCurrentUser()
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ?? User.FindFirst("sub") ?? User.FindFirst("id");
+                if (userIdClaim == null)
+                {
+                    return BadRequest(new { message = "Invalid token - no user ID found" });
+                }
+
+                if (!int.TryParse(userIdClaim.Value, out int userId))
+                {
+                    return BadRequest(new { message = "Invalid user ID in token" });
+                }
+
+                var user = await _userService.GetUserByIdAsync(userId);
+                if (user == null)
+                {
+                    return NotFound(new { message = "User not found" });
+                }
+
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting current user");
+                return StatusCode(500, new { message = "An error occurred while retrieving user information" });
+            }
         }
 
         [HttpGet]
