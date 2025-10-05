@@ -40,7 +40,7 @@ function Navbar() {
       </nav>
       
       <div className="navbar-actions">
-        <button className="register-button">Register</button>
+        <button className="register-button">Registe</button>
         
         {/* Notification Icon */}
         <a href="#notifications" className="notification-icon" aria-label="Notifications">
