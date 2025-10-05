@@ -1,188 +1,69 @@
+// Navbar.jsx
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { LayoutDashboard, Gavel, Gem, LineChart, CreditCard, Users, User, LogOut } from 'lucide-react';
+import './Navbar.css';
+import logoImage from '../img/logo6.png';
 
-const Navbar = () => {
-  const { user, logout, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
-
-  const navItems = [
-    { path: '/', icon: <LayoutDashboard size={16} />, label: 'Dashboard' },
-    { path: '/auctions', icon: <Gavel size={16} />, label: 'Auctions' },
-    { path: '/jewelry', icon: <Gem size={16} />, label: 'Jewelry' },
-    { path: '/bids', icon: <LineChart size={16} />, label: 'Bids', auth: true },
-    { path: '/payments', icon: <CreditCard size={16} />, label: 'Payments', auth: true },
-    { path: '/users', icon: <Users size={16} />, label: 'Users', admin: true }
-  ];
-
+function Navbar() {
   return (
-    <nav style={{
-      background: 'rgba(255, 255, 255, 0.95)',
-      backdropFilter: 'blur(10px)',
-      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-      position: 'sticky',
-      top: 0,
-      zIndex: 100
-    }}>
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        padding: '0 20px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        height: '64px'
-      }}>
-        {/* Logo */}
-        <Link 
-          to="/"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            textDecoration: 'none',
-            color: '#2d3748',
-            fontSize: '1.5rem',
-            fontWeight: 'bold'
-          }}
-        >
-          <Gem size={20} color="#667eea" />
-          RoyalBidz
-        </Link>
-
-        {/* Navigation Items */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '20px'
-        }}>
-          {navItems.map(({ path, icon, label, auth, admin }) => {
-            // Hide auth-required items if not authenticated
-            if (auth && !isAuthenticated) return null;
-            // Hide admin items if not admin
-            if (admin && (!user || user.role !== 'Admin')) return null;
-
-            return (
-              <Link
-                key={path}
-                to={path}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '8px 16px',
-                  textDecoration: 'none',
-                  color: '#4a5568',
-                  borderRadius: '6px',
-                  transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.background = '#f7fafc';
-                  e.target.style.color = '#667eea';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = 'transparent';
-                  e.target.style.color = '#4a5568';
-                }}
-              >
-                <span>{icon}</span>
-                <span style={{ fontSize: '14px', fontWeight: '500' }}>
-                  {label}
-                </span>
-              </Link>
-            );
-          })}
-
-          {/* User Menu */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            marginLeft: '20px',
-            paddingLeft: '20px',
-            borderLeft: '1px solid #e2e8f0'
-          }}>
-            {isAuthenticated ? (
-              <>
-                <Link
-                  to="/profile"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    padding: '8px 16px',
-                    textDecoration: 'none',
-                    color: '#4a5568',
-                    borderRadius: '6px',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.background = '#f7fafc';
-                    e.target.style.color = '#667eea';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = 'transparent';
-                    e.target.style.color = '#4a5568';
-                  }}
-                >
-                  <User size={16} />
-                  <span style={{ fontSize: '14px' }}>
-                    {user?.firstName || 'Profile'}
-                  </span>
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    padding: '8px 16px',
-                    background: 'none',
-                    border: 'none',
-                    color: '#e53e3e',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.background = '#fed7d7';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = 'transparent';
-                  }}
-                >
-                  <LogOut size={16} />
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="btn btn-outline btn-sm"
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/register"
-                  className="btn btn-primary btn-sm"
-                >
-                  Register
-                </Link>
-              </>
-            )}
-          </div>
+    <div className="navbar-container">
+      <div className="navbar-logo"> <img src={logoImage} alt="ROYALBIDZ JEWELRY" className="logo-image" />
+        <div className="logo-text">
+          
         </div>
+      </div>       
+      
+      <div className="navbar-search">
+        <button className="search-button" aria-label="Search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 21L16.514 16.506L21 21ZM19 10.5C19 15.194 15.194 19 10.5 19C5.806 19 2 15.194 2 10.5C2 5.806 5.806 2 10.5 2C15.194 2 19 5.806 19 10.5Z" 
+                  stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+        <input type="text" placeholder="Search products..." className="search-input" />
       </div>
-    </nav>
+      
+      <nav className="navbar-links">
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#foryou">For You</a></li>
+          <li className="dropdown">
+            <a href="#items">Items <span className="dropdown-arrow">▼</span></a>
+            <div className="dropdown-content">
+              <a href="#jewelry">Jewelry</a>
+              <a href="#watches">Watches</a>
+              <a href="#accessories">Accessories</a>
+            </div>
+          </li>
+          <li><a href="#contact">Contact us</a></li>
+          <li><a href="#signin">Sign in</a></li>
+        </ul>
+      </nav>
+      
+      <div className="navbar-actions">
+        <button className="register-button">Register</button>
+        
+        {/* Notification Icon */}
+        <a href="#notifications" className="notification-icon" aria-label="Notifications">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 8C18 6.4087 17.3679 4.88258 16.2426 3.75736C15.1174 2.63214 13.5913 2 12 2C10.4087 2 8.88258 2.63214 7.75736 3.75736C6.63214 4.88258 6 6.4087 6 8C6 15 3 17 3 17H21C21 17 18 15 18 8Z" 
+                  stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M13.73 21C13.5542 21.3031 13.3019 21.5547 12.9982 21.7295C12.6946 21.9044 12.3504 21.9965 12 21.9965C11.6496 21.9965 11.3054 21.9044 11.0018 21.7295C10.6981 21.5547 10.4458 21.3031 10.27 21" 
+                  stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <span className="notification-badge">3</span>
+        </a>
+        
+        {/* User Profile Icon */}
+        <a href="#profile" className="profile-icon" aria-label="User Profile">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" 
+                  stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <circle cx="12" cy="7" r="4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </div>
   );
-};
+}
 
 export default Navbar;

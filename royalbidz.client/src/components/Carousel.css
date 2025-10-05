@@ -1,0 +1,276 @@
+.carousel {
+  width: 100%;
+  height: calc(100vh - 64px);
+  margin-top: 64px;
+  margin-bottom: 30px; /* requested gap below carousel */
+  position: relative;
+  overflow: hidden;
+  background: #000;
+}
+
+.carousel-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  /* Removed max-width to allow 100% width */
+  margin: 0 auto;
+}
+
+.carousel-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.02);
+  transition: opacity 600ms ease, transform 800ms ease;
+}
+
+.carousel-slide.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.carousel-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.carousel-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.25) 40%, rgba(0,0,0,0.05) 70%, rgba(0,0,0,0) 100%);
+  display: flex;
+  align-items: center;
+}
+
+.carousel-content {
+  color: white;
+  padding-left: 6vw;
+  max-width: 720px;
+}
+
+.carousel-heading {
+  font-family: 'Times New Roman', serif;
+  font-size: clamp(28px, 5vw, 56px);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 12px;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.35);
+}
+
+.carousel-subheading {
+  font-size: clamp(14px, 2vw, 20px);
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 24px;
+}
+
+.carousel-actions {
+  display: flex;
+  gap: 14px;
+}
+
+.carousel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: .2px;
+  transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+
+.carousel-btn.primary {
+  background: #2c5f6b;
+  color: white;
+  box-shadow: 0 6px 20px rgba(44,95,107,.35);
+}
+
+.carousel-btn.primary:hover {
+  background: #1e4a52;
+  transform: translateY(-1px);
+}
+
+.carousel-btn.ghost {
+  background: transparent;
+  color: white;
+  border-color: rgba(255,255,255,.6);
+}
+
+.carousel-btn.ghost:hover {
+  background: rgba(255,255,255,.12);
+  transform: translateY(-1px);
+}
+
+.nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.15);
+  color: white;
+  border: 1px solid rgba(255,255,255,.25);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background .2s ease, transform .2s ease;
+}
+
+.nav:hover {
+  background: rgba(255,255,255,.22);
+  transform: translateY(-50%) scale(1.02);
+}
+
+.nav.prev { left: 18px; }
+.nav.next { right: 18px; }
+
+.dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 18px;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.dot {
+  width: 1px;              /* small base size */
+  height: 1px;
+  border-radius: 50%;      /* makes it circular */
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.9;
+}
+
+.dot:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: scale(0.3);   /* shrinks to 30% on hover */
+} 
+
+.dot.active {
+  background: #ffffff;
+  opacity: 1;
+  transform: scale(0.5);   /* slightly smaller for active */
+}
+
+
+/* Responsive Design for Carousel */
+@media (max-width: 1200px) {
+  .carousel-content {
+    padding-left: 4vw;
+    max-width: 600px;
+  }
+}
+
+@media (max-width: 992px) {
+  .carousel-content {
+    padding-left: 3vw;
+    max-width: 500px;
+  }
+  
+  .carousel-heading {
+    font-size: 2.5rem;
+  }
+  
+  .carousel-subheading {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel {
+    height: calc(100vh - 56px);
+    margin-top: 56px;
+  }
+  
+  .carousel-content { 
+    padding-left: 24px; 
+    padding-right: 24px; 
+    max-width: none;
+  }
+  
+  .carousel-heading {
+    font-size: 2rem;
+  }
+  
+  .carousel-subheading {
+    font-size: 1rem;
+  }
+  
+  /* Smaller dots on mobile */
+  .dots {
+    gap: 8px;
+    bottom: 15px;
+  }
+  
+  .dot {
+    width: 1px;
+    height: 1px;
+  }
+  
+  .dot:hover {
+    width: 2px;
+    height: 2px;
+  }
+  
+  .dot.active {
+    width: 3px;
+    height: 1px;
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel-content {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  
+  .carousel-heading {
+    font-size: 1.5rem;
+  }
+  
+  .carousel-subheading {
+    font-size: 0.9rem;
+  }
+  
+  .carousel-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .carousel-btn {
+    width: 100%;
+    text-align: center;
+  }
+  
+  /* Extra small dots on very small screens */
+  .dots {
+    gap: 5px;
+    bottom: 12px;
+  }
+  
+  .dot {
+    width: 2px;
+    height: 2px;
+  }
+  
+  .dot:hover {
+    width: 3px;
+    height: 3px;
+  }
+  
+  .dot.active {
+    width: 3px;
+    height: 3px;
+  }
+}
