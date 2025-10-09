@@ -1,4 +1,7 @@
-﻿.app {
+﻿/* Import common utility classes */
+@import './styles/common.css';
+
+.app {
   width: 100%;
   margin: 0;
   padding: 0;
@@ -9,6 +12,61 @@
   width: 100%;
   margin: 0;
   padding: 70px 0 0 0; /* Add top padding to account for fixed navbar */
+}
+
+/* Authentication Pages */
+.auth-container {
+  min-height: calc(100vh - 70px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  padding: 20px;
+}
+
+.auth-card {
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.auth-title {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.auth-title h1 {
+  color: #2d3748;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.auth-link {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.auth-link p {
+  color: #718096;
+  margin: 0;
+}
+
+.auth-link a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-link a:hover {
+  color: #5a6fd8;
+  text-decoration: underline;
 }
 
 /* Items Section */
@@ -39,6 +97,43 @@
   justify-items: center;
 }
 
+/* User cards for test accounts (Dashboard) */
+.user-card {
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.user-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.user-role {
+  font-weight: 600;
+  font-size: 16px;
+  color: #2d3748;
+  margin-bottom: 8px;
+}
+
+.user-credentials {
+  font-size: 14px;
+  color: #4a5568;
+  line-height: 1.4;
+  font-family: 'Courier New', monospace;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 8px;
+  border-radius: 6px;
+}
+
+/* Animation for spinning elements */
+.spin {
+  animation: spin 1s linear infinite;
+}
+
 /* Responsive Design for Items */
 @media (max-width: 1024px) {
   .items-grid {
@@ -65,6 +160,15 @@
     font-size: 28px;
     margin-bottom: 40px;
   }
+
+  .auth-card {
+    padding: 30px 20px;
+    margin: 10px;
+  }
+
+  .auth-title h1 {
+    font-size: 1.5rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -80,5 +184,15 @@
   .items-title {
     font-size: 24px;
     margin-bottom: 30px;
+  }
+
+  .auth-container {
+    padding: 10px;
+    align-items: flex-start;
+    padding-top: 80px;
+  }
+
+  .auth-card {
+    padding: 20px 15px;
   }
 }
