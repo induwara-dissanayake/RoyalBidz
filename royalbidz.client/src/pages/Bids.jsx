@@ -16,6 +16,40 @@ export default function Bids() {
     seconds: 15
   });
 
+  // Like / heart state with local persistence
+  const [liked, setLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(51);
+  const likeKey = 'bids_like_onegram_necklace';
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(likeKey);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (typeof parsed.liked === 'boolean') setLiked(parsed.liked);
+        if (typeof parsed.count === 'number') setLikesCount(parsed.count);
+      }
+    } catch (e) {
+      // ignore localStorage errors
+    }
+  }, []);
+
+  const toggleLike = () => {
+    setLiked(prev => {
+      const next = !prev;
+      setLikesCount(prevCount => {
+        const nextCount = next ? prevCount + 1 : Math.max(0, prevCount - 1);
+        try {
+          localStorage.setItem(likeKey, JSON.stringify({ liked: next, count: nextCount }));
+        } catch (e) {}
+        return nextCount;
+      });
+
+      // TODO: replace with API call to persist on server when available
+      return next;
+    });
+  };
+
   // Countdown timer
   useEffect(() => {
     const timer = setInterval(() => {
@@ -58,9 +92,24 @@ export default function Bids() {
         {/* Title & Like */}
         <div className="bids-header">
           <h1 className="bids-title">One Gram Gold Polki Guttapusalu Necklace Set By Asp Fashion Jewellery</h1>
-          <button className="bids-like" aria-label="Like this item">
-            <span>♡</span>
-            <span>51</span>
+          <button
+            className={`bids-like ${liked ? 'liked' : ''}`}
+            aria-pressed={liked}
+            aria-label={liked ? 'Unlike this item' : 'Like this item'}
+            onClick={toggleLike}
+          >
+            <span className="heart" aria-hidden>
+              {liked ? (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+              ) : (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              )}
+            </span>
+            <span className="likes-count">{likesCount}</span>
           </button>
         </div>
 
