@@ -24,8 +24,8 @@ function Navbar() {
       
       <nav className="navbar-links">
         <ul>
-          <li><a href="#home">Home</a></li>
-          <li><a href="#foryou">For You</a></li>
+          <li><a href="/App">Home</a></li>
+          <li><a href="/For you">For You</a></li>
           <li className="dropdown">
             <a href="#items">Items <span className="dropdown-arrow">▼</span></a>
             <div className="dropdown-content">
@@ -34,7 +34,7 @@ function Navbar() {
               <a href="#accessories">Accessories</a>
             </div>
           </li>
-          <li><a href="#contact">Contact us</a></li>
+          <li><a href="/Contact us">Contact us</a></li>
           <li><a href="#signin">Sign in</a></li>
         </ul>
       </nav>

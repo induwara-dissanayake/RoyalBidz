@@ -8,10 +8,11 @@ import Content from './components/Content';
 import BgImgContent from './components/BgImgContent';
 import Item from './components/Item';
 import Footer from './components/Footer';
+import Bids from './pages/Bids.jsx';
 
 import './App.css';
 
-function App() {
+function HomeShell() {
     // Sample jewelry items data
     const jewelryItems = [
         {
@@ -79,33 +80,36 @@ function App() {
     ];
 
     return (
+        <div className="app">
+            <Navbar />
+            <Carousel />
+            <Collage />
+            <Content />
+            <BgImgContent />
+            <section className="items-section">
+                <div className="items-container">
+                    <h2 className="items-title">Our Best Sellers</h2>
+                    <div className="items-grid">
+                        {jewelryItems.map((item) => (
+                            <Item key={item.id} item={item} />
+                        ))}
+                    </div>
+                </div>
+            </section>
+            <Footer />
+            <main className="main-content"></main>
+        </div>
+    );
+}
+
+function App() {
+    return (
         <AuthProvider>
             <Router>
-                <div className="app">
-                    <Navbar />
-                    <Carousel />
-                    <Collage />
-                    <Content />
-                    <BgImgContent />
-                    
-                    {/* Items Section */}
-                    <section className="items-section">
-                        <div className="items-container">
-                            <h2 className="items-title">Our Best Sellers</h2>
-                            <div className="items-grid">
-                                {jewelryItems.map((item) => (
-                                    <Item key={item.id} item={item} />
-                                ))}
-                            </div>
-                        </div>
-                    </section>
-                    
-                    <Footer />
-                    
-                    <main className="main-content">
-                        
-                    </main>
-                </div>
+                <Routes>
+                    <Route path="/Bids" element={<Bids />} />
+                    <Route path="*" element={<HomeShell />} />
+                </Routes>
             </Router>
         </AuthProvider>
     );
