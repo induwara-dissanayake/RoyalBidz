@@ -33,11 +33,13 @@ export const AuthProvider = ({ children }) => {
         password
       });
 
-      const { token: newToken, user: userData } = response.data;
+      // Backend returns { token, user, expiresAt }
+      const { token: newToken, user: userData, expiresAt } = response.data;
       
       setToken(newToken);
       setUser(userData);
       localStorage.setItem('token', newToken);
+      localStorage.setItem('tokenExpiry', expiresAt);
       axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
       
       return { success: true };
@@ -54,14 +56,20 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.post('/api/auth/register', userData);
       
-      const { token: newToken, user: newUser } = response.data;
+      // Registration endpoint returns just the user, then we need to login
+      const newUser = response.data;
       
-      setToken(newToken);
-      setUser(newUser);
-      localStorage.setItem('token', newToken);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+      // After successful registration, automatically log the user in
+      const loginResult = await login(userData.email, userData.password);
       
-      return { success: true };
+      if (loginResult.success) {
+        return { success: true };
+      } else {
+        return {
+          success: false,
+          message: 'Registration successful, but auto-login failed. Please login manually.'
+        };
+      }
     } catch (error) {
       console.error('Registration error:', error);
       return { 
@@ -75,6 +83,7 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     setUser(null);
     localStorage.removeItem('token');
+    localStorage.removeItem('tokenExpiry');
     delete axios.defaults.headers.common['Authorization'];
   };
 
@@ -90,9 +99,21 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Check token expiry
+  const isTokenExpired = () => {
+    const expiry = localStorage.getItem('tokenExpiry');
+    if (!expiry) return false;
+    return new Date() > new Date(expiry);
+  };
+
   useEffect(() => {
     if (token && !user) {
-      getCurrentUser();
+      // Check if token is expired
+      if (isTokenExpired()) {
+        logout();
+      } else {
+        getCurrentUser();
+      }
     }
   }, [token, user]);
 
@@ -103,7 +124,7 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
-    isAuthenticated: !!token
+    isAuthenticated: !!token && !isTokenExpired()
   };
 
   return (
