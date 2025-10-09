@@ -2,7 +2,7 @@
 
 A full-stack web application for online jewelry auctions built with ASP.NET Core 8 and React.
 
-## ??? Architecture Overview
+##  Architecture Overview
 
 - **Backend**: ASP.NET Core 8 Web API with MySQL database
 - **Frontend**: React 18 with Vite
@@ -10,7 +10,7 @@ A full-stack web application for online jewelry auctions built with ASP.NET Core
 - **Authentication**: JWT tokens with role-based authorization
 - **Database**: Entity Framework Core with MySQL
 
-## ?? Quick Start
+##  Quick Start
 
 ### Prerequisites
 
@@ -43,7 +43,7 @@ dotnet run   Backend will run on: http://localhost:5242
 npm install
 npm run dev   Frontend will run on: https://localhost:3117
 
-## ?? Configuration
+##  Configuration
 
 ### Development Configuration
 
@@ -72,7 +72,7 @@ Or use appsettings.Production.json (ensure it's not in version control):{
     "SecretKey": "your-production-jwt-secret-minimum-32-characters"
   }
 }
-## ?? Project Structure
+##  Project Structure
 RoyalBidz/
 ??? RoyalBidz.Server/          # Backend API
 ?   ??? Controllers/           # API controllers
@@ -90,7 +90,7 @@ RoyalBidz/
     ?   ??? contexts/         # React contexts
     ?   ??? main.jsx          # App entry point
     ??? package.json
-## ?? Test Accounts
+##  Test Accounts
 
 The system includes pre-configured test accounts:
 
