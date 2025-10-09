@@ -16,6 +16,8 @@ import {
   Zap,
   Book,
   User,
+  LogIn,
+  UserPlus
 } from 'lucide-react';
 
 const Dashboard = () => {
@@ -174,7 +176,7 @@ const Dashboard = () => {
             RoyalBidz Dashboard
           </h1>
           <p style={{ color: '#718096', fontSize: '1.1rem', marginBottom: '15px' }}>
-            Welcome to the Jewelry Auction Platform
+            Welcome to the Luxury Jewelry Auction Platform
             {user && <span> - Hello, {user.firstName}!</span>}
           </p>
           {getStatusIndicator()}
@@ -194,33 +196,24 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* Test Users Card (only show if not authenticated) */}
+      {/* Welcome Card for Non-Authenticated Users */}
       {!isAuthenticated && (
         <div className="card">
-          <h3 style={{ color: '#2d3748', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
-            <UsersIcon size={18} /> Test User Accounts
-          </h3>
-          <div className="grid grid-3">
-            <div className="user-card">
-              <div className="user-role">Admin</div>
-              <div className="user-credentials">
-                admin@royalbidz.com<br />
-                Admin123!
-              </div>
-            </div>
-            <div className="user-card">
-              <div className="user-role">Seller</div>
-              <div className="user-credentials">
-                seller@royalbidz.com<br />
-                Seller123!
-              </div>
-            </div>
-            <div className="user-card">
-              <div className="user-role">Buyer</div>
-              <div className="user-credentials">
-                buyer@royalbidz.com<br />
-                Buyer123!
-              </div>
+          <div style={{ textAlign: 'center', padding: '20px' }}>
+            <h3 style={{ color: '#2d3748', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
+              <User size={20} /> Welcome to RoyalBidz
+            </h3>
+            <p style={{ color: '#4a5568', marginBottom: '25px', lineHeight: '1.6' }}>
+              Join our exclusive auction platform to bid on luxury jewelry from around the world. 
+              Create an account to start participating in auctions and building your collection.
+            </p>
+            <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <a href="/register" className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <UserPlus size={16} /> Create Account
+              </a>
+              <a href="/login" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <LogIn size={16} /> Sign In
+              </a>
             </div>
           </div>
         </div>
@@ -358,13 +351,22 @@ const Dashboard = () => {
           <a href="/swagger" target="_blank" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Book size={16} /> API Documentation
           </a>
-          {isAuthenticated && (
+          {isAuthenticated ? (
             <>
               <a href="/bids" className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <LineChart size={16} /> My Bids
               </a>
               <a href="/profile" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <User size={16} /> Profile
+              </a>
+            </>
+          ) : (
+            <>
+              <a href="/login" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <LogIn size={16} /> Sign In
+              </a>
+              <a href="/register" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <UserPlus size={16} /> Register
               </a>
             </>
           )}
