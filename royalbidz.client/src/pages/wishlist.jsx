@@ -3,7 +3,7 @@ const Wishlist = () => {
   const [wishlist, setWishlist] = useState([
     {
       id: 1,
-      name: "Gold Necklace",
+      name: " Ring",
       price: "$200",
       quantity: 1,
       status: "In stock",
@@ -11,7 +11,7 @@ const Wishlist = () => {
     },
     {
       id: 2,
-      name: "Diamond Necklace",
+      name: " Necklace",
       price: "$420",
       quantity: 1,
       status: "In stock",
@@ -19,7 +19,7 @@ const Wishlist = () => {
     },
     {
       id: 3,
-      name: "Gold Earrings",
+      name: "Bangles",
       price: "$520",
       quantity: 1,
       status: "In stock",
@@ -27,7 +27,7 @@ const Wishlist = () => {
     },
     {
       id: 4,
-      name: "Silver Chain",
+      name: "Pendants",
       price: "$720",
       quantity: 1,
       status: "In stock",
