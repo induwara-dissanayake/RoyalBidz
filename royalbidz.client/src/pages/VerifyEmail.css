@@ -1,0 +1,78 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f0f2f5; /* Light background for the overall page */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Ensures the container takes full viewport height */
+}
+
+.verified-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  /* Add a subtle background color or image if desired, similar to your example */
+  /* background-image: url('path/to/your/background-image.jpg'); */
+  /* background-size: cover; */
+  /* background-position: center; */
+}
+
+.verification-card {
+  background-color: #e6b96e; /* Similar to the card background in your image */
+  padding: 190px 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 100%;
+  max-width: 400px; /* Adjust max-width as needed */
+  color: #333; /* Darker text for readability */
+}
+
+.checkmark-icon {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 20px auto;
+  border-radius: 50%;
+  background-color: #000000; /* Green checkmark background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white; /* Checkmark icon color */
+  font-size: 40px; /* Adjust if using a character instead of SVG */
+}
+
+.checkmark-icon svg {
+  color: white; /* SVG stroke color */
+  stroke-width: 2.5; /* Adjust SVG stroke thickness */
+}
+
+
+.verification-card h1 {
+  font-size: 2.2em;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.verification-card p {
+  font-size: 1.1em;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.ok-button {
+  background-color: #333; /* Dark button background */
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 5px;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.ok-button:hover {
+  background-color: #555; /* Slightly lighter on hover */
+}

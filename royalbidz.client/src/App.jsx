@@ -10,6 +10,10 @@ import Profile from './pages/Profile';
 import Register from './pages/Register';
 import Users from './pages/Users';
 import Navbar from './components/Navbar';
+import ContactUS from './pages/ContactUS';
+import Foryou from './pages/Foryou';
+import VerifyEmail from './pages/VerifyEmail';
+import VerifyEmail02 from './pages/VerifyEmail02';
 import './App.css';
 
 function App() {
@@ -29,6 +33,12 @@ function App() {
                             <Route path="/payments" element={<Payments />} />
                             <Route path="/users" element={<Users />} />
                             <Route path="/profile" element={<Profile />} />
+                            <Route path="/ContactUS" element={<ContactUS />} />
+                            <Route path="/Foryou" element={<Foryou />} />
+                            <Route path="/VerifyEmail" element={<VerifyEmail />} />
+                            <Route path="/VerifyEmail02" element={<VerifyEmail02 />} />
+
+                        
                         </Routes>
                     </main>
                 </div>

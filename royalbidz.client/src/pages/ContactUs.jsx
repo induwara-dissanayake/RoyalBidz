@@ -10,7 +10,7 @@ const ContactUs = () => {
      {/* Hero Section with Contact Us Title */}
       <section className="hero-section">
         <img src={image1} alt="Description of Image 1" className="new-image-class" />
-            <h1>CONTACT US</h1>
+            
       </section>
 
       {/* Main Content Area */}
