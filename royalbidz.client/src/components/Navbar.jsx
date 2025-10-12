@@ -1,5 +1,5 @@
 // Navbar.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Navbar.css';
 import logoImage from '../img/logo6.png';
 import RegisterForm from './RegisterForm';
@@ -14,6 +14,20 @@ function Navbar() {
   const handleCloseRegister = () => {
     setShowRegisterPopup(false);
   };
+
+  // Block body scroll when popup is open
+  useEffect(() => {
+    if (showRegisterPopup) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+
+    // Cleanup function to remove class when component unmounts
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, [showRegisterPopup]);
 
   return (
     <>
