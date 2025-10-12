@@ -1,16 +1,15 @@
 import { AuthProvider } from "./contexts/AuthContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "./utils/api";
 
 import Navbar from "./components/Navbar";
 import Carousel from "./components/Carousel";
 import Collage from "./components/Collage";
 import Content from "./components/Content";
 import BgImgContent from "./components/BgImgContent";
-import Item from "./components/Item";
+import { Item } from "./components/Item";
 import Footer from "./components/Footer";
-import Bids from "./pages/Bids.jsx";
 
 // Import pages
 import Dashboard from "./pages/Dashboard";
@@ -39,7 +38,7 @@ function App() {
     const loadJewelryItems = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("/api/jewelry");
+        const response = await api.get("/jewelry");
 
         // Map the database jewelry items to the format expected by the Item component
         const mappedItems = response.data.slice(0, 6).map((item) => ({
@@ -166,8 +165,8 @@ function App() {
               </div>
             ) : (
               <div className="items-grid">
-                {jewelryItems.map((item) => (
-                  <Item key={item.id} item={item} />
+                {jewelryItems.map((item, index) => (
+                  <Item key={item.id || `item-${index}`} item={item} />
                 ))}
               </div>
             )}
@@ -194,30 +193,6 @@ function App() {
     );
   };
 
-  return (
-    <div className="app">
-      <Navbar />
-      <Carousel />
-      <Collage />
-      <Content />
-      <BgImgContent />
-      <section className="items-section">
-        <div className="items-container">
-          <h2 className="items-title">Our Best Sellers</h2>
-          <div className="items-grid">
-            {jewelryItems.map((item) => (
-              <Item key={item.id} item={item} />
-            ))}
-          </div>
-        </div>
-      </section>
-      <Footer />
-      <main className="main-content"></main>
-    </div>
-  );
-}
-
-function App() {
   return (
     <AuthProvider>
       <Router>
