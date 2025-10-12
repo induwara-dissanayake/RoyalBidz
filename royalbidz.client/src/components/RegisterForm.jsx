@@ -70,7 +70,7 @@ export default function RegisterForm({ onClose }) {
     <div className="register-page modal-mode">
       <div className="register-wrapper">
         <div className="register-container-modern">
-          {/* internal close button inside the popup (not circular) */}
+          {/* Close button inside the popup */}
           <button
             type="button"
             className="register-close"
