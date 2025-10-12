@@ -12,7 +12,6 @@ export default function RegisterForm({ onClose }) {
     password: '',
     confirmPassword: '',
     phoneNumber: '',
-    address: '',
     role: 'Buyer'
   });
   const [loading, setLoading] = useState(false);
@@ -70,7 +69,7 @@ export default function RegisterForm({ onClose }) {
     <div className="register-page modal-mode">
       <div className="register-wrapper">
         <div className="register-container-modern">
-          {/* Close button inside the popup */}
+          {/* Close button */}
           <button
             type="button"
             className="register-close"
@@ -82,6 +81,8 @@ export default function RegisterForm({ onClose }) {
           >
             ×
           </button>
+
+          {/* Welcome Panel - Static */}
           <div className="welcome-panel">
             <div className="welcome-content">
               <div className="logo-circle">
@@ -91,7 +92,9 @@ export default function RegisterForm({ onClose }) {
                 </svg>
               </div>
               <h1 className="welcome-title">Welcome to<br/>RoyalBidz</h1>
-              <p className="welcome-description">Join our community of buyers and sellers. Start bidding on amazing items or list your own products today.</p>
+              <p className="welcome-description">
+                Join our community of buyers and sellers. Start bidding on amazing items or list your own products today.
+              </p>
               <div className="welcome-features">
                 <div className="feature-item">
                   <svg viewBox="0 0 20 20" fill="currentColor">
@@ -113,11 +116,12 @@ export default function RegisterForm({ onClose }) {
                 </div>
               </div>
               <div className="welcome-link">
-                <Link to="/signin" className="signin-link">Sign In</Link>
+                <Link to="/login" className="signin-link">Sign In</Link>
               </div>
             </div>
           </div>
 
+          {/* Form Panel - Scrollable */}
           <div className="form-panel">
             <div className="form-content">
               <h2 className="form-title">Create your account</h2>
@@ -134,27 +138,50 @@ export default function RegisterForm({ onClose }) {
               <form onSubmit={handleSubmit} className="register-form">
                 <div className="form-group">
                   <label className="form-label">Username</label>
-                  <input type="text" name="username" className="form-input" value={formData.username} onChange={handleChange} required placeholder="Enter username" />
+                  <input
+                    type="text"
+                    name="username"
+                    className="form-input"
+                    value={formData.username}
+                    onChange={handleChange}
+                    required
+                    placeholder="Enter username"
+                  />
                 </div>
 
                 <div className="form-group">
                   <label className="form-label">E-mail Address</label>
-                  <input type="email" name="email" className="form-input" value={formData.email} onChange={handleChange} required placeholder="Enter email" />
+                  <input
+                    type="email"
+                    name="email"
+                    className="form-input"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    placeholder="Enter email"
+                  />
                 </div>
 
                 <div className="form-group">
                   <label className="form-label">Phone Number</label>
-                  <input type="tel" name="phoneNumber" className="form-input" value={formData.phoneNumber} onChange={handleChange} placeholder="Enter phone number" />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Address</label>
-                  <input type="text" name="address" className="form-input" value={formData.address} onChange={handleChange} placeholder="Enter address" />
+                  <input
+                    type="tel"
+                    name="phoneNumber"
+                    className="form-input"
+                    value={formData.phoneNumber}
+                    onChange={handleChange}
+                    placeholder="Enter phone number"
+                  />
                 </div>
 
                 <div className="form-group">
                   <label className="form-label">Account Type</label>
-                  <select name="role" className="form-input form-select" value={formData.role} onChange={handleChange}>
+                  <select
+                    name="role"
+                    className="form-input form-select"
+                    value={formData.role}
+                    onChange={handleChange}
+                  >
                     <option value="Buyer">Buyer</option>
                     <option value="Seller">Seller</option>
                   </select>
@@ -163,12 +190,30 @@ export default function RegisterForm({ onClose }) {
                 <div className="form-group">
                   <label className="form-label">Password</label>
                   <div className="password-wrapper">
-                    <input type={showPassword ? 'text' : 'password'} name="password" className="form-input" value={formData.password} onChange={handleChange} required placeholder="Enter password" />
-                    <button type="button" className="password-toggle" onClick={() => setShowPassword(!showPassword)} aria-label="Toggle password visibility">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      name="password"
+                      className="form-input"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
+                      placeholder="Enter password"
+                    />
+                    <button
+                      type="button"
+                      className="password-toggle"
+                      onClick={() => setShowPassword(!showPassword)}
+                      aria-label="Toggle password visibility"
+                    >
                       {showPassword ? (
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                        </svg>
                       ) : (
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
                       )}
                     </button>
                   </div>
@@ -177,12 +222,30 @@ export default function RegisterForm({ onClose }) {
                 <div className="form-group">
                   <label className="form-label">Confirm Password</label>
                   <div className="password-wrapper">
-                    <input type={showConfirmPassword ? 'text' : 'password'} name="confirmPassword" className="form-input" value={formData.confirmPassword} onChange={handleChange} required placeholder="Confirm password" />
-                    <button type="button" className="password-toggle" onClick={() => setShowConfirmPassword(!showConfirmPassword)} aria-label="Toggle password visibility">
+                    <input
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      name="confirmPassword"
+                      className="form-input"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      required
+                      placeholder="Confirm password"
+                    />
+                    <button
+                      type="button"
+                      className="password-toggle"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      aria-label="Toggle password visibility"
+                    >
                       {showConfirmPassword ? (
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                        </svg>
                       ) : (
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
                       )}
                     </button>
                   </div>
@@ -196,7 +259,7 @@ export default function RegisterForm({ onClose }) {
                         <span>Creating...</span>
                       </>
                     ) : (
-                      <span>Register</span>
+                      <span>Sign Up</span>
                     )}
                   </button>
                 </div>
