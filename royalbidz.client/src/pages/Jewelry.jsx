@@ -1,216 +1,201 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
-import { Gem, Eye, DollarSign, Weight, Calendar, MapPin, RefreshCw, AlertCircle } from 'lucide-react';
+import React from "react";
+import { FaSearch, FaFacebookF, FaInstagram, FaYoutube, FaLinkedinIn } from "react-icons/fa";
 
-const Jewelry = () => {
-  const { user, isAuthenticated } = useAuth();
-  const [jewelry, setJewelry] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    loadJewelry();
-  }, []);
-
-  const loadJewelry = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get('/api/jewelry');
-      setJewelry(response.data);
-      setError('');
-    } catch (error) {
-      console.error('Error loading jewelry:', error);
-      setError('Failed to load jewelry items. Please check if the backend server is running.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getConditionBadgeClass = (condition) => {
-    switch (condition?.toLowerCase()) {
-      case 'new': return 'badge-active';
-      case 'excellent': case 'verygood': return 'badge-completed';
-      case 'good': return 'badge-pending';
-      default: return 'badge-inactive';
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="page-container">
-        <div className="loading">
-          <div className="spinner"></div>
-          <span style={{ marginLeft: '10px' }}>Loading jewelry...</span>
-        </div>
-      </div>
-    );
-  }
+const JewelleryPage = () => {
+  const items = [
+    {
+      id: 1,
+      name: "Gold Plated Kundan Jewellery",
+      category: "Necklace",
+      image: "https://images.unsplash.com/photo-1600181953299-3a2a3b9b8d1c?w=400",
+    },
+    {
+      id: 2,
+      name: "Possibly moissanite or zircon",
+      category: "Ring",
+      image: "https://images.unsplash.com/photo-1600185365483-26d7a4b2ed2e?w=400",
+    },
+    {
+      id: 3,
+      name: "Bengali terminology",
+      category: "Bangles",
+      image: "https://images.unsplash.com/photo-1600185365237-8d65b8c3c72b?w=400",
+    },
+    {
+      id: 4,
+      name: "Gold wedding Jewellery",
+      category: "Bangles",
+      image: "https://images.unsplash.com/photo-1600181952980-5cfb6d3d7c5b?w=400",
+    },
+    {
+      id: 5,
+      name: "Manufacturer of 22ct Gold ring",
+      category: "Ring",
+      image: "https://images.unsplash.com/photo-1600181953300-392f1a6e6b9b?w=400",
+    },
+    {
+      id: 6,
+      name: "Gold wedding Jewellery",
+      category: "Pendants",
+      image: "https://images.unsplash.com/photo-1600185365142-0e928c9e5ef7?w=400",
+    },
+    {
+      id: 7,
+      name: "Gold wedding Jewellery",
+      category: "Ring",
+      image: "https://images.unsplash.com/photo-1600181953065-7d64f735399e?w=400",
+    },
+    {
+      id: 8,
+      name: "Lyra Pendant",
+      category: "Pendants",
+      image: "https://images.unsplash.com/photo-1600181953228-9a5563b2b776?w=400",
+    },
+  ];
 
   return (
-    <div className="page-container">
+    <div className="font-sans bg-white text-gray-900">
       {/* Header */}
-      <div className="card">
-        <div className="card-header">
-          <div>
-            <h1 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <Gem size={24} /> Jewelry Catalog
-            </h1>
-            <p style={{ color: '#718096', margin: 0 }}>
-              Browse and manage jewelry items
+      <header className="bg-[#C89B3C] py-4 shadow-md">
+        <div className="container mx-auto flex items-center justify-between px-6">
+          {/* Logo */}
+          <div className="flex items-center space-x-2">
+            <img
+              src="https://i.ibb.co/nL9MtFy/royalbidz-logo.png"
+              alt="RoyalBidz Logo"
+              className="h-10 w-auto"
+            />
+            <h1 className="text-2xl font-bold text-white tracking-wide">RoyalBidz</h1>
+          </div>
+
+          {/* Search bar */}
+          <div className="flex items-center bg-white rounded overflow-hidden w-64">
+            <input
+              type="text"
+              placeholder="Search"
+              className="px-3 py-2 w-full text-gray-700 outline-none"
+            />
+            <button className="bg-[#003366] p-2 text-white">
+              <FaSearch />
+            </button>
+          </div>
+
+          {/* Nav */}
+          <nav className="flex items-center space-x-6 text-white text-lg">
+            <a href="#" className="hover:text-gray-200">Home</a>
+            <a href="#" className="hover:text-gray-200">For You</a>
+            <a href="#" className="hover:text-gray-200">Items</a>
+            <a href="#" className="hover:text-gray-200">Contact</a>
+            <a href="#" className="hover:text-gray-200">Sign in</a>
+            <button className="bg-[#0056B3] px-4 py-1.5 rounded hover:bg-[#004080] transition">
+              Register
+            </button>
+          </nav>
+        </div>
+      </header>
+
+      {/* Banner Section */}
+      <section className="text-center py-12 bg-[#fdf5e6]">
+        <h2 className="text-3xl font-bold mb-2">Jewellery Items</h2>
+        <p className="text-gray-700 mb-8">
+          Explore our curated collection of fine jewelry.
+        </p>
+
+        <div
+          className="max-w-4xl mx-auto rounded-lg overflow-hidden shadow-md"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1600181953315-8b2a6b72b9e2?w=800')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
+          <div className="bg-white bg-opacity-70 py-10 px-8">
+            <h3 className="text-3xl font-semibold mb-2">FLASH SALE FRIDAY</h3>
+            <p className="text-2xl font-bold text-[#C89B3C] mb-2">
+              SAVE 20% ON SELECT ITEMS
+            </p>
+            <p className="text-gray-800 text-lg">
+              PROMO CODE: <b>FRIYAT</b>
             </p>
           </div>
-          <button
-            onClick={loadJewelry}
-            className="btn btn-outline btn-sm"
-            style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-          >
-            <RefreshCw size={14} /> Refresh
-          </button>
         </div>
-      </div>
+      </section>
 
-      {/* Alerts */}
-      {error && (
-        <div className="alert alert-error">
-          <AlertCircle size={16} style={{ marginRight: '8px' }} />
-          {error}
-          <button 
-            onClick={() => setError('')}
-            style={{ float: 'right', background: 'none', border: 'none', fontSize: '16px' }}
+      {/* Items Grid */}
+      <section className="py-12 px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 container mx-auto">
+        {items.map((item) => (
+          <div
+            key={item.id}
+            className="bg-white rounded-lg shadow hover:shadow-lg transition p-3 text-center"
           >
-            ×
-          </button>
-        </div>
-      )}
-
-      {/* Jewelry Grid */}
-      {jewelry.length === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: '60px 20px' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '20px' }}>
-            <Gem size={64} color="#cbd5e0" />
+            <img
+              src={item.image}
+              alt={item.name}
+              className="w-full h-56 object-cover rounded-md mb-3"
+            />
+            <h3 className="text-lg font-semibold">{item.name}</h3>
+            <p className="text-sm text-red-600">{item.category}</p>
           </div>
-          <h3 style={{ color: '#4a5568', marginBottom: '10px' }}>No jewelry items found</h3>
-          <p style={{ color: '#718096' }}>
-            {error ? 'Unable to load jewelry items from the server.' : 'No jewelry items have been added yet.'}
-          </p>
-          {error && (
-            <button 
-              onClick={loadJewelry}
-              className="btn btn-primary"
-              style={{ marginTop: '10px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
-            >
-              <RefreshCw size={16} /> Try Again
-            </button>
-          )}
-        </div>
-      ) : (
-        <div className="grid grid-3">
-          {jewelry.map((item) => (
-            <div key={item.id} className="card">
-              <div style={{ marginBottom: '15px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                  <h3 style={{ color: '#2d3748', margin: 0, flex: 1 }}>
-                    {item.name}
-                  </h3>
-                  <span className={`badge ${getConditionBadgeClass(item.condition)}`}>
-                    {item.condition}
-                  </span>
-                </div>
-                
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                  <span style={{ 
-                    background: '#667eea', 
-                    color: 'white', 
-                    padding: '2px 8px', 
-                    borderRadius: '4px',
-                    fontSize: '0.8rem'
-                  }}>
-                    {item.type}
-                  </span>
-                  <span style={{ 
-                    background: '#48bb78', 
-                    color: 'white', 
-                    padding: '2px 8px', 
-                    borderRadius: '4px',
-                    fontSize: '0.8rem'
-                  }}>
-                    {item.primaryMaterial}
-                  </span>
-                </div>
+        ))}
+      </section>
 
-                {item.brand && (
-                  <p style={{ color: '#9f7aea', fontSize: '0.9rem', margin: '5px 0', fontWeight: '500' }}>
-                    {item.brand}
-                  </p>
-                )}
-                
-                <p style={{ color: '#4a5568', fontSize: '0.9rem', lineHeight: '1.4' }}>
-                  {item.description?.substring(0, 100)}
-                  {item.description?.length > 100 && '...'}
-                </p>
-              </div>
-
-              <div style={{ marginBottom: '15px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '0.9rem' }}>
-                  <div>
-                    <span style={{ color: '#718096' }}>Estimated Value:</span>
-                    <div style={{ 
-                      fontWeight: 'bold', 
-                      color: '#2d3748',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px'
-                    }}>
-                      <DollarSign size={14} />
-                      {item.estimatedValue ? `$${item.estimatedValue.toLocaleString()}` : 'N/A'}
-                    </div>
-                  </div>
-                  
-                  {item.weight && (
-                    <div>
-                      <span style={{ color: '#718096' }}>Weight:</span>
-                      <div style={{ fontWeight: 'bold', color: '#2d3748', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Weight size={14} />
-                        {item.weight}g
-                      </div>
-                    </div>
-                  )}
-
-                  {item.yearMade && (
-                    <div>
-                      <span style={{ color: '#718096' }}>Year:</span>
-                      <div style={{ fontWeight: 'bold', color: '#2d3748', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Calendar size={14} />
-                        {item.yearMade}
-                      </div>
-                    </div>
-                  )}
-
-                  {item.origin && (
-                    <div>
-                      <span style={{ color: '#718096' }}>Origin:</span>
-                      <div style={{ fontWeight: 'bold', color: '#2d3748', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <MapPin size={14} />
-                        {item.origin}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <button className="btn btn-outline btn-sm" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center' }}>
-                  <Eye size={14} /> View Details
-                </button>
-              </div>
+      {/* Footer */}
+      <footer className="bg-gradient-to-r from-[#D9A441] to-[#C89B3C] text-white py-10">
+        <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 px-6">
+          {/* Brand */}
+          <div>
+            <h2 className="text-2xl font-bold mb-2">RoyalBidz</h2>
+            <p>Luxury Jewelry</p>
+            <div className="flex space-x-4 mt-4 text-xl">
+              <FaFacebookF className="hover:text-gray-200 cursor-pointer" />
+              <FaInstagram className="hover:text-gray-200 cursor-pointer" />
+              <FaYoutube className="hover:text-gray-200 cursor-pointer" />
+              <FaLinkedinIn className="hover:text-gray-200 cursor-pointer" />
             </div>
-          ))}
+          </div>
+
+          {/* Pages */}
+          <div>
+            <h3 className="font-semibold mb-3">Our Pages</h3>
+            <ul className="space-y-1">
+              <li>Home</li>
+              <li>For You</li>
+              <li>Items</li>
+              <li>Register</li>
+              <li>Sign In</li>
+              <li>Contact Us</li>
+            </ul>
+          </div>
+
+          {/* Categories */}
+          <div>
+            <h3 className="font-semibold mb-3">Categories</h3>
+            <ul className="space-y-1">
+              <li>Necklaces</li>
+              <li>Pendants</li>
+              <li>Rings</li>
+              <li>Bangles</li>
+              <li>Bracelets</li>
+              <li>Ear Studs</li>
+            </ul>
+          </div>
+
+          {/* Address */}
+          <div>
+            <h3 className="font-semibold mb-3">Address</h3>
+            <p>NSBM Green University of Sri Lanka</p>
+            <p>Email: <a href="mailto:info@royalbidz.com" className="underline">info@royalbidz.com</a></p>
+            <p>Tel: +97 71444444</p>
+          </div>
         </div>
-      )}
+
+        <div className="text-center mt-10 text-sm border-t border-white/40 pt-4">
+          Â© 2025 Vogue Jewellers. All Rights Reserved.
+        </div>
+      </footer>
     </div>
   );
 };
 
-export default Jewelry;
+export default JewelleryPage;
