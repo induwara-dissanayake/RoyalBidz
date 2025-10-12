@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import './register.css';
+import './Register.css';
 
 const Register = () => {
   const { register } = useAuth();
@@ -133,7 +133,7 @@ const Register = () => {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                placeholder="Enter your Phone Password"
+                placeholder="Enter your Password"
               />
             </div>
 
@@ -142,7 +142,7 @@ const Register = () => {
               className="btn-register"
               disabled={loading}
             >
-              {loading ? 'Signing In...' : 'Sign In'}
+              {loading ? 'Registering...' : 'Register'}
             </button>
           </form>
 
