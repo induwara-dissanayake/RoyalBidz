@@ -62,7 +62,7 @@ namespace RoyalBidz.Server.Controllers
                 // Send welcome email (don't block registration if this fails)
                 try
                 {
-                    await _notificationService.SendWelcomeEmailAsync(user.Email, $"{user.FirstName} {user.LastName}");
+                    await _notificationService.SendWelcomeEmailAsync(user.Email, user.Username);
                 }
                 catch (Exception emailEx)
                 {

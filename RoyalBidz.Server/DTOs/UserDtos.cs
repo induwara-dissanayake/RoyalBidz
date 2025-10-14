@@ -6,11 +6,9 @@ namespace RoyalBidz.Server.DTOs
     public class UserDto
     {
         public int Id { get; set; }
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
+        public string Username { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
-        public string? Address { get; set; }
         public UserRole Role { get; set; }
         public UserStatus Status { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -21,11 +19,7 @@ namespace RoyalBidz.Server.DTOs
     {
         [Required]
         [StringLength(100)]
-        public string FirstName { get; set; } = string.Empty;
-
-        [Required]
-        [StringLength(100)]
-        public string LastName { get; set; } = string.Empty;
+        public string Username { get; set; } = string.Empty;
 
         [Required]
         [EmailAddress]
@@ -38,23 +32,16 @@ namespace RoyalBidz.Server.DTOs
         [Phone]
         public string? PhoneNumber { get; set; }
 
-        public string? Address { get; set; }
-
         public UserRole Role { get; set; } = UserRole.Buyer;
     }
 
     public class UpdateUserDto
     {
         [StringLength(100)]
-        public string? FirstName { get; set; }
-
-        [StringLength(100)]
-        public string? LastName { get; set; }
+        public string? Username { get; set; }
 
         [Phone]
         public string? PhoneNumber { get; set; }
-
-        public string? Address { get; set; }
     }
 
     public class LoginDto

@@ -22,11 +22,7 @@ namespace RoyalBidz.Server.Models
         
         [Required]
         [StringLength(100)]
-        public string FirstName { get; set; } = string.Empty;
-        
-        [Required]
-        [StringLength(100)]
-        public string LastName { get; set; } = string.Empty;
+        public string Username { get; set; } = string.Empty;
         
         [Required]
         [EmailAddress]
@@ -39,9 +35,6 @@ namespace RoyalBidz.Server.Models
         [Phone]
         [StringLength(20)]
         public string? PhoneNumber { get; set; }
-        
-        [StringLength(500)]
-        public string? Address { get; set; }
         
         public UserRole Role { get; set; } = UserRole.Buyer;
         
