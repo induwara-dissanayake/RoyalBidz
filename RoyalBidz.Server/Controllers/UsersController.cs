@@ -26,10 +26,15 @@ namespace RoyalBidz.Server.Controllers
         {
             try
             {
-                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-                if (userId == 0)
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ?? User.FindFirst("sub") ?? User.FindFirst("id");
+                if (userIdClaim == null)
                 {
-                    return Unauthorized(new { message = "Invalid token" });
+                    return BadRequest(new { message = "Invalid token - no user ID found" });
+                }
+
+                if (!int.TryParse(userIdClaim.Value, out int userId))
+                {
+                    return BadRequest(new { message = "Invalid user ID in token" });
                 }
 
                 var user = await _userService.GetUserByIdAsync(userId);
@@ -43,7 +48,7 @@ namespace RoyalBidz.Server.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting current user");
-                return StatusCode(500, new { message = "An error occurred while retrieving the current user" });
+                return StatusCode(500, new { message = "An error occurred while retrieving user information" });
             }
         }
 

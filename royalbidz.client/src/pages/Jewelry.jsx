@@ -1,5 +1,11 @@
 import React from "react";
-import { FaSearch, FaFacebookF, FaInstagram, FaYoutube, FaLinkedinIn } from "react-icons/fa";
+import {
+  FaSearch,
+  FaFacebookF,
+  FaInstagram,
+  FaYoutube,
+  FaLinkedinIn,
+} from "react-icons/fa";
 
 const JewelleryPage = () => {
   const items = [
@@ -7,49 +13,57 @@ const JewelleryPage = () => {
       id: 1,
       name: "Gold Plated Kundan Jewellery",
       category: "Necklace",
-      image: "https://images.unsplash.com/photo-1600181953299-3a2a3b9b8d1c?w=400",
+      image:
+        "https://images.unsplash.com/photo-1600181953299-3a2a3b9b8d1c?w=400",
     },
     {
       id: 2,
       name: "Possibly moissanite or zircon",
       category: "Ring",
-      image: "https://images.unsplash.com/photo-1600185365483-26d7a4b2ed2e?w=400",
+      image:
+        "https://images.unsplash.com/photo-1600185365483-26d7a4b2ed2e?w=400",
     },
     {
       id: 3,
       name: "Bengali terminology",
       category: "Bangles",
-      image: "https://images.unsplash.com/photo-1600185365237-8d65b8c3c72b?w=400",
+      image:
+        "https://images.unsplash.com/photo-1600185365237-8d65b8c3c72b?w=400",
     },
     {
       id: 4,
       name: "Gold wedding Jewellery",
       category: "Bangles",
-      image: "https://images.unsplash.com/photo-1600181952980-5cfb6d3d7c5b?w=400",
+      image:
+        "https://images.unsplash.com/photo-1600181952980-5cfb6d3d7c5b?w=400",
     },
     {
       id: 5,
       name: "Manufacturer of 22ct Gold ring",
       category: "Ring",
-      image: "https://images.unsplash.com/photo-1600181953300-392f1a6e6b9b?w=400",
+      image:
+        "https://images.unsplash.com/photo-1600181953300-392f1a6e6b9b?w=400",
     },
     {
       id: 6,
       name: "Gold wedding Jewellery",
       category: "Pendants",
-      image: "https://images.unsplash.com/photo-1600185365142-0e928c9e5ef7?w=400",
+      image:
+        "https://images.unsplash.com/photo-1600185365142-0e928c9e5ef7?w=400",
     },
     {
       id: 7,
       name: "Gold wedding Jewellery",
       category: "Ring",
-      image: "https://images.unsplash.com/photo-1600181953065-7d64f735399e?w=400",
+      image:
+        "https://images.unsplash.com/photo-1600181953065-7d64f735399e?w=400",
     },
     {
       id: 8,
       name: "Lyra Pendant",
       category: "Pendants",
-      image: "https://images.unsplash.com/photo-1600181953228-9a5563b2b776?w=400",
+      image:
+        "https://images.unsplash.com/photo-1600181953228-9a5563b2b776?w=400",
     },
   ];
 
@@ -65,7 +79,9 @@ const JewelleryPage = () => {
               alt="RoyalBidz Logo"
               className="h-10 w-auto"
             />
-            <h1 className="text-2xl font-bold text-white tracking-wide">RoyalBidz</h1>
+            <h1 className="text-2xl font-bold text-white tracking-wide">
+              RoyalBidz
+            </h1>
           </div>
 
           {/* Search bar */}
@@ -82,11 +98,21 @@ const JewelleryPage = () => {
 
           {/* Nav */}
           <nav className="flex items-center space-x-6 text-white text-lg">
-            <a href="#" className="hover:text-gray-200">Home</a>
-            <a href="#" className="hover:text-gray-200">For You</a>
-            <a href="#" className="hover:text-gray-200">Items</a>
-            <a href="#" className="hover:text-gray-200">Contact</a>
-            <a href="#" className="hover:text-gray-200">Sign in</a>
+            <a href="#" className="hover:text-gray-200">
+              Home
+            </a>
+            <a href="#" className="hover:text-gray-200">
+              For You
+            </a>
+            <a href="#" className="hover:text-gray-200">
+              Items
+            </a>
+            <a href="#" className="hover:text-gray-200">
+              Contact
+            </a>
+            <a href="#" className="hover:text-gray-200">
+              Sign in
+            </a>
             <button className="bg-[#0056B3] px-4 py-1.5 rounded hover:bg-[#004080] transition">
               Register
             </button>
@@ -185,7 +211,12 @@ const JewelleryPage = () => {
           <div>
             <h3 className="font-semibold mb-3">Address</h3>
             <p>NSBM Green University of Sri Lanka</p>
-            <p>Email: <a href="mailto:info@royalbidz.com" className="underline">info@royalbidz.com</a></p>
+            <p>
+              Email:{" "}
+              <a href="mailto:info@royalbidz.com" className="underline">
+                info@royalbidz.com
+              </a>
+            </p>
             <p>Tel: +97 71444444</p>
           </div>
         </div>

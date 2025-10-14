@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 08, 2025 at 06:09 PM
+-- Generation Time: Oct 14, 2025 at 09:55 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -183,15 +183,13 @@ CREATE TABLE `payments` (
 
 CREATE TABLE `users` (
   `Id` int(11) NOT NULL,
-  `FirstName` varchar(100) NOT NULL,
-  `LastName` varchar(100) NOT NULL,
+  `Username` varchar(50) NOT NULL,
   `Email` varchar(255) NOT NULL,
   `PasswordHash` longtext NOT NULL,
   `PhoneNumber` varchar(20) DEFAULT NULL,
-  `Address` varchar(500) DEFAULT NULL,
-  `Role` int(11) NOT NULL,
-  `Status` int(11) NOT NULL,
-  `CreatedAt` datetime(6) NOT NULL,
+  `Role` int(11) NOT NULL DEFAULT 0,
+  `Status` int(11) NOT NULL DEFAULT 0,
+  `CreatedAt` datetime(6) NOT NULL DEFAULT current_timestamp(6),
   `LastLogin` datetime(6) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -199,10 +197,11 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`Id`, `FirstName`, `LastName`, `Email`, `PasswordHash`, `PhoneNumber`, `Address`, `Role`, `Status`, `CreatedAt`, `LastLogin`) VALUES
-(1, 'Admin', 'User', 'admin@royalbidz.com', '$2a$11$z74G0vlVhZHSL9lJncHtd.6.EN1q./.4rESGjM8yC6f9PvqczAeTS', NULL, NULL, 2, 0, '2024-01-01 00:00:00.000000', '2025-09-24 05:52:21.364418'),
-(2, 'John', 'Seller', 'seller@royalbidz.com', '$2a$11$9yE3NmzviiJAITHM6XdsCuTYKflVwbmUveTDvqEd7Pt1MEfptMXcS', NULL, NULL, 1, 0, '2024-01-01 00:00:00.000000', NULL),
-(3, 'Jane', 'Buyer', 'buyer@royalbidz.com', '$2a$11$y9pqcETt2c0NcIfYyAJcweER7tWnJpGUIGNm9dO.zr2DZDyHkkNpi', NULL, NULL, 0, 0, '2024-01-01 00:00:00.000000', NULL);
+INSERT INTO `users` (`Id`, `Username`, `Email`, `PasswordHash`, `PhoneNumber`, `Role`, `Status`, `CreatedAt`, `LastLogin`) VALUES
+(1, 'admin', 'admin@royalbidz.com', '$2a$11$z74G0vlVhZHSL9lJncHtd.6.EN1q./.4rESGjM8yC6f9PvqczAeTS', '+1234567890', 2, 0, '2024-01-01 00:00:00.000000', NULL),
+(2, 'seller1', 'seller@royalbidz.com', '$2a$11$9yE3NmzviiJAITHM6XdsCuTYKflVwbmUveTDvqEd7Pt1MEfptMXcS', '+1234567891', 1, 0, '2024-01-01 00:00:00.000000', NULL),
+(3, 'buyer1', 'buyer@royalbidz.com', '$2a$11$y9pqcETt2c0NcIfYyAJcweER7tWnJpGUIGNm9dO.zr2DZDyHkkNpi', '+1234567892', 0, 0, '2024-01-01 00:00:00.000000', '2025-10-14 19:44:08.539816'),
+(4, 'aaa', 'aaa@gmail.com', '$2a$11$z/YOU9JOD8cK0i7cR09VKuLWseJpm.uuJGOujNsiZYM6Cuc4BHhJq', '1111111111', 0, 0, '2025-10-14 19:03:14.352756', '2025-10-14 19:40:57.763229');
 
 --
 -- Indexes for dumped tables
@@ -251,7 +250,8 @@ ALTER TABLE `payments`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`Id`),
-  ADD UNIQUE KEY `IX_Users_Email` (`Email`);
+  ADD UNIQUE KEY `IX_Users_Email` (`Email`),
+  ADD UNIQUE KEY `IX_Users_Username` (`Username`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -291,7 +291,7 @@ ALTER TABLE `payments`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
