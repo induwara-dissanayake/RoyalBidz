@@ -20,22 +20,25 @@ const Auctions = () => {
       const response = await axios.get('/api/auctions');
       // Handle both paginated and direct array responses
       const auctionData = response.data.items || response.data;
-      setAuctions(auctionData);
+      setAuctions(Array.isArray(auctionData) ? auctionData : []);
       setError('');
     } catch (error) {
       console.error('Error loading auctions:', error);
       setError('Failed to load auctions. Please check if the backend server is running.');
+      setAuctions([]); // Ensure auctions is always an array
     } finally {
       setLoading(false);
     }
   };
 
   const getStatusBadgeClass = (status) => {
-    switch (status?.toLowerCase()) {
-      case 'active': return 'badge-active';
-      case 'completed': return 'badge-completed';
-      case 'cancelled': return 'badge-inactive';
-      case 'ended': return 'badge-completed';
+    // Handle both string and integer enum values
+    const statusStr = typeof status === 'string' ? status : String(status);
+    switch (statusStr?.toLowerCase()) {
+      case 'active': case '2': return 'badge-active';
+      case 'completed': case '5': return 'badge-completed';  
+      case 'ended': case '3': return 'badge-completed';
+      case 'cancelled': case '4': return 'badge-inactive';
       default: return 'badge-pending';
     }
   };
@@ -122,8 +125,8 @@ const Auctions = () => {
         </div>
       ) : (
         <div className="grid grid-2">
-          {auctions.map((auction) => (
-            <div key={auction.id} className="card">
+          {auctions.map((auction, index) => (
+            <div key={auction?.id ? `auction-${auction.id}` : `auction-item-${index}`} className="card">
               <div style={{ marginBottom: '15px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
                   <h3 style={{ color: '#2d3748', margin: 0, flex: 1 }}>

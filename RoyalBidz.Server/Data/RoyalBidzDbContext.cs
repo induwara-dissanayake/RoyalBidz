@@ -26,8 +26,7 @@ namespace RoyalBidz.Server.Data
                 entity.HasKey(e => e.Id);
                 entity.HasIndex(e => e.Email).IsUnique();
                 entity.Property(e => e.Email).IsRequired();
-                entity.Property(e => e.FirstName).IsRequired().HasMaxLength(100);
-                entity.Property(e => e.LastName).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Username).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.PasswordHash).IsRequired();
             });
 
@@ -130,8 +129,7 @@ namespace RoyalBidz.Server.Data
                 new User
                 {
                     Id = 1,
-                    FirstName = "Admin",
-                    LastName = "User",
+                    Username = "admin",
                     Email = "admin@royalbidz.com",
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
                     Role = UserRole.Admin,
@@ -141,8 +139,7 @@ namespace RoyalBidz.Server.Data
                 new User
                 {
                     Id = 2,
-                    FirstName = "John",
-                    LastName = "Seller",
+                    Username = "seller1",
                     Email = "seller@royalbidz.com",
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("Seller123!"),
                     Role = UserRole.Seller,
@@ -152,8 +149,7 @@ namespace RoyalBidz.Server.Data
                 new User
                 {
                     Id = 3,
-                    FirstName = "Jane",
-                    LastName = "Buyer",
+                    Username = "buyer1",
                     Email = "buyer@royalbidz.com",
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("Buyer123!"),
                     Role = UserRole.Buyer,

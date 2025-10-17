@@ -44,8 +44,8 @@
     0 0 0 1px rgba(0, 0, 0, 0.05);
   overflow: hidden;
   width: 100%;
-  height: calc(100vh - 20px);
-  max-height: 750px;
+  height: auto;
+  max-height: 95vh;
   max-width: 1000px;
 }
 
@@ -199,8 +199,7 @@
   padding: 155px 80px;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: visible;
   background: #ffffff;
 }
 
@@ -216,7 +215,7 @@
 }
 
 .form-panel::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #2c5f6b 0%, #1e4a52 100%);
+  background: linear-gradient(180deg, #c5700f 0%, #1e4a52 100%);
   border-radius: 10px;
   border: 2px solid #f1f5f9;
 }
