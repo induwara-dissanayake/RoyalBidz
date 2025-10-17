@@ -1,7 +1,7 @@
 .carousel {
   width: 100%;
-  height: calc(100vh - 64px);
-  margin-top: 64px;
+  height: calc(100vh - 70px);
+  margin-top: 0; /* Remove gap between navbar and carousel */
   margin-bottom: 30px; /* requested gap below carousel */
   position: relative;
   overflow: hidden;
