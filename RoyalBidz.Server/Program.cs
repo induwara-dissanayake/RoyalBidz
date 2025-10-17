@@ -10,10 +10,17 @@ using RoyalBidz.Server.Services.Implementations;
 using RoyalBidz.Server.Services.Interfaces;
 using RoyalBidz.Server.Services.BackgroundServices;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+// Configure JSON options to serialize enums as strings
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        options.JsonSerializerOptions.PropertyNamingPolicy = null; // Keep PascalCase
+    });
 
 // Configure Entity Framework with MySQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
