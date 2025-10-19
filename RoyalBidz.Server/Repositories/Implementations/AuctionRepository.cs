@@ -34,7 +34,8 @@ namespace RoyalBidz.Server.Repositories.Implementations
 
         public async Task<IEnumerable<Auction>> GetEndingSoonAsync(TimeSpan timeSpan)
         {
-            var endTime = DateTime.UtcNow.Add(timeSpan);
+            // Use Colombo local time for end-time comparisons
+            var endTime = RoyalBidz.Server.Utils.TimeZoneHelper.GetColomboNow().Add(timeSpan);
             return await _dbSet
                 .Include(a => a.JewelryItem)
                 .ThenInclude(j => j.Images)
@@ -46,14 +47,36 @@ namespace RoyalBidz.Server.Repositories.Implementations
 
         public async Task<Auction?> GetWithDetailsAsync(int id)
         {
-            return await _dbSet
+            var auction = await _dbSet
                 .Include(a => a.JewelryItem)
-                .ThenInclude(j => j.Images.OrderBy(i => i.DisplayOrder))
+                    .ThenInclude(j => j.Images)
                 .Include(a => a.Seller)
                 .Include(a => a.WinningBidder)
-                .Include(a => a.Bids.OrderByDescending(b => b.BidTime))
-                .ThenInclude(b => b.Bidder)
+                .Include(a => a.Bids)
+                    .ThenInclude(b => b.Bidder)
                 .FirstOrDefaultAsync(a => a.Id == id);
+
+            // EF Core does not support OrderBy inside Include in all versions/queries and it
+            // can cause translation failures when the collection has items. Sort collections
+            // in-memory after loading to keep behavior stable and avoid runtime hangs.
+            if (auction != null)
+            {
+                if (auction.JewelryItem?.Images != null)
+                {
+                    auction.JewelryItem.Images = auction.JewelryItem.Images
+                        .OrderBy(i => i.DisplayOrder)
+                        .ToList();
+                }
+
+                if (auction.Bids != null)
+                {
+                    auction.Bids = auction.Bids
+                        .OrderByDescending(b => b.BidTime)
+                        .ToList();
+                }
+            }
+
+            return auction;
         }
 
         public async Task<IEnumerable<Auction>> SearchAuctionsAsync(string? search, JewelryType? type,
@@ -136,13 +159,14 @@ namespace RoyalBidz.Server.Repositories.Implementations
             return await query.CountAsync();
         }
 
-        public async Task UpdateCurrentBidAsync(int auctionId, decimal currentBid, int? winnerId)
+    public async Task UpdateCurrentBidAsync(int auctionId, decimal currentBid, int? winnerId)
         {
             var auction = await _dbSet.FindAsync(auctionId);
             if (auction != null)
             {
                 auction.CurrentBid = currentBid;
-                auction.WinningBidderId = winnerId;
+        // Set the live leading bidder; final WinningBidderId should be set when auction ends
+        auction.LeadingBidderId = winnerId;
                 auction.UpdatedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
             }

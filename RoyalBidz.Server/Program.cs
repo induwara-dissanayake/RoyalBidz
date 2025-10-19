@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using RoyalBidz.Server.Data;
 using RoyalBidz.Server.Hubs;
 using RoyalBidz.Server.Mappings;
+using RoyalBidz.Server.Models;
 using RoyalBidz.Server.Repositories.Implementations;
 using RoyalBidz.Server.Repositories.Interfaces;
 using RoyalBidz.Server.Services.Implementations;
@@ -72,6 +73,9 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
+// Configure Email Settings
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
 // Configure CORS
 builder.Services.AddCors(options =>
 {
@@ -89,18 +93,28 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // Register Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+builder.Services.AddScoped<IUserPreferencesRepository, UserPreferencesRepository>();
+builder.Services.AddScoped<IUserActivityRepository, UserActivityRepository>();
+builder.Services.AddScoped<IWishlistRepository, WishlistRepository>();
+builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
 builder.Services.AddScoped<IJewelryItemRepository, JewelryItemRepository>();
 builder.Services.AddScoped<IAuctionRepository, AuctionRepository>();
 builder.Services.AddScoped<IBidRepository, BidRepository>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IContactInquiryRepository, ContactInquiryRepository>();
 
 // Register Services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IJewelryService, JewelryService>();
 builder.Services.AddScoped<IAuctionService, AuctionService>();
 builder.Services.AddScoped<IBidService, BidService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IContactService, ContactService>();
+builder.Services.AddScoped<IUserNotificationService, UserNotificationService>();
+builder.Services.AddScoped<IEmailNotificationService, EmailNotificationService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 
@@ -152,6 +166,17 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Serve static files from wwwroot (uploads, images, etc.)
+app.UseStaticFiles();
+
+// Log webroot and sample file existence for diagnostics
+{
+    var webRoot = Path.Combine(app.Environment.ContentRootPath, "wwwroot");
+    app.Logger.LogInformation("WebRootPath: {WebRoot}", webRoot);
+    var sample = Path.Combine(webRoot, "uploads", "jewelry", "2.png");
+    app.Logger.LogInformation("Sample file exists: {Exists} -> {Path}", File.Exists(sample), sample);
+}
 
 app.UseCors("AllowReactApp");
 

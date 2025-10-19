@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import {
   Bell,
   LogIn,
@@ -16,76 +17,124 @@ import {
 
 const Notifications = () => {
   const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all"); // all, unread, read
+  const [error, setError] = useState("");
 
-  // Mock notifications data
-  const mockNotifications = [
-    {
-      id: 1,
-      type: "bid_outbid",
-      title: "You've been outbid!",
-      message:
-        'Your bid on "Vintage Diamond Ring" has been outbid. Current highest bid: $1,750',
-      timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
-      read: false,
-      icon: Gavel,
-      color: "#f59e0b",
-    },
-    {
-      id: 2,
-      type: "auction_won",
-      title: "Congratulations! You won an auction",
-      message: 'You won the auction for "Pearl Earrings" with a bid of $650',
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
-      read: false,
-      icon: Star,
-      color: "#10b981",
-    },
-    {
-      id: 3,
-      type: "payment_success",
-      title: "Payment processed successfully",
-      message: 'Your payment of $650 for "Pearl Earrings" has been processed',
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 3), // 3 hours ago
-      read: true,
-      icon: DollarSign,
-      color: "#10b981",
-    },
-    {
-      id: 4,
-      type: "auction_ending",
-      title: "Auction ending soon",
-      message:
-        'The auction for "Gold Necklace Set" ends in 1 hour. You are currently the highest bidder!',
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 4), // 4 hours ago
-      read: true,
-      icon: Clock,
-      color: "#3b82f6",
-    },
-    {
-      id: 5,
-      type: "new_auction",
-      title: "New auction matching your interests",
-      message:
-        'A new "Diamond Bracelet" auction has started. Starting bid: $800',
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 6), // 6 hours ago
-      read: true,
-      icon: Bell,
-      color: "#8b5cf6",
-    },
-  ];
-
+  // Fetch notifications from backend
   useEffect(() => {
     if (isAuthenticated) {
-      // Simulate loading notifications
-      setTimeout(() => {
-        setNotifications(mockNotifications);
-        setLoading(false);
-      }, 1000);
+      fetchNotifications();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated]); // Removed filter dependency since we filter on frontend
+
+  const fetchNotifications = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+
+      // Always fetch all notifications and filter on frontend
+      const queryParams = new URLSearchParams({
+        limit: "50",
+        offset: "0",
+      });
+
+      const response = await fetch(
+        `/api/notifications?${queryParams.toString()}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("API Response status:", response.status); // Debug log
+      console.log("API Response ok:", response.ok); // Debug log
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Raw notifications data:", data); // Debug log
+        console.log("First notification structure:", data[0]); // Debug log for structure
+
+        // Transform backend data to match frontend format
+        const transformedNotifications = data
+          .filter((notification) => notification && notification.Id) // Filter out invalid notifications (backend uses PascalCase)
+          .map((notification, index) => ({
+            id: notification.Id || `temp-${index}`, // Ensure unique ID (backend uses PascalCase)
+            type: notification.Type,
+            title: notification.Title,
+            message: notification.Message,
+            timestamp: new Date(notification.CreatedAt),
+            read: notification.IsRead, // Backend uses PascalCase IsRead
+            icon: getNotificationIcon(notification.Type),
+            color: getNotificationColor(notification.Type),
+            amount: notification.Amount,
+            entityType: notification.EntityType,
+            entityId: notification.EntityId,
+            actionUrl: notification.ActionUrl,
+            actionLabel: notification.ActionLabel,
+            ActionCancelUrl: notification.ActionCancelUrl,
+            ActionCancelLabel: notification.ActionCancelLabel,
+          }));
+
+        console.log("Transformed notifications:", transformedNotifications); // Debug log
+        console.log(
+          "Transformed notifications count:",
+          transformedNotifications.length
+        ); // Debug log
+        setNotifications(transformedNotifications);
+      } else {
+        setError("Failed to load notifications");
+      }
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+      setError("Failed to load notifications");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Helper functions to get icon and color based on notification type
+  const getNotificationIcon = (type) => {
+    switch (type) {
+      case "bid_outbid":
+      case "bid_placed":
+        return Gavel;
+      case "auction_won":
+        return Star;
+      case "payment_success":
+        return DollarSign;
+      case "auction_ending":
+      case "auction_started":
+        return Clock;
+      case "new_auction":
+        return Bell;
+      default:
+        return AlertCircle;
+    }
+  };
+
+  const getNotificationColor = (type) => {
+    switch (type) {
+      case "bid_outbid":
+        return "#f59e0b";
+      case "auction_won":
+      case "payment_success":
+        return "#10b981";
+      case "auction_ending":
+      case "auction_started":
+        return "#3b82f6";
+      case "new_auction":
+        return "#8b5cf6";
+      case "bid_placed":
+        return "#E0AF62";
+      default:
+        return "#6b7280";
+    }
+  };
 
   const filteredNotifications = notifications.filter((notification) => {
     if (filter === "unread") return !notification.read;
@@ -95,24 +144,82 @@ const Notifications = () => {
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  const markAsRead = (id) => {
-    setNotifications((prev) =>
-      prev.map((notification) =>
-        notification.id === id ? { ...notification, read: true } : notification
-      )
-    );
+  const markAsRead = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`/api/notifications/${id}/mark-read`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        setNotifications((prev) =>
+          prev.map((notification) =>
+            notification.id === id
+              ? { ...notification, read: true }
+              : notification
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+    }
   };
 
-  const markAllAsRead = () => {
-    setNotifications((prev) =>
-      prev.map((notification) => ({ ...notification, read: true }))
-    );
+  const markAllAsRead = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/notifications/mark-all-read", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        setNotifications((prev) =>
+          prev.map((notification) => ({ ...notification, read: true }))
+        );
+      }
+    } catch (error) {
+      console.error("Error marking all notifications as read:", error);
+    }
   };
 
-  const deleteNotification = (id) => {
-    setNotifications((prev) =>
-      prev.filter((notification) => notification.id !== id)
-    );
+  const deleteNotification = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`/api/notifications/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        setNotifications((prev) =>
+          prev.filter((notification) => notification.id !== id)
+        );
+      }
+    } catch (error) {
+      console.error("Error deleting notification:", error);
+    }
+  };
+
+  const handleNotificationAction = async (notification) => {
+    if (notification.actionUrl) {
+      // Mark as read when taking action
+      if (!notification.read) {
+        await markAsRead(notification.id);
+      }
+      // Navigate to the action URL
+      navigate(notification.actionUrl);
+    }
   };
 
   const formatTimestamp = (timestamp) => {
@@ -376,11 +483,15 @@ const Notifications = () => {
           </div>
         ) : (
           <div style={{ display: "grid", gap: "12px" }}>
-            {filteredNotifications.map((notification) => {
+            {filteredNotifications.map((notification, index) => {
               const Icon = notification.icon;
+              // Ensure unique key even if ID is duplicate
+              const uniqueKey = notification.id
+                ? `${notification.id}-${index}`
+                : `notification-${index}`;
               return (
                 <div
-                  key={notification.id}
+                  key={uniqueKey}
                   style={{
                     background: "white",
                     borderRadius: "12px",
@@ -464,8 +575,73 @@ const Notifications = () => {
                         </span>
 
                         <div style={{ display: "flex", gap: "8px" }}>
+                          {notification.actionUrl &&
+                            notification.actionLabel && (
+                              <button
+                                key={`action-${uniqueKey}`}
+                                onClick={() =>
+                                  handleNotificationAction(notification)
+                                }
+                                style={{
+                                  background:
+                                    "linear-gradient(135deg, #E0AF62, #d4a556)",
+                                  border: "none",
+                                  color: "white",
+                                  cursor: "pointer",
+                                  padding: "6px 12px",
+                                  borderRadius: "6px",
+                                  fontSize: "12px",
+                                  fontWeight: "600",
+                                  transition: "all 0.3s ease",
+                                }}
+                                title={notification.actionLabel}
+                              >
+                                {notification.actionLabel}
+                              </button>
+                            )}
+                          {notification.ActionCancelUrl ||
+                          notification.actionCancelUrl ||
+                          notification.actionCancelLabel ||
+                          notification.ActionCancelLabel ? (
+                            <button
+                              key={`cancel-${uniqueKey}`}
+                              onClick={async () => {
+                                // Mark as read and navigate to cancel URL
+                                if (!notification.read)
+                                  await markAsRead(notification.id);
+                                const cancelUrl =
+                                  notification.ActionCancelUrl ||
+                                  notification.actionCancelUrl ||
+                                  notification.actionCancelLabel ||
+                                  notification.ActionCancelLabel ||
+                                  null;
+                                if (cancelUrl) navigate(cancelUrl);
+                              }}
+                              style={{
+                                background: "transparent",
+                                border: "1px solid #ef4444",
+                                color: "#ef4444",
+                                cursor: "pointer",
+                                padding: "6px 12px",
+                                borderRadius: "6px",
+                                fontSize: "12px",
+                                fontWeight: "600",
+                                transition: "all 0.3s ease",
+                              }}
+                              title={
+                                notification.ActionCancelLabel ||
+                                notification.actionCancelLabel ||
+                                "Cancel"
+                              }
+                            >
+                              {notification.ActionCancelLabel ||
+                                notification.actionCancelLabel ||
+                                "Cancel"}
+                            </button>
+                          ) : null}
                           {!notification.read && (
                             <button
+                              key={`mark-read-${uniqueKey}`}
                               onClick={() => markAsRead(notification.id)}
                               style={{
                                 background: "none",
@@ -485,6 +661,7 @@ const Notifications = () => {
                             </button>
                           )}
                           <button
+                            key={`delete-${uniqueKey}`}
                             onClick={() => deleteNotification(notification.id)}
                             style={{
                               background: "none",

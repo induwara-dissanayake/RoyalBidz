@@ -188,7 +188,7 @@ body {
   margin: 0;
   padding: 0;
   display: flex;
-  gap: 20px; /* Original gap, but overall alignment is improved */
+  gap: 30px; /* Increased gap between navigation items */
   align-items: center;
 }
 
@@ -198,6 +198,7 @@ body {
 
 .navbar-links a {
   text-decoration: none;
+  font-size: 16px; /* Increased font size by 2px */
   color: #2c3e50; /* Original link color */
   font-weight: 500;
   font-size: 13px;

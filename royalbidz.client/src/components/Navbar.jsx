@@ -11,6 +11,36 @@ function Navbar() {
   const { user, isAuthenticated } = useAuth();
   const [showRegister, setShowRegister] = useState(false);
   const [showSignIn, setShowSignIn] = useState(false);
+  const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
+
+  // Fetch unread notification count
+  const fetchUnreadNotificationCount = async () => {
+    if (!isAuthenticated) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/notifications/stats", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Accept PascalCase or camelCase from the server
+        const count = data.unreadNotifications ?? data.UnreadNotifications ?? 0;
+        setUnreadNotificationCount(
+          Number.isFinite(Number(count)) ? Number(count) : 0
+        );
+      } else if (response.status === 401 || response.status === 403) {
+        // Unauthenticated/forbidden: keep count at 0 quietly
+        setUnreadNotificationCount(0);
+      }
+    } catch (error) {
+      console.error("Error fetching notification count:", error);
+    }
+  };
 
   useEffect(() => {
     const originalBodyOverflow = document.body.style.overflow;
@@ -27,6 +57,15 @@ function Navbar() {
       document.documentElement.style.overflow = originalHtmlOverflow || "";
     };
   }, [showRegister, showSignIn]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchUnreadNotificationCount();
+      // Refresh notification count every 30 seconds
+      const interval = setInterval(fetchUnreadNotificationCount, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [isAuthenticated]);
   return (
     <>
       <div className="navbar-container">
@@ -80,12 +119,17 @@ function Navbar() {
                 Jewelry <span className="dropdown-arrow">▼</span>
               </Link>
               <div className="dropdown-content">
-                <a href="/jewelry/necklaces">Necklaces</a>
-                <a href="/jewelry/pendants">Pendants</a>
-                <a href="/jewelry/rings">Rings</a>
-                <a href="/jewelry/bangles">Bangles</a>
-                <a href="/jewelry/bracelets">Bracelets</a>
-                <a href="/jewelry/ear-studs-earring">Ear studs-Earring</a>
+                {/* Use React Router Links with query params so the Jewelry page can read searchParams and apply filters */}
+                <Link to="/jewelry?category=Necklace">Necklaces</Link>
+                <Link to="/jewelry?category=Pendant">Pendants</Link>
+                <Link to="/jewelry?category=Ring">Rings</Link>
+                {/* Map 'Bangles' to 'Bracelet' which the Jewelry page recognises */}
+                <Link to="/jewelry?category=Bracelet">Bangles</Link>
+                <Link to="/jewelry?category=Bracelet">Bracelets</Link>
+                {/* Normalize to 'Earrings' */}
+                <Link to="/jewelry?category=Earrings">
+                  Ear studs / Earrings
+                </Link>
               </div>
             </li>
             <li>
@@ -145,7 +189,11 @@ function Navbar() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <span className="notification-badge">3</span>
+                    {unreadNotificationCount > 0 && (
+                      <span className="notification-badge">
+                        {unreadNotificationCount}
+                      </span>
+                    )}
                   </Link>
                 </li>
                 <li>
@@ -216,35 +264,19 @@ function Navbar() {
           </ul>
         </nav>
       </div>
+
+      {/* Render RegisterForm modal when requested */}
       {showRegister && (
-        <div
-          className="register-modal-overlay"
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 2000,
-            overflow: "hidden",
+        <RegisterForm
+          onClose={() => setShowRegister(false)}
+          onShowSignIn={() => {
+            setShowRegister(false);
+            setShowSignIn(true);
           }}
-          onClick={() => setShowRegister(false)}
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            style={{ maxHeight: "95vh", overflow: "hidden" }}
-          >
-            <RegisterForm
-              onClose={() => setShowRegister(false)}
-              onShowSignIn={() => {
-                setShowRegister(false);
-                setShowSignIn(true);
-              }}
-            />
-          </div>
-        </div>
+        />
       )}
+
+      {/* Render SignIn modal when requested; allow it to open Register as well */}
       {showSignIn && (
         <SignIn
           onClose={() => setShowSignIn(false)}
