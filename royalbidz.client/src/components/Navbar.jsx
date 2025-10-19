@@ -264,8 +264,28 @@ function Navbar() {
           </ul>
         </nav>
       </div>
-    )}
-    {showSignIn && <SignIn onClose={() => setShowSignIn(false)} />}
+
+      {/* Render RegisterForm modal when requested */}
+      {showRegister && (
+        <RegisterForm
+          onClose={() => setShowRegister(false)}
+          onShowSignIn={() => {
+            setShowRegister(false);
+            setShowSignIn(true);
+          }}
+        />
+      )}
+
+      {/* Render SignIn modal when requested; allow it to open Register as well */}
+      {showSignIn && (
+        <SignIn
+          onClose={() => setShowSignIn(false)}
+          onShowRegister={() => {
+            setShowSignIn(false);
+            setShowRegister(true);
+          }}
+        />
+      )}
     </>
   );
 }
