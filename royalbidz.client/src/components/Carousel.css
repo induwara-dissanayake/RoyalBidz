@@ -1,8 +1,8 @@
 .carousel {
   width: 100%;
-  height: calc(100vh - 64px);
-  margin-top: 64px;
-  margin-bottom: 30px; /* requested gap below carousel */
+  height: calc(100vh - 66px);
+  margin-top: -10px; /* remove extra gap; main-content already offsets for fixed navbar */
+  margin-bottom: 40px; /* add gap before items section */
   position: relative;
   overflow: hidden;
   background: #000;
@@ -130,42 +130,44 @@
 
 .nav.prev { left: 18px; }
 .nav.next { right: 18px; }
-
 .dots {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 18px;
   display: flex;
-  gap: 8px;
+  gap: 20px;
   justify-content: center;
 }
 
+/* Base dot style (uniform size) */
 .dot {
-  width: 1px;              /* small base size */
-  height: 1px;
-  border-radius: 50%;      /* makes it circular */
-  background: rgba(255, 255, 255, 0.5);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
-  opacity: 0.9;
+  padding: 0;
+  outline: none;
 }
 
+/* Remove focus outline on click */
+.dot:focus {
+  outline: none;
+}
+
+/* Remove hover effects */
 .dot:hover {
-  background: rgba(255, 255, 255, 0.9);
-  transform: scale(0.3);   /* shrinks to 30% on hover */
-} 
+  outline: none;
+}
 
 .dot.active {
-  background: #ffffff;
-  opacity: 1;
-  transform: scale(0.5);   /* slightly smaller for active */
+  background: #1e90ff; /* blue for active/current slide */
 }
 
-
 /* Responsive Design for Carousel */
-@media (max-width: 1200px) {
+@media (max-width: 500px) {
   .carousel-content {
     padding-left: 4vw;
     max-width: 600px;
@@ -190,7 +192,8 @@
 @media (max-width: 768px) {
   .carousel {
     height: calc(100vh - 56px);
-    margin-top: 56px;
+    margin-top: 0; /* remove gap on mobile as well */
+    margin-bottom: 20px; /* maintain small gap on mobile */
   }
   
   .carousel-content { 
@@ -213,23 +216,10 @@
     bottom: 15px;
   }
   
-  .dot {
-    width: 1px;
-    height: 1px;
-  }
-  
-  .dot:hover {
-    width: 2px;
-    height: 2px;
-  }
-  
-  .dot.active {
-    width: 3px;
-    height: 1px;
-  }
+  /* uniform sizing on mobile */
 }
 
-@media (max-width: 480px) {
+@media (max-width: 400px) {
   .carousel-content {
     padding-left: 16px;
     padding-right: 16px;
@@ -265,12 +255,12 @@
   }
   
   .dot:hover {
-    width: 3px;
-    height: 3px;
+    width: 1px;
+    height: 1px;
   }
   
   .dot.active {
-    width: 3px;
-    height: 3px;
+    width: 1px;
+    height: 1px;
   }
 }

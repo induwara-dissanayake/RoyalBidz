@@ -385,7 +385,7 @@ const Register = () => {
             disabled={loading}
             style={{ marginTop: '20px' }}
           >
-            {loading ? (
+            {loading ? ( 
               <>
                 <Loader2 size={16} className="spin" />
                 Creating Account...

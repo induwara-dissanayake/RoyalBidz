@@ -8,7 +8,7 @@ import Carousel from "./components/Carousel";
 import Collage from "./components/Collage";
 import Content from "./components/Content";
 import BgImgContent from "./components/BgImgContent";
-import { Item } from "./components/Item";
+import Item from "./components/Item";
 import Footer from "./components/Footer";
 
 // Import pages
@@ -129,62 +129,24 @@ function App() {
         <Content />
         <BgImgContent />
 
-        {/* Items Section */}
+        {/* Jewelry Grid Section */}
         <section className="items-section">
           <div className="items-container">
-            <h2 className="items-title">Featured Jewelry Collection</h2>
-
-            {error && (
-              <div
-                style={{
-                  textAlign: "center",
-                  color: "#f56565",
-                  marginBottom: "20px",
-                  padding: "15px",
-                  background: "#fff5f5",
-                  borderRadius: "8px",
-                  border: "1px solid #fed7d7",
-                }}
-              >
-                {error}
-              </div>
-            )}
-
-            {loading ? (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  minHeight: "200px",
-                  color: "#718096",
-                }}
-              >
-                <div className="spinner" style={{ marginRight: "10px" }}></div>
-                Loading jewelry collection...
-              </div>
-            ) : (
-              <div className="items-grid">
-                {jewelryItems.map((item, index) => (
-                  <Item key={item.id || `item-${index}`} item={item} />
-                ))}
-              </div>
-            )}
-
-            {!loading && jewelryItems.length === 0 && !error && (
-              <div
-                style={{
-                  textAlign: "center",
-                  color: "#718096",
-                  padding: "40px 20px",
-                }}
-              >
-                <p>No jewelry items available at the moment.</p>
-                <p style={{ fontSize: "14px", marginTop: "10px" }}>
-                  Please check back later or contact support.
-                </p>
-              </div>
-            )}
+            <h2 className="items-title">Our Best Sellers</h2>
+            <div className="items-grid">
+              {[
+                { id: 1, name: 'Classic Gold Bangle Set', price: 1250, imageSrc: '/src/img/itme1.png' },
+                { id: 2, name: 'Heart-Shaped Diamond Ring', price: 2890, imageSrc: '/src/img/itme2.png' },
+                { id: 3, name: 'Rose Gold Teardrop Necklace', price: 1890, imageSrc: '/src/img/itme3.png' },
+                { id: 4, name: 'Gold Starburst Pendant', price: 1450, imageSrc: '/src/img/itme4.png' },
+                { id: 5, name: 'Elegant Pearl Earrings', price: 980, imageSrc: '/src/img/itme5.png' },
+                { id: 6, name: 'Diamond Tennis Bracelet', price: 3200, imageSrc: '/src/img/itme6.png' },
+                { id: 7, name: 'Emerald Drop Earrings', price: 2100, imageSrc: '/src/img/itme7.png' },
+                { id: 8, name: 'Ruby Statement Ring', price: 2750, imageSrc: '/src/img/itme8.png' }
+              ].map((item) => (
+                <Item key={item.id} item={item} />
+              ))}
+            </div>
           </div>
         </section>
 

@@ -1,220 +1,154 @@
+/* Main container for the jewelry item card */
 .item-card {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  transition: all 0.3s ease;
-  cursor: pointer;
   position: relative;
-  height: 500px;
-  display: flex;
-  flex-direction: column;
+  width: 300px;
+  height: 300px;
+  background: #fdfaf0;
+  border-radius: 2px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin: 10px;
 }
 
+/* A subtle lift effect when the user hovers over the card */
 .item-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px);
+  box-shadow: 0 6px 13px rgba(0, 0, 0, 0.5);
 }
 
-.item-image-container {
-  position: relative;
-  width: 100%;
-  height: 250px;
-  overflow: hidden;
-  background: #f8f9fa;
-}
-
-.item-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.item-card:hover .item-image {
-  transform: scale(1.05);
-}
-
-.item-overlay {
+/* This wrapper creates the inner circle for the image */
+.item-image-wrapper {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 370px;
+  height: 370px;
+  background: transparent; /* Remove background circle */
+  border-radius: 50%;
   display: flex;
-  align-items: center;
   justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.item-card:hover .item-overlay {
-  opacity: 1;
-}
-
-.add-to-cart-btn {
-  background: #2c5f6b;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 25px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
   align-items: center;
-  gap: 8px;
-  transition: all 0.3s ease;
 }
 
-.add-to-cart-btn:hover {
-  background: #1e4a52;
-  transform: scale(1.05);
+/* The jewelry image itself */
+.item-image {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
 }
 
-.heart-btn {
+/* The heart button, positioned in the top-right corner */
+.heart-button {
   position: absolute;
   top: 12px;
   right: 12px;
-  background: rgba(255, 255, 255, 0.9);
+  background: transparent;
   border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 10;
+  padding: 0;
+  line-height: 1;
+  transition: transform 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  z-index: 2;
 }
 
-.heart-btn:hover {
-  background: rgba(255, 255, 255, 1);
-  transform: scale(1.1);
+.heart-button:hover {
+  transform: scale(1.2);
 }
 
-.heart-btn.liked {
-  background: rgba(255, 71, 87, 0.1);
-}
-
-.special-badge {
+/* The overlay that appears when you hover over the card */
+.item-hover-overlay {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  background: linear-gradient(135deg, #ffd700, #ffed4e);
-  color: #333;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  z-index: 2;
-  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
-}
-
-.item-info {
-  padding: 20px;
-  flex: 1;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 155px; /* Fixed height of 45px */
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  justify-content: flex-end; /* Content at bottom */
+  align-items: center;
+  text-align: center;
+  padding: 10px;
+  padding-bottom: 15px; /* Extra padding at bottom */
+  opacity: 0;
+  transform: translateY(100%);
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  z-index: 5;
+}
+
+/* When the parent .item-card is hovered, the overlay slides in and fades in */
+.item-card:hover .item-hover-overlay {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .item-name {
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
-  margin: 0;
-  line-height: 1.3;
-}
-
-.item-category {
-  font-size: 14px;
-  color: #666;
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.item-price-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 8px 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 0 0 10px 0;
+  line-height: 1.2;
 }
 
 .item-price {
-  font-size: 20px;
-  font-weight: 700;
-  color: #2c5f6b;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.95rem;
+  margin-bottom: 15px;
 }
 
-.item-original-price {
-  font-size: 16px;
-  color: #999;
-  text-decoration: line-through;
+/* The "Bid Now" button inside the overlay */
+.bid-button {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  background-color: #e4b12c;
+  color: #111;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-.item-rating {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: auto;
+.bid-button:hover {
+  background-color: #f0c14b;
 }
 
-.rating-count {
-  font-size: 12px;
-  color: #666;
-  margin-left: 4px;
+/* Grid container for 4x2 layout */
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .item-image-container {
-    height: 200px;
-  }
-  
-  .item-info {
-    padding: 16px;
-  }
-  
-  .item-name {
-    font-size: 16px;
-  }
-  
-  .item-price {
-    font-size: 18px;
-  }
-  
-  .add-to-cart-btn {
-    padding: 10px 20px;
-    font-size: 13px;
-  }
+/* Items section styling */
+.items-section {
+  background-color: #ffffff;
 }
 
-@media (max-width: 480px) {
-  .item-image-container {
-    height: 180px;
-  }
-  
-  .item-info {
-    padding: 12px;
-  }
-  
-  .item-name {
-    font-size: 15px;
-  }
-  
-  .item-price {
-    font-size: 16px;
-  }
-  
-  .special-badge {
-    font-size: 11px;
-    padding: 4px 8px;
-  }
+.items-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.items-title {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2d3748;
+  letter-spacing: -0.02em;
 }

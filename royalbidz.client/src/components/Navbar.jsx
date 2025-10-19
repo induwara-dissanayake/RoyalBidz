@@ -1,379 +1,123 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import "./register.css";
+// Navbar.jsx
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import './Navbar.css';
+import logoImage from '../img/logo6.png';
+import RegisterForm from './RegisterForm';
+import SignIn from './SignIn';
 
-const Register = () => {
-  const { register } = useAuth();
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    phoneNumber: "",
-    address: "",
-    role: "Buyer",
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+function Navbar() {
+  const [showRegister, setShowRegister] = useState(false);
+  const [showSignIn, setShowSignIn] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-    setError("");
-  };
-
-  const validateForm = () => {
-    if (!formData.username.trim()) {
-      setError("Username is required");
-      return false;
-    }
-    if (formData.username.length < 3) {
-      setError("Username must be at least 3 characters long");
-      return false;
-    }
-    if (!formData.email.includes("@")) {
-      setError("Please enter a valid email address");
-      return false;
-    }
-    if (formData.password.length < 6) {
-      setError("Password must be at least 6 characters long");
-      return false;
-    }
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
-      return false;
-    }
-    return true;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!validateForm()) return;
-
-    setLoading(true);
-    setError("");
-
-    const { confirmPassword, ...registerData } = formData;
-
-    const result = await register(registerData);
-
-    if (result.success) {
-      navigate("/");
+  useEffect(() => {
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    if (showRegister || showSignIn) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
     } else {
-      setError(result.message);
+      document.body.style.overflow = originalBodyOverflow || '';
+      document.documentElement.style.overflow = originalHtmlOverflow || '';
     }
-
-    setLoading(false);
+    return () => {
+      document.body.style.overflow = originalBodyOverflow || '';
+      document.documentElement.style.overflow = originalHtmlOverflow || '';
   };
-
+  }, [showRegister, showSignIn]);
   return (
-    <div className="register-page">
-      <Navbar />
-
-      <div className="register-wrapper">
-        <div className="register-container-modern">
-          {/* Left Side - Welcome Panel */}
-          <div className="welcome-panel">
-            <div className="welcome-content">
-              <div className="logo-circle">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-              </div>
-              <h1 className="welcome-title">
-                Welcome to
-                <br />
-                RoyalBidz
-              </h1>
-              <p className="welcome-description">
-                Join our community of buyers and sellers. Start bidding on
-                amazing items or list your own products today.
-              </p>
-              <div className="welcome-features">
-                <div className="feature-item">
-                  <svg viewBox="0 0 20 20" fill="currentColor">
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <span>Secure Transactions</span>
-                </div>
-                <div className="feature-item">
-                  <svg viewBox="0 0 20 20" fill="currentColor">
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <span>Easy Bidding Process</span>
-                </div>
-                <div className="feature-item">
-                  <svg viewBox="0 0 20 20" fill="currentColor">
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <span>24/7 Support</span>
-                </div>
-              </div>
-              <div className="welcome-link">
-                <Link to="/login" className="signin-link">
-                  Sign In
-                </Link>
-              </div>
+    <>
+    <div className="navbar-container">
+      <Link to="/" className="navbar-logo">
+        <img src={logoImage} alt="ROYALBIDZ JEWELRY" className="logo-image" />
+        <div className="logo-text">
             </div>
-          </div>
+      </Link>
 
-          {/* Right Side - Registration Form */}
-          <div className="form-panel">
-            <div className="form-content">
-              <h2 className="form-title">Create your account</h2>
-
-              {error && (
-                <div className="alert-error">
-                  <svg
-                    className="error-icon"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <span>{error}</span>
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="register-form">
-                <div className="form-group">
-                  <label className="form-label">Username</label>
-                  <input
-                    type="text"
-                    name="username"
-                    className="form-input"
-                    value={formData.username}
-                    onChange={handleChange}
-                    required
-                    placeholder="Enter username"
-                  />
+      <div className="navbar-search">
+        <button className="search-button" aria-label="Search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M21 21L16.65 16.65" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+        <input type="text" placeholder="Search products..." className="search-input" />
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">E-mail Address</label>
-                  <input
-                    type="email"
-                    name="email"
-                    className="form-input"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    placeholder="Enter email"
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Phone Number</label>
-                  <input
-                    type="tel"
-                    name="phoneNumber"
-                    className="form-input"
-                    value={formData.phoneNumber}
-                    onChange={handleChange}
-                    placeholder="Enter phone number"
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Address</label>
-                  <input
-                    type="text"
-                    name="address"
-                    className="form-input"
-                    value={formData.address}
-                    onChange={handleChange}
-                    placeholder="Enter address"
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Account Type</label>
-                  <select
-                    name="role"
-                    className="form-input form-select"
-                    value={formData.role}
-                    onChange={handleChange}
-                  >
-                    <option value="Buyer">Buyer</option>
-                    <option value="Seller">Seller</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Password</label>
-                  <div className="password-wrapper">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      name="password"
-                      className="form-input"
-                      value={formData.password}
-                      onChange={handleChange}
-                      required
-                      placeholder="Enter password"
-                    />
-                    <button
-                      type="button"
-                      className="password-toggle"
-                      onClick={() => setShowPassword(!showPassword)}
-                      aria-label="Toggle password visibility"
-                    >
-                      {showPassword ? (
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
-                          />
-                        </svg>
-                      ) : (
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                          />
-                        </svg>
-                      )}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Confirm Password</label>
-                  <div className="password-wrapper">
-                    <input
-                      type={showConfirmPassword ? "text" : "password"}
-                      name="confirmPassword"
-                      className="form-input"
-                      value={formData.confirmPassword}
-                      onChange={handleChange}
-                      required
-                      placeholder="Confirm password"
-                    />
-                    <button
-                      type="button"
-                      className="password-toggle"
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
-                      aria-label="Toggle password visibility"
-                    >
-                      {showConfirmPassword ? (
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
-                          />
-                        </svg>
-                      ) : (
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                          />
-                        </svg>
-                      )}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="form-actions">
-                  <button
-                    type="submit"
-                    className="btn-register"
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <>
-                        <span className="spinner"></span>
-                        <span>Creating...</span>
-                      </>
-                    ) : (
-                      <span>Sign Up</span>
-                    )}
-                  </button>
-                </div>
-              </form>
-
-              <div className="form-footer">
-                <p>
-                  Already have an account?{" "}
-                  <Link to="/login" className="login-link">
-                    Sign In
-                  </Link>
-                </p>
-              </div>
+      <nav className="navbar-links">
+        <ul>
+          <li><Link to="/">Home</Link></li>
+          <li><a href="#foryou">For You</a></li>
+          <li className="dropdown">
+            <a href="#jewelry">Jewelry <span className="dropdown-arrow">▼</span></a>
+            <div className="dropdown-content">
+              <a href="/jewelry/necklaces">Necklaces</a>
+              <a href="/jewelry/pendants">Pendants</a>
+              <a href="/jewelry/rings">Rings</a>
+              <a href="/jewelry/bangles">Bangles</a>
+              <a href="/jewelry/bracelets">Bracelets</a>
+              <a href="/jewelry/ear-studs-earring">Ear studs-Earring</a>
             </div>
-          </div>
+          </li>
+          <li><Link to="/contact">Contact us</Link></li>
+          <li><button className="signin-nav-button" onClick={() => setShowSignIn(true)}>Sign in</button></li>
+          <li><button className="register-button" onClick={() => setShowRegister(true)}>Register</button></li>
+          <li>
+            <a href="#notifications" className="notification-icon" aria-label="Notifications">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 8C18 6.4087 17.3679 4.88258 16.2426 3.75736C15.1174 2.63214 13.5913 2 12 2C10.4087 2 8.88258 2.63214 7.75736 3.75736C6.63214 4.88258 6 6.4087 6 8C6 15 3 17 3 17H21C21 17 18 15 18 8Z" 
+                      stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M13.73 21C13.5542 21.3031 13.3019 21.5547 12.9982 21.7295C12.6946 21.9044 12.3504 21.9965 12 21.9965C11.6496 21.9965 11.3054 21.9044 11.0018 21.7295C10.6981 21.5547 10.4458 21.3031 10.27 21" 
+                      stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span className="notification-badge">3</span>
+            </a>
+          </li>
+          <li>
+            <a href="#profile" className="profile-icon" aria-label="User Profile">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" 
+                      stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="12" cy="7" r="4" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </a>
+          </li>
+          <li>
+            <a href="#wishlist" className="wishlist-icon" aria-label="Wishlist">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" 
+                      stroke="black" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12 5.5C12.5 4.5 14 3 16.5 3C19.58 3 22 5.42 22 8.5C22 11.5 20 14 16 17" 
+                      stroke="black" strokeWidth="2" strokeLinecap="round" opacity="0.3"/>
+              </svg>
+            </a>
+          </li>
+        </ul>
+      </nav>
+                </div>
+    {showRegister && (
+      <div 
+        className="register-modal-overlay" 
+        style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 2000,
+          overflow: 'hidden'
+        }}
+        onClick={() => setShowRegister(false)}
+      >
+        <div onClick={(e) => e.stopPropagation()} style={{ maxHeight: '95vh', overflow: 'hidden' }}>
+          <RegisterForm onClose={() => setShowRegister(false)} />
         </div>
       </div>
-    </div>
+    )}
+    {showSignIn && <SignIn onClose={() => setShowSignIn(false)} />}
+    </>
   );
-};
+}
 
-export default Register;
+export default Navbar;
