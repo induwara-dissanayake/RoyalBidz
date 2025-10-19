@@ -1,6 +1,5 @@
 import React from 'react';
 import './BgImgContent.css';
-import s2Image from '../img/s2.png';
 
 export default function BgImgContent() {
   return (
@@ -8,7 +7,7 @@ export default function BgImgContent() {
       <div className="bg-img-container">
         {/* Background Image */}
         <div className="background-image">
-          <img src={s2Image} alt="Background" className="bg-img" />
+          <img src="/img/s2.png" alt="Background" className="bg-img" />
         </div>
         
         {/* Jewelry Images */}

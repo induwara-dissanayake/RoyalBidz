@@ -1,7 +1,13 @@
 ﻿/* Import common utility classes */
 @import './styles/common.css';
 
+/* Global font family for all text elements */
+* {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+
 .app {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   width: 100%;
   margin: 0;
   padding: 0;

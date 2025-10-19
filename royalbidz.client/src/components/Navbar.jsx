@@ -264,44 +264,8 @@ function Navbar() {
           </ul>
         </nav>
       </div>
-      {showRegister && (
-        <div
-          className="register-modal-overlay"
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 2000,
-            overflow: "hidden",
-          }}
-          onClick={() => setShowRegister(false)}
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            style={{ maxHeight: "95vh", overflow: "hidden" }}
-          >
-            <RegisterForm
-              onClose={() => setShowRegister(false)}
-              onShowSignIn={() => {
-                setShowRegister(false);
-                setShowSignIn(true);
-              }}
-            />
-          </div>
-        </div>
-      )}
-      {showSignIn && (
-        <SignIn
-          onClose={() => setShowSignIn(false)}
-          onShowRegister={() => {
-            setShowSignIn(false);
-            setShowRegister(true);
-          }}
-        />
-      )}
+    )}
+    {showSignIn && <SignIn onClose={() => setShowSignIn(false)} />}
     </>
   );
 }

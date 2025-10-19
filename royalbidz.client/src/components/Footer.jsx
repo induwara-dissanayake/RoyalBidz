@@ -1,91 +1,115 @@
 import React from 'react';
 import './Footer.css';
 import logoImage from '../img/logo6.png';
-import { Twitter, Instagram, Youtube, Linkedin } from 'lucide-react';
+import { Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
 
 export default function Footer() {
   return (
     <footer className="footer">
-      {/* Upper Section */}
-      <div className="footer-upper">
+      {/* Main Footer Content */}
+      <div className="footer-main">
         <div className="footer-container">
-          <div className="footer-content">
-            {/* Logo and Social Media */}
-            <div className="footer-section logo-section">
+          <div className="footer-grid">
+            
+            {/* Brand Section */}
+            <div className="footer-brand">
               <div className="footer-logo">
                 <img src={logoImage} alt="ROYALBIDZ JEWELRY" className="footer-logo-image" />
               </div>
-              <div className="social-icons">
-                <a href="#" className="social-icon">
-                  <Twitter size={20} />
-                </a>
-                <a href="#" className="social-icon">
-                  <Instagram size={20} />
-                </a>
-                <a href="#" className="social-icon">
-                  <Youtube size={20} />
-                </a>
-                <a href="#" className="social-icon">
-                  <Linkedin size={20} />
-                </a>
+              <p className="footer-tagline">
+                Crafting timeless elegance with exceptional quality and purposeful design.
+              </p>
+              <div className="social-media">
+                <h4 className="social-title">Follow Us</h4>
+                <div className="social-icons">
+                  <a href="#" className="social-link" aria-label="Twitter">
+                    <Twitter size={18} />
+                  </a>
+                  <a href="#" className="social-link" aria-label="Instagram">
+                    <Instagram size={18} />
+                  </a>
+                  <a href="#" className="social-link" aria-label="Youtube">
+                    <Youtube size={18} />
+                  </a>
+                  <a href="#" className="social-link" aria-label="Linkedin">
+                    <Linkedin size={18} />
+                  </a>
+                </div>
               </div>
             </div>
 
-            {/* Our Pages */}
-            <div className="footer-section">
-              <h3 className="footer-title">Our Pages</h3>
-              <ul className="footer-links">
+            {/* Quick Links */}
+            <div className="footer-column">
+              <h3 className="footer-heading">Quick Links</h3>
+              <ul className="footer-menu">
                 <li><a href="#">Home</a></li>
-                <li><a href="#">For you</a></li>
+                <li><a href="#">For You</a></li>
                 <li><a href="#">Items</a></li>
                 <li><a href="#">Register</a></li>
-                <li><a href="#">Sign in</a></li>
-                <li><a href="#">Contact us</a></li>
+                <li><a href="#">Sign In</a></li>
+                <li><a href="#">Contact Us</a></li>
               </ul>
             </div>
 
-            {/* Categories */}
-            <div className="footer-section">
-              <h3 className="footer-title">Categories</h3>
-              <ul className="footer-links">
+            {/* Collections */}
+            <div className="footer-column">
+              <h3 className="footer-heading">Collections</h3>
+              <ul className="footer-menu">
                 <li><a href="#">Necklaces</a></li>
                 <li><a href="#">Pendants</a></li>
                 <li><a href="#">Rings</a></li>
                 <li><a href="#">Bangles</a></li>
                 <li><a href="#">Bracelets</a></li>
-                <li><a href="#">Contact us</a></li>
-                <li><a href="#">Ear studs-Earring</a></li>
+                <li><a href="#">Earrings</a></li>
               </ul>
             </div>
 
-            {/* Useful Links */}
-            <div className="footer-section">
-              <h3 className="footer-title">Useful Links</h3>
-              <ul className="footer-links">
-                <li><a href="#">Privacy policy</a></li>
-                <li><a href="#">Terms and Conditions</a></li>
+            {/* Support */}
+            <div className="footer-column">
+              <h3 className="footer-heading">Support</h3>
+              <ul className="footer-menu">
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms & Conditions</a></li>
                 <li><a href="#">Services</a></li>
                 <li><a href="#">Quality Policy</a></li>
+                <li><a href="#">Shipping Info</a></li>
+                <li><a href="#">Returns</a></li>
               </ul>
             </div>
 
-            {/* Address */}
-            <div className="footer-section">
-              <h3 className="footer-title">Address</h3>
-              <div className="footer-address">
-                <p>NSBM Green university of Sri Lanka.</p>
-                <p><a href="mailto:info@royalbidz.com">email: info@royalbidz.com</a></p>
-                <p>Telephone Number: +97 71444444</p>
-              </div>
+            {/* Contact Info */}
+            <div className="footer-column">
+              <h3 className="footer-heading">Get In Touch</h3>
+              <ul className="footer-contact">
+                
+                <li>
+                  <Mail size={18} />
+                  <a href="mailto:info@royalbidz.com">info@royalbidz.com</a>
+                </li>
+                <li>
+                  <Phone size={18} />
+                  <a href="tel:+97171444444">+97 71 444 444</a>
+                </li>
+              </ul>
             </div>
+
           </div>
         </div>
       </div>
 
-      {/* Bottom Section */}
+      {/* Footer Bottom */}
       <div className="footer-bottom">
         <div className="footer-container">
-          <p className="copyright">© 2025 Vogue Jewellers. All Rights Reserved.</p>
+          <div className="footer-bottom-content">
+            <p className="copyright">© 2025 Vogue Jewellers. All Rights Reserved.</p>
+            <div className="footer-bottom-links">
+              <a href="#">Privacy</a>
+              <span className="separator">•</span>
+              <a href="#">Terms</a>
+              <span className="separator">•</span>
+              <a href="#">Sitemap</a>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

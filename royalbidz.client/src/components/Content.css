@@ -1,33 +1,34 @@
 .elegance-section {
   width: 100%;
-  padding: 50px 60px;
+  padding: 60px 40px;
   background: #ffffff;
 }
 
 .elegance-container {
-  max-width: 1300px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 70px;
+  padding: 0 40px;
 }
 
 .elegance-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 60px;
 }
 
 .elegance-text {
-  flex: 2;
-  max-width: 700px;
+  flex: 1.2;
+  max-width: 750px;
+  margin-left: 20px;
 }
 
 .elegance-heading {
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 700;
-  color: #1a1a1a;
-  line-height: 1.4;
-  margin-bottom: 25px;
+  color: #1f2937;
+  line-height: 1.3;
+  margin-bottom: 30px;
   font-family: "Times New Roman", Times, serif;
   letter-spacing: -0.5px;
   margin-top: 0;
@@ -36,12 +37,12 @@
 .elegance-paragraphs {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
 }
 
 .elegance-paragraph {
   font-size: 17px;
-  line-height: 1.75;
+  line-height: 1.8;
   color: #2c2c2c;
   text-align: justify;
   font-family: "Times New Roman", Times, serif;
@@ -53,7 +54,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  max-width: 1000px;
+  min-width: 500px;
 }
 
 .image-wrapper {
@@ -65,14 +66,47 @@
 }
 
 .ring-image {
-
   width: 100%;
-  max-width: 850px;
+  max-width: 600px;
   height: auto;
   object-fit: contain;
+  animation: floatUpDown 3s ease-in-out infinite;
+}
+
+.ring-image:hover {
+  animation-play-state: paused;
+  transform: scale(1.05);
+}
+
+/* Vertical Float Animation */
+@keyframes floatUpDown {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-30px);
+  }
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+  .elegance-container {
+    max-width: 1100px;
+  }
+
+  .elegance-content {
+    gap: 40px;
+  }
+
+  .elegance-image {
+    min-width: 400px;
+  }
+
+  .ring-image {
+    max-width: 500px;
+  }
+}
+
 @media (max-width: 1024px) {
   .elegance-content {
     flex-direction: column;
@@ -83,43 +117,76 @@
     max-width: 100%;
   }
 
+  .elegance-image {
+    min-width: auto;
+    width: 100%;
+  }
+
   .elegance-heading {
-    font-size: 28px;
+    font-size: 32px;
     text-align: center;
   }
 
   .elegance-paragraph {
     text-align: left;
+    font-size: 16px;
+  }
+
+  .ring-image {
+    max-width: 550px;
   }
 }
 
-@media (max-width: 468px) {
+@media (max-width: 768px) {
   .elegance-section {
-    padding: 40px 15px;
+    padding: 50px 25px;
   }
 
   .elegance-container {
-    padding: 0 20px;
+    padding: 0 15px;
   }
 
   .elegance-heading {
-    font-size: 24px;
+    font-size: 28px;
   }
 
   .elegance-paragraph {
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.7;
   }
 
   .ring-image {
-    max-width: 380px;
+    max-width: 450px;
   }
 }
 
 @media (max-width: 480px) {
+  .elegance-section {
+    padding: 40px 15px;
+  }
+
+  .elegance-heading {
+    font-size: 24px;
+    margin-bottom: 25px;
+  }
+
+  .elegance-paragraphs {
+    gap: 15px;
+  }
+
+  .elegance-paragraph {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .ring-image {
+    max-width: 350px;
+  }
+}
+
+@media (max-width: 380px) {
   .elegance-heading {
     font-size: 22px;
-    margin-bottom: 20px;
   }
 
   .elegance-paragraph {
@@ -127,6 +194,6 @@
   }
 
   .ring-image {
-    max-width: 320px;
+    max-width: 300px;
   }
 }
