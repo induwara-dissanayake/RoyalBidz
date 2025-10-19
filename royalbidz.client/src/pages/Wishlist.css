@@ -1,0 +1,233 @@
+/* Wishlist specific styles - inherits from common.css */
+
+.wishlist-item-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.wishlist-item-card .card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.wishlist-item-image {
+  position: relative;
+  width: 100%;
+  padding-bottom: 60%; /* slightly shorter to reduce big empty area */
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  max-height: 360px;
+}
+
+.wishlist-item-image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  max-height: 360px;
+}
+
+.wishlist-item-card:hover .wishlist-item-image img {
+  transform: scale(1.05);
+}
+
+.wishlist-checkbox {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 4px;
+  padding: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.wishlist-checkbox:hover {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.wishlist-remove-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  background: rgba(229, 62, 62, 0.9);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.wishlist-remove-btn:hover {
+  background: rgba(197, 48, 48, 0.95);
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.condition-badge {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.jewelry-type-badge {
+  background: #edf2f7;
+  color: #4a5568;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.jewelry-condition-badge {
+  background: #e6fffa;
+  color: #00a3c4;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.wishlist-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.wishlist-actions .btn {
+  flex: 1;
+  justify-content: center;
+  font-size: 0.875rem;
+}
+
+.empty-wishlist {
+  text-align: center;
+  padding: 80px 20px;
+  color: #718096;
+}
+
+.empty-wishlist-icon {
+  margin: 0 auto 24px;
+  opacity: 0.6;
+}
+
+.wishlist-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.wishlist-summary-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .wishlist-summary {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .wishlist-summary-actions {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .wishlist-actions {
+    flex-direction: column;
+  }
+  
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Loading states */
+.wishlist-loading {
+  text-align: center;
+  padding: 40px;
+}
+
+.wishlist-loading svg {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Selection controls */
+.wishlist-controls {
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.select-all-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #4a5568;
+}
+
+.select-all-control input[type="checkbox"] {
+  transform: scale(1.2);
+}
+
+/* Button improvements */
+.btn-remove-selected {
+  background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+  color: white;
+}
+
+.btn-remove-selected:hover {
+  background: linear-gradient(135deg, #c53030 0%, #9c2626 100%);
+  transform: translateY(-1px);
+}
+
+/* Card hover effects */
+.wishlist-item-card .card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), 0 8px 24px rgba(0, 0, 0, 0.1);
+}

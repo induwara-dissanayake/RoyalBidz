@@ -161,5 +161,65 @@ namespace RoyalBidz.Server.Controllers
                 return StatusCode(500, new { message = "An error occurred while deleting the jewelry item" });
             }
         }
+
+        [HttpPost("upload-image")]
+        [Authorize(Roles = "Seller,Admin")]
+        public async Task<ActionResult<JewelryImageDto>> UploadImage([FromForm] IFormFile file, 
+            [FromForm] int jewelryItemId, [FromForm] string? altText, [FromForm] bool isPrimary = false, 
+            [FromForm] int displayOrder = 0)
+        {
+            try
+            {
+                if (file == null || file.Length == 0)
+                {
+                    return BadRequest(new { message = "No file provided" });
+                }
+
+                // Validate file type
+                var allowedTypes = new[] { "image/jpeg", "image/jpg", "image/png", "image/webp" };
+                if (!allowedTypes.Contains(file.ContentType.ToLower()))
+                {
+                    return BadRequest(new { message = "Only JPEG, PNG and WebP images are allowed" });
+                }
+
+                // Validate file size (5MB max)
+                if (file.Length > 5 * 1024 * 1024)
+                {
+                    return BadRequest(new { message = "File size cannot exceed 5MB" });
+                }
+
+                var image = await _jewelryService.UploadImageAsync(jewelryItemId, file, altText, isPrimary, displayOrder);
+                return Ok(image);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error uploading image for jewelry item {ItemId}", jewelryItemId);
+                return StatusCode(500, new { message = "An error occurred while uploading the image" });
+            }
+        }
+
+        [HttpPost("{jewelryItemId}/images")]
+        [Authorize(Roles = "Seller,Admin")]
+        public async Task<ActionResult<JewelryImageDto>> AddImageToJewelryItem(int jewelryItemId, [FromBody] CreateJewelryImageDto createImageDto)
+        {
+            try
+            {
+                var image = await _jewelryService.AddImageToJewelryItemAsync(jewelryItemId, createImageDto);
+                return Ok(image);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adding image to jewelry item {ItemId}", jewelryItemId);
+                return StatusCode(500, new { message = "An error occurred while adding the image" });
+            }
+        }
     }
 }

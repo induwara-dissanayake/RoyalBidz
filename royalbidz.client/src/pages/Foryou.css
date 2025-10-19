@@ -1,53 +1,109 @@
 /* Foryou.css */
 
 .foryou-container {
-    max-width: 900px; 
+    max-width: 1200px; 
     margin: 50px auto;
     padding: 30px;
-    background-color: #ffffff; /* Dark background */
-    color: #fff; /* White text */
-    font-family: Arial, sans-serif;
-    border-radius: 8px; /* Slightly rounded corners */
+    background-color: #ffffff;
+    color: #333;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .foryou-title {
-    font-size: 2.5em;
-    font-weight: bold;
-    color: #ffd700; /* Gold-like color for title */
+    font-size: 2.2em;
+    font-weight: 700;
+    color: #E0AF62;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
+    line-height: 1.2;
 }
 
 .foryou-description {
-    font-size: 1em;
-    color: #ccc;
+    font-size: 1.1em;
+    color: #666;
     text-align: center;
     margin-bottom: 40px;
     line-height: 1.6;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.foryou-form .form-group {
-    margin-bottom: 25px;
+.foryou-form {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
 }
 
-.foryou-form label {
+.form-section {
+    background: #f8f9fa;
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.form-section h2 {
+    color: #E0AF62;
+    font-size: 1.4em;
+    font-weight: 600;
+    margin: 0 0 20px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #E0AF62;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
     display: block;
-    font-size: 0.9em;
-    color: #ffd700; /* Gold color for labels */
-    margin-bottom: 8px;
-    font-weight: bold;
+    font-size: 14px;
+    color: #374151;
+    margin-bottom: 6px;
+    font-weight: 500;
 }
 
-.foryou-form input[type="text"],
-.foryou-form textarea {
+.form-group input,
+.form-group select,
+.form-group textarea {
     width: 100%;
-    padding: 12px;
-    border: 1px solid #555; /* Darker border */
-    border-radius: 5px;
-    background-color: #222; /* Darker input background */
-    color: #eee; /* Light text in inputs */
-    font-size: 1em;
-    box-sizing: border-box; /* Include padding in width */
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #374151;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #E0AF62;
+    box-shadow: 0 0 0 3px rgba(224, 175, 98, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.error {
+    color: #ef4444;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
 }
 
 .foryou-form input[type="text"]::placeholder,
@@ -91,6 +147,58 @@
     height: 100%;
     opacity: 0;
     cursor: pointer;
+}
+
+/* Image Preview Styles */
+.image-preview {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid #e5e7eb;
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.remove-image {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.remove-image:hover {
+    background-color: #dc2626;
+}
+
+.primary-badge {
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    background-color: #ffd700;
+    color: #000;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: bold;
 }
 
 .submit-button {

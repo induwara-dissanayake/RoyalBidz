@@ -16,14 +16,16 @@ namespace RoyalBidz.Server.Services.Implementations
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly ILogger<AuthService> _logger;
+        private readonly INotificationService _notificationService;
 
         public AuthService(IUserRepository userRepository, IMapper mapper, 
-            IConfiguration configuration, ILogger<AuthService> logger)
+            IConfiguration configuration, ILogger<AuthService> logger, INotificationService notificationService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _configuration = configuration;
             _logger = logger;
+            _notificationService = notificationService;
         }
 
         public async Task<LoginResponseDto> LoginAsync(LoginDto loginDto)
@@ -42,7 +44,9 @@ namespace RoyalBidz.Server.Services.Implementations
 
             await _userRepository.UpdateLastLoginAsync(user.Id);
 
-            var userDto = _mapper.Map<UserDto>(user);
+            // Get the complete user data with profile information
+            var userWithProfile = await _userRepository.GetWithProfileAsync(user.Id);
+            var userDto = _mapper.Map<UserDto>(userWithProfile);
             var token = await GenerateJwtToken(userDto);
             var expiresAt = DateTime.UtcNow.AddHours(24);
 
@@ -64,8 +68,27 @@ namespace RoyalBidz.Server.Services.Implementations
             var user = _mapper.Map<User>(createUserDto);
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(createUserDto.Password);
             user.CreatedAt = DateTime.UtcNow;
+            user.EmailVerified = false;
+
+            // Generate verification code
+            var verificationCode = new Random().Next(100000, 999999).ToString();
+            user.EmailVerificationCode = verificationCode;
+            user.EmailVerificationCodeExpiry = DateTime.UtcNow.AddMinutes(15);
 
             await _userRepository.AddAsync(user);
+
+            // Send verification email
+            try
+            {
+                _logger.LogInformation("Attempting to send verification email to {Email}", user.Email);
+                await _notificationService.SendEmailVerificationCodeAsync(user.Email, user.Username, verificationCode);
+                _logger.LogInformation("Verification email sent successfully to {Email}", user.Email);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send verification email to {Email}", user.Email);
+                // Don't throw - allow registration to complete even if email fails
+            }
 
             return _mapper.Map<UserDto>(user);
         }
@@ -146,6 +169,99 @@ namespace RoyalBidz.Server.Services.Implementations
             {
                 return await Task.FromResult(false);
             }
+        }
+
+        public async Task<EmailVerificationResponseDto> VerifyEmailAsync(VerifyEmailDto verifyEmailDto)
+        {
+            var user = await _userRepository.GetByEmailAsync(verifyEmailDto.Email);
+            if (user == null)
+            {
+                throw new InvalidOperationException("User not found");
+            }
+
+            if (user.EmailVerified)
+            {
+                return new EmailVerificationResponseDto
+                {
+                    Success = true,
+                    Message = "Email is already verified"
+                };
+            }
+
+            if (user.EmailVerificationCode != verifyEmailDto.VerificationCode)
+            {
+                return new EmailVerificationResponseDto
+                {
+                    Success = false,
+                    Message = "Invalid verification code"
+                };
+            }
+
+            if (user.EmailVerificationCodeExpiry < DateTime.UtcNow)
+            {
+                return new EmailVerificationResponseDto
+                {
+                    Success = false,
+                    Message = "Verification code has expired"
+                };
+            }
+
+            // Mark email as verified
+            user.EmailVerified = true;
+            user.EmailVerificationCode = null;
+            user.EmailVerificationCodeExpiry = null;
+            await _userRepository.UpdateAsync(user);
+
+            // Send success email
+            await _notificationService.SendEmailVerificationSuccessAsync(user.Email, user.Username);
+
+            return new EmailVerificationResponseDto
+            {
+                Success = true,
+                Message = "Email verified successfully"
+            };
+        }
+
+        public async Task<bool> ResendVerificationCodeAsync(ResendVerificationDto resendVerificationDto)
+        {
+            var user = await _userRepository.GetByEmailAsync(resendVerificationDto.Email);
+            if (user == null)
+            {
+                return false;
+            }
+
+            if (user.EmailVerified)
+            {
+                return true; // Already verified
+            }
+
+            return await SendEmailVerificationCodeAsync(resendVerificationDto.Email);
+        }
+
+        public async Task<bool> SendEmailVerificationCodeAsync(string email)
+        {
+            var user = await _userRepository.GetByEmailAsync(email);
+            if (user == null)
+            {
+                return false;
+            }
+
+            if (user.EmailVerified)
+            {
+                return true; // Already verified
+            }
+
+            // Generate verification code
+            var verificationCode = new Random().Next(100000, 999999).ToString();
+            user.EmailVerificationCode = verificationCode;
+            user.EmailVerificationCodeExpiry = DateTime.UtcNow.AddMinutes(15); // 15 minutes expiry
+
+            await _userRepository.UpdateAsync(user);
+
+            // Send verification email
+            await _notificationService.SendEmailVerificationCodeAsync(user.Email, user.Username, verificationCode);
+
+            return true;
         }
     }
 }

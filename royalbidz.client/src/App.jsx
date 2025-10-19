@@ -16,6 +16,7 @@ import Footer from "./components/Footer";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Auctions from "./pages/Auctions";
+import AuctionDetail from "./pages/AuctionDetail";
 import Jewelry from "./pages/Jewelry";
 import Bids from "./pages/Bids";
 import Payments from "./pages/Payments";
@@ -23,6 +24,9 @@ import Users from "./pages/Users";
 import Foryou from "./pages/Foryou";
 import Wishlist from "./pages/wishlist";
 import Notifications from "./pages/Notifications";
+import VerifyEmail from "./pages/VerifyEmail";
+import PaymentPage from "./pages/PaymentPage";
+import PaymentSuccess from "./pages/PaymentSuccess";
 
 import "./App.css";
 import ContactUs from "./pages/ContactUs";
@@ -206,6 +210,7 @@ function App() {
             <Routes>
               <Route path="/contact" element={<ContactUs />} />
               <Route path="/" element={<HomePage />} />
+              <Route path="/verify-email" element={<VerifyEmail />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route
                 path="/profile"
@@ -216,7 +221,9 @@ function App() {
                 }
               />
               <Route path="/auctions" element={<Auctions />} />
+              <Route path="/auctions/:id" element={<AuctionDetail />} />
               <Route path="/jewelry" element={<Jewelry />} />
+              <Route path="/jewelry/:category" element={<Jewelry />} />
               <Route path="/bids" element={<Bids />} />
               <Route path="/payments" element={<Payments />} />
               <Route path="/users" element={<Users />} />
@@ -241,6 +248,22 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Notifications />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/payment/:auctionId"
+                element={
+                  <ProtectedRoute>
+                    <PaymentPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/payment-success/:auctionId"
+                element={
+                  <ProtectedRoute>
+                    <PaymentSuccess />
                   </ProtectedRoute>
                 }
               />

@@ -10,11 +10,18 @@ namespace RoyalBidz.Server.Data
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
+        public DbSet<UserPreferences> UserPreferences { get; set; }
+        public DbSet<UserActivity> UserActivities { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Wishlist> Wishlists { get; set; }
+        public DbSet<PaymentMethod> PaymentMethods { get; set; }
         public DbSet<JewelryItem> JewelryItems { get; set; }
         public DbSet<JewelryImage> JewelryImages { get; set; }
         public DbSet<Auction> Auctions { get; set; }
         public DbSet<Bid> Bids { get; set; }
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<ContactInquiry> ContactInquiries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,6 +35,20 @@ namespace RoyalBidz.Server.Data
                 entity.Property(e => e.Email).IsRequired();
                 entity.Property(e => e.Username).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.PasswordHash).IsRequired();
+                
+                entity.HasOne(d => d.Profile)
+                    .WithOne(p => p.User)
+                    .HasForeignKey<UserProfile>(d => d.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // UserProfile configuration
+            modelBuilder.Entity<UserProfile>(entity =>
+            {
+                entity.ToTable("user_profiles");
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => e.UserId).IsUnique();
+                entity.Property(e => e.UserId).IsRequired();
             });
 
             // JewelryItem configuration
@@ -114,6 +135,114 @@ namespace RoyalBidz.Server.Data
                     .WithMany(p => p.Payments)
                     .HasForeignKey(d => d.PayerId)
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // ContactInquiry configuration
+            modelBuilder.Entity<ContactInquiry>(entity =>
+            {
+                entity.ToTable("contact_inquiries");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Email).IsRequired().HasMaxLength(255);
+                entity.Property(e => e.MobileNumber).HasMaxLength(20);
+                entity.Property(e => e.Enquiry).IsRequired();
+                entity.Property(e => e.Status).HasConversion<string>();
+                entity.Property(e => e.Priority).HasConversion<string>();
+                entity.Property(e => e.CreatedAt).IsRequired();
+
+                entity.HasIndex(e => e.Status);
+                entity.HasIndex(e => e.CreatedAt);
+                entity.HasIndex(e => e.Email);
+
+                entity.HasOne(d => d.AssignedToUser)
+                    .WithMany()
+                    .HasForeignKey(d => d.AssignedToUserId)
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            // UserPreferences configuration
+            modelBuilder.Entity<UserPreferences>(entity =>
+            {
+                entity.ToTable("user_preferences");
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => e.UserId).IsUnique();
+                
+                entity.HasOne(d => d.User)
+                    .WithOne(p => p.Preferences)
+                    .HasForeignKey<UserPreferences>(d => d.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // UserActivity configuration
+            modelBuilder.Entity<UserActivity>(entity =>
+            {
+                entity.ToTable("user_activities");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.ActivityType).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Description).IsRequired().HasMaxLength(500);
+                entity.Property(e => e.Amount).HasColumnType("decimal(18,2)");
+                
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Activities)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                    
+                entity.HasIndex(e => new { e.UserId, e.CreatedAt });
+                entity.HasIndex(e => e.ActivityType);
+            });
+
+            // Notification configuration
+            modelBuilder.Entity<Notification>(entity =>
+            {
+                entity.ToTable("notifications");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Type).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.Message).IsRequired().HasMaxLength(1000);
+                entity.Property(e => e.Amount).HasColumnType("decimal(18,2)");
+                
+                entity.HasOne(d => d.User)
+                    .WithMany()
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                    
+                entity.HasIndex(e => new { e.UserId, e.CreatedAt });
+                entity.HasIndex(e => new { e.UserId, e.IsRead });
+                entity.HasIndex(e => e.Type);
+            });
+
+            // Wishlist configuration
+            modelBuilder.Entity<Wishlist>(entity =>
+            {
+                entity.ToTable("wishlists");
+                entity.HasKey(e => e.Id);
+                
+                entity.HasOne(d => d.User)
+                    .WithMany()
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                    
+                entity.HasOne(d => d.JewelryItem)
+                    .WithMany()
+                    .HasForeignKey(d => d.JewelryItemId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                    
+                entity.HasIndex(e => new { e.UserId, e.JewelryItemId }).IsUnique();
+            });
+
+            // PaymentMethod configuration
+            modelBuilder.Entity<PaymentMethod>(entity =>
+            {
+                entity.ToTable("payment_methods");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Type).IsRequired().HasMaxLength(50);
+                
+                entity.HasOne(d => d.User)
+                    .WithMany()
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                    
+                entity.HasIndex(e => e.UserId);
             });
 
             // Seed data

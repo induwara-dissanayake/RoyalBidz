@@ -1,864 +1,767 @@
- import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { Search, ChevronDown, Filter, Crown, X, Facebook, Instagram, Linkedin, Youtube, LayoutDashboard, Gavel, Gem, LineChart, CreditCard, Users, User, LogOut } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import {
+  useNavigate,
+  useLocation,
+  useSearchParams,
+  useParams,
+} from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import api from "../utils/api";
+import {
+  Search,
+  Filter,
+  Heart,
+  Eye,
+  Star,
+  Grid3X3,
+  List,
+  ArrowUpDown,
+  Package,
+  Gem,
+  Crown,
+  Diamond,
+  Sparkles,
+} from "lucide-react";
+import "./Jewelry.css";
 
 const JewelryStore = () => {
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showFilter, setShowFilter] = useState(false);
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const { category } = useParams();
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
+  // State management
+  const [jewelryItems, setJewelryItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedType, setSelectedType] = useState("All");
+  const [selectedMaterial, setSelectedMaterial] = useState("All");
+  const [sortBy, setSortBy] = useState("name");
+  const [viewMode, setViewMode] = useState("grid");
+  const [showFilters, setShowFilters] = useState(false);
+  // keep inputs empty so placeholders show; treat empty as unbounded in filters
+  const [priceRange, setPriceRange] = useState(["", ""]);
+  // Wishlist state
+  const [wishlistItems, setWishlistItems] = useState(new Set());
+  const [wishlistLoading, setWishlistLoading] = useState(false);
+
+  // Jewelry types and materials from the backend enum
+  const jewelryTypes = [
+    "All",
+    "Ring",
+    "Necklace",
+    "Earrings",
+    "Bracelet",
+    "Watch",
+    "Brooch",
+    "Pendant",
+    "Anklet",
+  ];
+
+  const jewelryMaterials = [
+    "All",
+    "Gold",
+    "Silver",
+    "Platinum",
+    "Diamond",
+    "Pearl",
+    "Ruby",
+    "Emerald",
+    "Sapphire",
+    "Other",
+  ];
+
+  // Load jewelry items and wishlist
+  useEffect(() => {
+    loadJewelryItems();
+    if (isAuthenticated) {
+      loadWishlistItems();
+    }
+  }, [isAuthenticated]);
+
+  // Handle URL parameters for category filtering
+  useEffect(() => {
+    // Check for category in URL path parameter
+    if (category) {
+      const formattedCategory =
+        category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
+      if (jewelryTypes.includes(formattedCategory)) {
+        setSelectedType(formattedCategory);
+      }
+    }
+
+    // Also check for category in search parameters (for backward compatibility)
+    const categoryParam = searchParams.get("category");
+    if (categoryParam) {
+      const formattedCategory =
+        categoryParam.charAt(0).toUpperCase() +
+        categoryParam.slice(1).toLowerCase();
+      if (jewelryTypes.includes(formattedCategory)) {
+        setSelectedType(formattedCategory);
+      }
+    }
+  }, [searchParams, category]);
+
+  const loadJewelryItems = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get("/jewelry");
+      setJewelryItems(response.data);
+    } catch (error) {
+      setError("Failed to load jewellery items");
+      console.error("Error loading jewellery:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const navItems = [
-    { path: '/', icon: <LayoutDashboard size={16} />, label: 'Dashboard' },
-    { path: '/auctions', icon: <Gavel size={16} />, label: 'Auctions' },
-    { path: '/jewelry', icon: <Gem size={16} />, label: 'Jewelry' },
-    { path: '/bids', icon: <LineChart size={16} />, label: 'Bids', auth: true },
-    { path: '/payments', icon: <CreditCard size={16} />, label: 'Payments', auth: true },
-    { path: '/users', icon: <Users size={16} />, label: 'Users', admin: true }
-  ];
-const jewelleryItems = [
-  {
-    id: 1,
-    name: "Gold Plated Kundan Jewellery",
-    category: "Necklace",
-    image:
-      ":https://cdn.joyalukkas.in/media/catalog/product/c/n/cn1400078797_1.jpg"
-  },
-  {
-    id: 2,
-    name: "Possibly Moissanite or Zircon",
-    category: "Ring",
-    image:
-      "https://fc896706.delivery.rocketcdn.me/wp-content/uploads/2022/06/IMG_2430-1-500x500.jpg"
-  },
-  {
-    id: 3,
-    name: "Bengal Terminology",
-    category: "Bangles",
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRM9dpEfkNfLX8JAaEkt5xzlL2Gyz5H0TXqhb_e6iafJRn4WpQpmcHx-cp1QQm45rjzJ20&usqp=CAU"
-  },
-  {
-    id: 4,
-    name: "Gold Wedding Jewellery",
-    category: "Bangles",
-    image:      
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAzh_vgJKFGM7gv8X_2Qiv7xh5kExT27nlynKFDNzHd-Y5xEr8xLbuzcR9u3cf_hfYFLA&usqp=CAU"
-  },
-  {
-    id: 5,
-    name: "Manufacturer of 22ct Gold Ring",
-    category: "Ring",
-    image:
-      "https://cdn1.jewelxy.com/live/img/business_product/360x360/nepUYs5C9T_20211101114124.jpg"
-  },
-  {
-    id: 6,
-    name: "Gold Wedding Jewellery",
-    category: "Pendants",
-    image:
-      "https://kinclimg1.bluestone.com/f_jpg,c_scale,w_1024,b_rgb:f0f0f0/giproduct/BIPG0008P28-POSTER-4167.jpg"
-  },
-  {
-    id: 7,
-    name: "Gold Wedding Ring",
-    category: "Ring",
-    image:
-      "https://ae01.alicdn.com/kf/S3972e4cc9bdf47c883ccb09933d979ddq.jpg_640x640q90.jpg"
-  },
-  {
-    id: 8,
-    name: "Lyra Pendant",
-    category: "Pendants",
-    image:
-      "https://assets.telegraphindia.com/abp/2024/Oct/1730184911_locket.jpg"
-  },
-];
+  const loadWishlistItems = async () => {
+    if (!isAuthenticated) return;
 
-return (
+    try {
+      const response = await api.get("/profile/wishlist");
+      const normalized = (response.data || []).map((raw) => {
+        return {
+          jewelryItemId:
+            raw?.jewelryItemId ??
+            raw?.JewelryItemId ??
+            raw?.JewelryItem?.Id ??
+            raw?.JewelryItem?.id ??
+            null,
+        };
+      });
+      const wishlistIds = new Set(
+        normalized.map((i) => i.jewelryItemId).filter(Boolean)
+      );
+      setWishlistItems(wishlistIds);
+    } catch (error) {
+      console.error("Error loading wishlist:", error);
+    }
+  };
+
+  // Helper functions for enum mapping (moved before filtering logic)
+  const getJewelryTypeName = (type) => {
+    const typeMap = {
+      0: "Ring",
+      1: "Necklace",
+      2: "Earrings",
+      3: "Bracelet",
+      4: "Watch",
+      5: "Brooch",
+      6: "Pendant",
+      7: "Anklet",
+    };
+    return typeMap[type] ?? "Assorted Jewelry";
+  };
+
+  const getJewelryMaterialName = (material) => {
+    const materialMap = {
+      0: "Gold",
+      1: "Silver",
+      2: "Platinum",
+      3: "Diamond",
+      4: "Pearl",
+      5: "Ruby",
+      6: "Emerald",
+      7: "Sapphire",
+      8: "Other",
+    };
+    return materialMap[material] ?? "Mixed Materials";
+  };
+
+  const getConditionName = (condition) => {
+    const conditionMap = { 0: "New", 1: "Excellent", 2: "Good", 3: "Fair" };
+    return conditionMap[condition] ?? "Pre-owned";
+  };
+
+  // Normalize backend JSON (support PascalCase or camelCase or different shapes)
+  const normalizeItem = (raw) => {
+    if (!raw)
+      return {
+        id: null,
+        name: undefined,
+        description: undefined,
+        brand: undefined,
+        type: undefined,
+        primaryMaterial: undefined,
+        condition: undefined,
+        estimatedValue: undefined,
+        images: [],
+        createdAt: undefined,
+      };
+
+    const imagesRaw =
+      raw.images || raw.Images || raw.jewelryImages || raw.JewelryImages || [];
+    const images = Array.isArray(imagesRaw)
+      ? imagesRaw.map((img) => ({
+          imageUrl:
+            img?.imageUrl ??
+            img?.ImageUrl ??
+            img?.ImageURL ??
+            img?.url ??
+            img?.Url,
+          altText: img?.altText ?? img?.AltText ?? null,
+          isPrimary: img?.isPrimary ?? img?.IsPrimary ?? false,
+        }))
+      : [];
+
+    return {
+      id: raw?.id ?? raw?.Id ?? raw?.ID ?? null,
+      name: raw?.name ?? raw?.Name ?? raw?.title ?? raw?.Title,
+      description: raw?.description ?? raw?.Description,
+      brand: raw?.brand ?? raw?.Brand,
+      type: raw?.type ?? raw?.Type,
+      primaryMaterial: raw?.primaryMaterial ?? raw?.PrimaryMaterial,
+      condition: raw?.condition ?? raw?.Condition,
+      estimatedValue:
+        raw?.estimatedValue ??
+        raw?.EstimatedValue ??
+        raw?.EstimatedValueInCents ??
+        0,
+      images,
+      createdAt: raw?.createdAt ?? raw?.CreatedAt,
+      yearMade: raw?.yearMade ?? raw?.YearMade,
+      weight: raw?.weight ?? raw?.Weight,
+      // keep original attached for fallback if needed
+      __raw: raw,
+    };
+  };
+
+  // Filter and sort logic
+  // Work with a normalized list so front-end tolerates different backend JSON casing/shapes
+  const normalizedItems = jewelryItems.map((it) => normalizeItem(it));
+
+  const filteredAndSortedItems = normalizedItems
+    .filter((item) => {
+      const itemName = (item?.name || "").toString();
+      const itemDescription = (item?.description || "").toString();
+      const itemBrand = (item?.brand || "").toString();
+
+      const matchesSearch =
+        itemName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        itemDescription.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        itemBrand.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchesType = (() => {
+        if (selectedType === "All") return true;
+        const t = item?.type;
+        if (t === null || t === undefined) return false;
+        if (typeof t === "number")
+          return getJewelryTypeName(t) === selectedType;
+        // string: compare names case-insensitive
+        return String(t).toLowerCase() === selectedType.toLowerCase();
+      })();
+
+      const matchesMaterial = (() => {
+        if (selectedMaterial === "All") return true;
+        const m = item?.primaryMaterial;
+        if (m === null || m === undefined) return false;
+        if (typeof m === "number")
+          return getJewelryMaterialName(m) === selectedMaterial;
+        return String(m).toLowerCase() === selectedMaterial.toLowerCase();
+      })();
+
+      const minPrice = priceRange[0] !== "" ? Number(priceRange[0]) : 0;
+      const maxPrice = priceRange[1] !== "" ? Number(priceRange[1]) : 100000;
+      const matchesPrice =
+        Number(item?.estimatedValue || 0) >= minPrice &&
+        Number(item?.estimatedValue || 0) <= maxPrice;
+
+      return matchesSearch && matchesType && matchesMaterial && matchesPrice;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "name":
+          return (a?.name || "")
+            .toString()
+            .localeCompare((b?.name || "").toString());
+        case "price-low":
+          return (
+            Number(a?.estimatedValue || 0) - Number(b?.estimatedValue || 0)
+          );
+        case "price-high":
+          return (
+            Number(b?.estimatedValue || 0) - Number(a?.estimatedValue || 0)
+          );
+        case "newest":
+          return new Date(b?.createdAt || 0) - new Date(a?.createdAt || 0);
+        default:
+          return 0;
+      }
+    });
+
+  const handleViewItem = async (itemId) => {
+    try {
+      // First, check if there's an active auction for this jewelry item
+      console.log(`Checking for auction with jewelry item ID: ${itemId}`);
+      const auctionResponse = await api.get(`/auctions/by-jewelry/${itemId}`);
+      console.log("Auction API response:", auctionResponse.data);
+
+      if (
+        auctionResponse.data &&
+        (auctionResponse.data.id || auctionResponse.data.Id)
+      ) {
+        // If auction exists, navigate to auction detail page
+        const auctionId = auctionResponse.data.id || auctionResponse.data.Id;
+        console.log(`Navigating to auction detail: /auctions/${auctionId}`);
+        navigate(`/auctions/${auctionId}`);
+      } else {
+        // Fallback to jewelry detail page
+        console.log(
+          `No auction found, navigating to jewelry detail: /jewelry/${itemId}`
+        );
+        navigate(`/jewelry/${itemId}`);
+      }
+    } catch (error) {
+      // If auction API fails, fallback to jewelry detail page
+      console.log("Error checking for auction:", error);
+      alert(`Error: ${error.message}`);
+      console.log(
+        "No auction found for jewelry item, redirecting to jewelry detail"
+      );
+      navigate(`/jewelry/${itemId}`);
+    }
+  };
+
+  const handleAddToWishlist = async (itemId) => {
+    if (!isAuthenticated) {
+      navigate("/signin");
+      return;
+    }
+
+    setWishlistLoading(true);
+
+    try {
+      const isInWishlist = wishlistItems.has(itemId);
+
+      if (isInWishlist) {
+        // Remove from wishlist
+        await api.delete(`/profile/wishlist/${itemId}`);
+        setWishlistItems((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(itemId);
+          return newSet;
+        });
+      } else {
+        // Add to wishlist
+        await api.post(`/profile/wishlist/${itemId}`);
+        setWishlistItems((prev) => new Set([...prev, itemId]));
+      }
+    } catch (error) {
+      console.error("Error managing wishlist:", error);
+      if (error.response?.data?.message) {
+        alert(error.response.data.message);
+      } else {
+        alert("Failed to update wishlist. Please try again.");
+      }
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="jewelry-loading">
+        <div className="loading-spinner">
+          <Sparkles className="loading-icon" />
+          <p>Loading beautiful jewellery...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
     <div className="jewelry-store">
-      {/* Navigation Bar */}
-      <nav style={{
-        background: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(10px)',
-        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 100
-      }}>
-        <div style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          padding: '0 20px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          height: '64px'
-        }}>
-          {/* Logo */}
-          <Link 
-            to="/"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              textDecoration: 'none',
-              color: '#2d3748',
-              fontSize: '1.5rem',
-              fontWeight: 'bold'
-            }}
-          >
-            <Gem size={20} color="#667eea" />
-            RoyalBidz
-          </Link>
-
-          {/* Navigation Items */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '20px'
-          }}>
-            {navItems.map(({ path, icon, label, auth, admin }) => {
-              // Hide auth-required items if not authenticated
-              if (auth && !isAuthenticated) return null;
-              // Hide admin items if not admin
-              if (admin && (!user || user.role !== 'Admin')) return null;
-
-              return (
-                <Link
-                  key={path}
-                  to={path}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    padding: '8px 16px',
-                    textDecoration: 'none',
-                    color: '#4a5568',
-                    borderRadius: '6px',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.background = '#f7fafc';
-                    e.target.style.color = '#667eea';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = 'transparent';
-                    e.target.style.color = '#4a5568';
-                  }}
-                >
-                  <span>{icon}</span>
-                  <span style={{ fontSize: '14px', fontWeight: '500' }}>
-                    {label}
-                  </span>
-                </Link>
-              );
-            })}
-
-            {/* User Menu */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              marginLeft: '20px',
-              paddingLeft: '20px',
-              borderLeft: '1px solid #e2e8f0'
-            }}>
-              {isAuthenticated ? (
-                <>
-                  <Link
-                    to="/profile"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      padding: '8px 16px',
-                      textDecoration: 'none',
-                      color: '#4a5568',
-                      borderRadius: '6px',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = '#f7fafc';
-                      e.target.style.color = '#667eea';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = 'transparent';
-                      e.target.style.color = '#4a5568';
-                    }}
-                  >
-                    <User size={16} />
-                    <span style={{ fontSize: '14px' }}>
-                      {user?.firstName || 'Profile'}
-                    </span>
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      padding: '8px 16px',
-                      background: 'none',
-                      border: 'none',
-                      color: '#e53e3e',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = '#fed7d7';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = 'transparent';
-                    }}
-                  >
-                    <LogOut size={16} />
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/login"
-                    className="btn btn-outline btn-sm"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="btn btn-primary btn-sm"
-                  >
-                    Register
-                  </Link>
-                </>
-              )}
-            </div>
+      {/* Hero Section */}
+      <section className="jewelry-hero">
+        <div className="hero-content">
+          <div className="hero-text">
+            <h1>
+              <Crown className="hero-icon" />
+              Exquisite Jewellery Auctions
+            </h1>
+            <p>
+              Discover timeless elegance and exceptional craftsmanship in our
+              curated selection of fine jewellery auctions
+            </p>
           </div>
         </div>
-      </nav>
+      </section>
 
-      {/* Header */}
-      <header className="store-header">
-        <div className="header-container">
-          {/* Logo */}
-          <div className="logo-section">
-            <Crown size={24} className="crown-icon" />
-            <span className="logo-text">ROYALBILUZ JEWELRY</span>
-          </div>
-
-          {/* Search Bar */}
-          <div className="search-section">
-            <div className="search-bar">
-              <Search size={16} className="search-icon" />
+      {/* Search and Filter Bar */}
+      <section className="jewelry-controls">
+        <div className="container">
+          <div className="search-bar">
+            <div className="search-input-container">
+              <Search className="search-icon" />
               <input
                 type="text"
-                placeholder="Search"
+                placeholder="Search for jewellery, brands, or materials..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="search-input"
               />
             </div>
+
+            <button
+              className={`filter-toggle ${showFilters ? "active" : ""}`}
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              <Filter size={20} />
+              Filters
+            </button>
+
+            <div className="view-controls">
+              <button
+                className={`view-btn ${viewMode === "grid" ? "active" : ""}`}
+                onClick={() => setViewMode("grid")}
+              >
+                <Grid3X3 size={20} />
+              </button>
+              <button
+                className={`view-btn ${viewMode === "list" ? "active" : ""}`}
+                onClick={() => setViewMode("list")}
+              >
+                <List size={20} />
+              </button>
+            </div>
           </div>
 
-          {/* Navigation */}
-          <nav className="nav-section">
-            <a href="#" className="nav-link">Home</a>
-            <a href="#" className="nav-link">For You</a>
-            <div className="nav-dropdown">
-              <a href="#" className="nav-link">
-                Items
-                <ChevronDown size={14} />
-              </a>
-            </div>
-            <a href="#" className="nav-link">Contact</a>
-            <a href="#" className="nav-link">Sign in</a>
-          </nav>
+          {/* Advanced Filters */}
+          {showFilters && (
+            <div className="advanced-filters">
+              <div className="filter-row">
+                <div className="filter-group">
+                  <label>Type</label>
+                  <select
+                    value={selectedType}
+                    onChange={(e) => setSelectedType(e.target.value)}
+                  >
+                    {jewelryTypes.map((type) => (
+                      <option key={type} value={type}>
+                        {type}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-          {/* Actions */}
-          <div className="action-section">
-            <button className="register-btn">Register</button>
-            <div className="user-icon">
-              <div className="user-avatar"></div>
+                <div className="filter-group">
+                  <label>Material</label>
+                  <select
+                    value={selectedMaterial}
+                    onChange={(e) => setSelectedMaterial(e.target.value)}
+                  >
+                    {jewelryMaterials.map((material) => (
+                      <option key={material} value={material}>
+                        {material}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="filter-group">
+                  <label>Sort By</label>
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                  >
+                    <option value="name">Name A-Z</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="newest">Newest First</option>
+                  </select>
+                </div>
+
+                <div className="filter-group price-range">
+                  <label>Price Range</label>
+                  <div className="price-inputs">
+                    <div className="price-input-group">
+                      <input
+                        type="number"
+                        min="0"
+                        max="1000000"
+                        step="100"
+                        value={priceRange[0]}
+                        onChange={(e) => {
+                          const v =
+                            e.target.value === ""
+                              ? ""
+                              : parseInt(e.target.value, 10) || 0;
+                          setPriceRange([v, priceRange[1]]);
+                        }}
+                        placeholder="min"
+                        aria-label="min price"
+                      />
+                    </div>
+                    <div className="price-input-group">
+                      <input
+                        type="number"
+                        min="0"
+                        max="1000000"
+                        step="100"
+                        value={priceRange[1]}
+                        onChange={(e) => {
+                          const v =
+                            e.target.value === ""
+                              ? ""
+                              : parseInt(e.target.value, 10) || 100000;
+                          setPriceRange([priceRange[0], v]);
+                        }}
+                        placeholder="max"
+                        aria-label="max price"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+          )}
+        </div>
+      </section>
+
+      {/* Results Summary */}
+      <section className="results-summary">
+        <div className="container">
+          <div className="results-info">
+            <p>{filteredAndSortedItems.length} jewellery items found</p>
+            {(searchTerm ||
+              selectedType !== "All" ||
+              selectedMaterial !== "All") && (
+              <button
+                className="clear-filters"
+                onClick={() => {
+                  setSearchTerm("");
+                  setSelectedType("All");
+                  setSelectedMaterial("All");
+                  setPriceRange([0, 100000]);
+                }}
+              >
+                Clear all filters
+              </button>
+            )}
           </div>
         </div>
-      </header>
+      </section>
 
-      {/* Main Content */}
-      <main className="main-content">
-        {/* Banner Section */}
-        <section className="banner-section">
-          <div className="banner-header">
-            <div className="banner-text">
-              <h1 className="banner-title">Jewellery Items</h1>
-              <p className="banner-subtitle">Explore our curated collection of fine jewelry.</p>
+      {/* Jewelry Grid */}
+      <section className="jewelry-grid-section">
+        <div className="container">
+          {error && (
+            <div className="error-message">
+              <Package className="error-icon" />
+              <p>{error}</p>
             </div>
-            <button className="filter-btn" onClick={() => setShowFilter(!showFilter)}>
-              <Filter size={16} />
-              Filter
-            </button>
-          </div>
-          
-          <div className="promo-banner">
-            <div className="promo-text-section">
-              <div className="promo-line-1">FLASH SALE FRIDAY</div>
-              <div className="promo-line-2">SAVE 20%</div>
-              <div className="promo-line-3">ON SELECT ITEMS</div>
-              <div className="promo-code">PROMO CODE: FRIYAY</div>
-            </div>
-            <div className="jewelry-display">
-              <div className="jewelry-item jewelry-bangle-large"></div>
-              <div className="jewelry-item jewelry-ring-gemstone"></div>
-              <div className="jewelry-item jewelry-earrings-small"></div>
-              <div className="jewelry-item jewelry-ring-tricolor"></div>
-            </div>
-          </div>
-        </section>
+          )}
 
-        {/* Product Grid */}
-        <section className="product-section">
-          <div className="product-grid">
-            {jewelryItems.map((item) => (
-              <div key={item.id} className="product-card">
-                <div className="product-image">
-                  <img src={item.image} alt={item.name} />
+          {filteredAndSortedItems.length === 0 && !loading && !error && (
+            <div className="no-results">
+              <Gem className="no-results-icon" />
+              <h3>No Auctions found</h3>
+              <p>Try adjusting your search terms or filters</p>
+            </div>
+          )}
+
+          <div className={`jewelry-grid ${viewMode}`}>
+            {filteredAndSortedItems.map((item, index) => (
+              <div
+                key={item?.id || `jewellery-item-${index}`}
+                className="jewelry-card"
+              >
+                <div className="jewelry-image-container">
+                  {/* determine image source with sensible fallbacks (primary image, uploaded file by id, default) */}
+                  {(() => {
+                    // determine base API URL (Vite env only) — otherwise use relative paths so the dev proxy handles uploads
+                    const apiBase =
+                      typeof import.meta !== "undefined" &&
+                      import.meta.env?.VITE_API_BASE
+                        ? import.meta.env.VITE_API_BASE
+                        : "";
+
+                    const primary =
+                      item.images?.[0]?.imageUrl ||
+                      item.images?.[0]?.ImageUrl ||
+                      "";
+                    const fallbackPaths = [
+                      `/uploads/jewelry/${item.id}.jpg`,
+                      `/uploads/jewelry/${item.id}.png`,
+                      `/uploads/jewelry/${item.id}.jpeg`,
+                    ];
+
+                    const pickSrc = (p) => {
+                      if (!p) return null;
+                      // absolute URL -> use as-is
+                      if (/^https?:\/\//i.test(p)) return p;
+                      // if path starts with /uploads and we have an apiBase, prefix it
+                      if (p.startsWith("/") && apiBase) return `${apiBase}${p}`;
+                      return p; // relative path
+                    };
+
+                    let src = pickSrc(primary) || null;
+                    if (!src) {
+                      for (const p of fallbackPaths) {
+                        const candidate = pickSrc(p);
+                        // don't perform network existence check here; candidate will 404 if missing
+                        src = candidate;
+                        break;
+                      }
+                    }
+                    if (!src) src = "/images/jewelry-placeholder.jpg";
+
+                    return (
+                      <img
+                        src={src}
+                        alt={item.name || "Jewellery item"}
+                        className="jewelry-image"
+                      />
+                    );
+                  })()}
+
+                  {/* center overlay used for grid view */}
+                  <div className="jewelry-overlay">
+                    <button
+                      className="overlay-btn primary"
+                      onClick={() => handleViewItem(item.id)}
+                    >
+                      <Eye size={20} />
+                      View Details
+                    </button>
+                    <button
+                      className="overlay-btn secondary"
+                      onClick={() => handleAddToWishlist(item.id)}
+                      disabled={wishlistLoading}
+                      style={{
+                        color: wishlistItems.has(item.id)
+                          ? "#e53e3e"
+                          : "inherit",
+                      }}
+                    >
+                      <Heart
+                        size={20}
+                        fill={wishlistItems.has(item.id) ? "#e53e3e" : "none"}
+                      />
+                      {wishlistItems.has(item.id) ? "In Wishlist" : "Wishlist"}
+                    </button>
+                  </div>
+
+                  {/* corner icon-only buttons for list view */}
+                  {viewMode === "list" && (
+                    <>
+                      <button
+                        className="corner-btn top-left"
+                        onClick={() => handleViewItem(item.id)}
+                        aria-label="Show more"
+                        title="Show more"
+                      >
+                        <Eye size={16} />
+                      </button>
+                      <button
+                        className="corner-btn top-right"
+                        onClick={() => handleAddToWishlist(item.id)}
+                        disabled={wishlistLoading}
+                        aria-label={
+                          wishlistItems.has(item.id)
+                            ? "Remove from wishlist"
+                            : "Add to wishlist"
+                        }
+                        title={
+                          wishlistItems.has(item.id)
+                            ? "Remove from wishlist"
+                            : "Add to wishlist"
+                        }
+                        style={{
+                          color: wishlistItems.has(item.id)
+                            ? "#e53e3e"
+                            : "white",
+                          backgroundColor: wishlistItems.has(item.id)
+                            ? "rgba(229, 62, 62, 0.1)"
+                            : "rgba(0, 0, 0, 0.7)",
+                        }}
+                      >
+                        <Heart
+                          size={16}
+                          fill={wishlistItems.has(item.id) ? "#e53e3e" : "none"}
+                        />
+                      </button>
+                    </>
+                  )}
+
+                  <div className="jewelry-badges">
+                    {item?.condition === 0 && (
+                      <span className="badge new">New</span>
+                    )}
+                    {item?.brand && (
+                      <span className="badge brand">{item.brand}</span>
+                    )}
+                  </div>
                 </div>
-                <div className="product-info">
-                  <h3 className="product-title">{item.name}</h3>
-                  <span className="product-category">{item.category}</span>
+
+                <div className="jewelry-info">
+                  <div className="jewelry-header">
+                    <h3 className="jewelry-name">
+                      {item?.name || "Unnamed Item"}
+                    </h3>
+                    <div className="jewelry-meta">
+                      <span className="jewelry-type">
+                        {getJewelryTypeName(item?.type)}
+                      </span>
+                      <span className="jewelry-material">
+                        {getJewelryMaterialName(item?.primaryMaterial)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <p className="jewelry-description">
+                    {(item?.description || "").length > 100
+                      ? `${(item?.description || "").substring(0, 100)}...`
+                      : item?.description || "No description available"}
+                  </p>
+
+                  <div className="jewelry-details">
+                    {item.weight && (
+                      <div className="detail-item">
+                        <span className="detail-label">Weight:</span>
+                        <span className="detail-value">{item.weight}g</span>
+                      </div>
+                    )}
+                    {item.yearMade && (
+                      <div className="detail-item">
+                        <span className="detail-label">Year:</span>
+                        <span className="detail-value">{item.yearMade}</span>
+                      </div>
+                    )}
+                    <div className="detail-item">
+                      <span className="detail-label">Condition:</span>
+                      <span className="detail-value">
+                        {getConditionName(item?.condition)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="jewelry-footer">
+                    <div className="jewelry-price">
+                      <span className="price-label">Est. Value</span>
+                      <span className="price-value">
+                        ${(item?.estimatedValue || 0)?.toLocaleString()}
+                      </span>
+                    </div>
+
+                    <div className="jewelry-actions">
+                      <button
+                        className="btn-primary"
+                        onClick={() => handleViewItem(item.id)}
+                      >
+                        View Item
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-        </section>
-      </main>
-
-      {/* Footer */}
-      <footer className="store-footer">
-        <div className="footer-top">
-          <div className="footer-container">
-            <div className="footer-column">
-              <div className="footer-logo">
-                <Crown size={20} className="crown-icon" />
-                <span className="logo-text">ROYALBILUZ JEWELRY</span>
-              </div>
-              <div className="social-links">
-                <a href="#" className="social-link"><X size={16} /></a>
-                <a href="#" className="social-link"><Facebook size={16} /></a>
-                <a href="#" className="social-link"><Instagram size={16} /></a>
-                <a href="#" className="social-link"><Linkedin size={16} /></a>
-                <a href="#" className="social-link"><Youtube size={16} /></a>
-              </div>
-            </div>
-            
-            <div className="footer-column">
-              <h4 className="footer-title">Our Pages</h4>
-              <ul className="footer-links">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">For you</a></li>
-                <li><a href="#">Register</a></li>
-                <li><a href="#">Sign in</a></li>
-                <li><a href="#">Contact us</a></li>
-              </ul>
-            </div>
-            
-            <div className="footer-column">
-              <h4 className="footer-title">Categories</h4>
-              <ul className="footer-links">
-                <li><a href="#">Necklaces</a></li>
-                <li><a href="#">Pendants</a></li>
-                <li><a href="#">Rings</a></li>
-                <li><a href="#">Bangles</a></li>
-                <li><a href="#">Bracelets</a></li>
-                <li><a href="#">Contact us</a></li>
-                <li><a href="#">Ear studs-Earring</a></li>
-              </ul>
-            </div>
-            
-            <div className="footer-column">
-              <h4 className="footer-title">Useful Links</h4>
-              <ul className="footer-links">
-                <li><a href="#">Privacy policy</a></li>
-                <li><a href="#">Terms and Conditions</a></li>
-                <li><a href="#">Services</a></li>
-                <li><a href="#">Quality Policy</a></li>
-              </ul>
-            </div>
-            
-            <div className="footer-column">
-              <h4 className="footer-title">Address</h4>
-              <div className="contact-info">
-                <p>NISEM Green university of Sri Lanka.</p>
-                <p>email: info@royalbiluz.com</p>
-                <p>Telephone Number: +50 71444444</p>
-              </div>
-            </div>
-          </div>
         </div>
-        
-        <div className="footer-bottom">
-          <p>&copy; 2015 Vogue Jewellers. All Rights Reserved.</p>
-        </div>
-      </footer>
-
-      <style jsx>{`
-        .jewelry-store {
-          min-height: 100vh;
-          background: #f8f6f0;
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        /* Header Styles */
-        .store-header {
-          background: #f5f0e8;
-          padding: 15px 0;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .header-container {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 20px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 20px;
-        }
-
-        .logo-section {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .crown-icon {
-          color: #E0AF62;
-        }
-
-        .logo-text {
-          font-size: 1.2rem;
-          font-weight: bold;
-          color: #E0AF62;
-        }
-
-        .search-section {
-          flex: 1;
-          max-width: 300px;
-        }
-
-        .search-bar {
-          position: relative;
-          display: flex;
-          align-items: center;
-          background: white;
-          border-radius: 8px;
-          padding: 8px 12px;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .search-icon {
-          color: #666;
-          margin-right: 8px;
-        }
-
-        .search-input {
-          border: none;
-          outline: none;
-          flex: 1;
-          font-size: 14px;
-        }
-
-        .nav-section {
-          display: flex;
-          align-items: center;
-          gap: 20px;
-        }
-
-        .nav-link {
-          color: #333;
-          text-decoration: none;
-          font-weight: 500;
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          transition: color 0.3s ease;
-        }
-
-        .nav-link:hover {
-          color: #E0AF62;
-        }
-
-        .action-section {
-          display: flex;
-          align-items: center;
-          gap: 15px;
-        }
-
-        .register-btn {
-          background: #E0AF62;
-          color: white;
-          border: none;
-          padding: 10px 20px;
-          border-radius: 6px;
-          font-weight: 500;
-          cursor: pointer;
-          transition: background 0.3s ease;
-        }
-
-        .register-btn:hover {
-          background: #d19d4f;
-        }
-
-        .user-avatar {
-          width: 32px;
-          height: 32px;
-          background: #e5e7eb;
-          border-radius: 50%;
-          cursor: pointer;
-        }
-
-        /* Main Content */
-        .main-content {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 40px 20px;
-        }
-
-        /* Banner Section */
-        .banner-section {
-          margin-bottom: 40px;
-        }
-
-        .banner-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          margin-bottom: 30px;
-        }
-
-        .banner-text {
-          flex: 1;
-        }
-
-        .banner-title {
-          font-size: 2.5rem;
-          color: #333;
-          margin-bottom: 10px;
-          font-weight: bold;
-          font-style: italic;
-        }
-
-        .banner-subtitle {
-          font-size: 1.1rem;
-          color: #ff6b35;
-          margin: 0;
-        }
-
-        .filter-btn {
-          background: #1e3a8a;
-          color: white;
-          border: 2px solid #3b82f6;
-          padding: 10px 20px;
-          border-radius: 6px;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          cursor: pointer;
-          font-weight: 500;
-          transition: all 0.3s ease;
-        }
-
-        .filter-btn:hover {
-          background: #1e40af;
-          border-color: #1e40af;
-        }
-
-        .promo-banner {
-          background: #f8f6f0;
-          border-radius: 12px;
-          padding: 40px;
-          position: relative;
-          overflow: hidden;
-          display: flex;
-          align-items: center;
-          min-height: 300px;
-        }
-
-        .promo-text-section {
-          flex: 1;
-          z-index: 2;
-          position: relative;
-        }
-
-        .promo-line-1 {
-          font-size: 1.2rem;
-          color: #8b7355;
-          margin-bottom: 10px;
-          font-weight: 400;
-        }
-
-        .promo-line-2 {
-          font-size: 3.5rem;
-          color: #5d4e37;
-          margin-bottom: 10px;
-          font-weight: bold;
-          line-height: 1;
-        }
-
-        .promo-line-3 {
-          font-size: 1.2rem;
-          color: #8b7355;
-          margin-bottom: 25px;
-          font-weight: 400;
-        }
-
-        .promo-code {
-          background: #5d4e37;
-          color: #f8f6f0;
-          padding: 12px 24px;
-          border-radius: 6px;
-          display: inline-block;
-          font-weight: bold;
-          border: 2px solid #8b7355;
-          font-size: 0.9rem;
-        }
-
-        .jewelry-display {
-          flex: 1;
-          position: relative;
-          height: 300px;
-          z-index: 1;
-        }
-
-        .jewelry-item {
-          position: absolute;
-          border-radius: 50%;
-          box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
-        .jewelry-bangle-large {
-          width: 140px;
-          height: 140px;
-          background: linear-gradient(45deg, #ffd700, #ffed4e, #daa520);
-          top: 50%;
-          right: 15%;
-          transform: translateY(-50%) rotate(25deg);
-          border: 4px solid #daa520;
-          border-radius: 50%;
-          box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-        }
-
-        .jewelry-ring-gemstone {
-          width: 90px;
-          height: 90px;
-          background: radial-gradient(circle, #ff6b6b 20%, #ff8e8e 40%, #ffa8a8 60%, #ffd700 80%);
-          top: 15%;
-          right: 35%;
-          border: 3px solid #ff4757;
-          box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
-        .jewelry-earrings-small {
-          width: 35px;
-          height: 35px;
-          background: linear-gradient(45deg, #ffd700, #ff69b4);
-          top: 10%;
-          right: 10%;
-          border: 2px solid #daa520;
-          box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-        }
-
-        .jewelry-ring-tricolor {
-          width: 70px;
-          height: 70px;
-          background: conic-gradient(from 0deg, #ffd700 0deg, #c0c0c0 120deg, #ff69b4 240deg, #ffd700 360deg);
-          bottom: 15%;
-          right: 5%;
-          border: 3px solid #333;
-          box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
-        /* Product Grid */
-        .product-section {
-          background: white;
-          border-radius: 12px;
-          padding: 30px;
-        }
-
-        .product-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 30px;
-        }
-
-        .product-card {
-          text-align: center;
-          transition: all 0.3s ease;
-          border: 1px solid #e5e7eb;
-          border-radius: 12px;
-          padding: 20px;
-          background: white;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .product-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
-        .product-image {
-          margin-bottom: 15px;
-        }
-
-        .product-image img {
-          width: 100%;
-          height: 200px;
-          object-fit: cover;
-          border-radius: 8px;
-          transition: transform 0.3s ease;
-        }
-
-        .product-card:hover .product-image img {
-          transform: scale(1.05);
-        }
-
-        .product-title {
-          font-size: 1.1rem;
-          color: #333;
-          margin-bottom: 8px;
-          font-weight: 600;
-          line-height: 1.4;
-        }
-
-        .product-category {
-          color: #dc2626;
-          font-size: 0.9rem;
-          font-weight: 500;
-        }
-
-        /* Footer */
-        .store-footer {
-          background: #f5f0e8;
-          margin-top: 60px;
-        }
-
-        .footer-top {
-          padding: 40px 0;
-        }
-
-        .footer-container {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 20px;
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          gap: 30px;
-        }
-
-        .footer-column h4 {
-          color: #333;
-          margin-bottom: 15px;
-          font-size: 1.1rem;
-        }
-
-        .footer-logo {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          margin-bottom: 20px;
-        }
-
-        .social-links {
-          display: flex;
-          gap: 15px;
-        }
-
-        .social-link {
-          color: #666;
-          transition: color 0.3s ease;
-        }
-
-        .social-link:hover {
-          color: #E0AF62;
-        }
-
-        .footer-links {
-          list-style: none;
-          padding: 0;
-        }
-
-        .footer-links li {
-          margin-bottom: 8px;
-        }
-
-        .footer-links a {
-          color: #666;
-          text-decoration: none;
-          transition: color 0.3s ease;
-        }
-
-        .footer-links a:hover {
-          color: #E0AF62;
-        }
-
-        .contact-info p {
-          color: #666;
-          margin-bottom: 8px;
-        }
-
-        .footer-bottom {
-          background: #E0AF62;
-          color: white;
-          text-align: center;
-          padding: 20px 0;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-          .product-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-          }
-        }
-
-        @media (max-width: 768px) {
-          .header-container {
-            flex-direction: column;
-            gap: 15px;
-          }
-
-          .nav-section {
-            flex-wrap: wrap;
-            justify-content: center;
-          }
-
-          .banner-title {
-            font-size: 2rem;
-          }
-
-          .promo-line-2 {
-            font-size: 2.5rem;
-          }
-
-          .product-grid {
-            grid-template-columns: 1fr;
-            gap: 20px;
-          }
-
-          .footer-container {
-            grid-template-columns: 1fr;
-            text-align: center;
-          }
-        }
-      `}</style>
+      </section>
     </div>
   );
 };

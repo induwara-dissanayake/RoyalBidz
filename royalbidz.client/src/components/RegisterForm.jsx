@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import api from "../utils/api";
 import "../pages/Register.css";
 
 export default function RegisterForm({ onClose, onShowSignIn }) {
@@ -54,14 +55,22 @@ export default function RegisterForm({ onClose, onShowSignIn }) {
     setLoading(true);
     setError("");
     const { confirmPassword, ...registerData } = formData;
-    const result = await register(registerData);
-    if (result && result.success) {
+
+    try {
+      const response = await api.post("/auth/register", registerData);
+
+      // Registration successful, redirect to email verification
       setLoading(false);
       if (onClose) onClose();
-      navigate("/");
-    } else {
+
+      // Navigate to email verification page with email in state
+      navigate("/verify-email", {
+        state: { email: formData.email },
+        replace: true,
+      });
+    } catch (error) {
       setLoading(false);
-      setError(result?.message || "Registration failed");
+      setError(error.response?.data?.message || "Registration failed");
     }
   };
 
