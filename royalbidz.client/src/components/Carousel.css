@@ -1,8 +1,8 @@
 .carousel {
   width: 100%;
-  height: calc(100vh - 66px);
-  margin-top: -10px; /* remove extra gap; main-content already offsets for fixed navbar */
-  margin-bottom: 40px; /* add gap before items section */
+  height: calc(100vh - 70px);
+  margin-top: 0; /* Remove gap between navbar and carousel */
+  margin-bottom: 30px; /* requested gap below carousel */
   position: relative;
   overflow: hidden;
   background: #000;
