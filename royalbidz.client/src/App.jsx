@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import api from "./utils/api";
 
 import Navbar from "./components/Navbar";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Carousel from "./components/Carousel";
 import Collage from "./components/Collage";
 import Content from "./components/Content";
@@ -14,15 +15,21 @@ import Footer from "./components/Footer";
 // Import pages
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
 import Auctions from "./pages/Auctions";
+import AuctionDetail from "./pages/AuctionDetail";
 import Jewelry from "./pages/Jewelry";
 import Bids from "./pages/Bids";
 import Payments from "./pages/Payments";
 import Users from "./pages/Users";
+import Foryou from "./pages/Foryou";
+import Wishlist from "./pages/wishlist";
+import Notifications from "./pages/Notifications";
+import VerifyEmail from "./pages/VerifyEmail";
+import PaymentPage from "./pages/PaymentPage";
+import PaymentSuccess from "./pages/PaymentSuccess";
 
 import "./App.css";
+import ContactUs from "./pages/ContactUs";
 
 function App() {
   // Home page component with real data
@@ -163,16 +170,65 @@ function App() {
 
           <main className="main-content">
             <Routes>
+              <Route path="/contact" element={<ContactUs />} />
               <Route path="/" element={<HomePage />} />
+              <Route path="/verify-email" element={<VerifyEmail />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/auctions" element={<Auctions />} />
+              <Route path="/auctions/:id" element={<AuctionDetail />} />
               <Route path="/jewelry" element={<Jewelry />} />
+              <Route path="/jewelry/:category" element={<Jewelry />} />
               <Route path="/bids" element={<Bids />} />
               <Route path="/payments" element={<Payments />} />
               <Route path="/users" element={<Users />} />
+              <Route
+                path="/foryou"
+                element={
+                  <ProtectedRoute>
+                    <Foryou />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/wishlist"
+                element={
+                  <ProtectedRoute>
+                    <Wishlist />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/notifications"
+                element={
+                  <ProtectedRoute>
+                    <Notifications />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/payment/:auctionId"
+                element={
+                  <ProtectedRoute>
+                    <PaymentPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/payment-success/:auctionId"
+                element={
+                  <ProtectedRoute>
+                    <PaymentSuccess />
+                  </ProtectedRoute>
+                }
+              />
             </Routes>
           </main>
         </div>

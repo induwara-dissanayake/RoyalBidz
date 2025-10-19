@@ -10,6 +10,9 @@ namespace RoyalBidz.Server.Services.Interfaces
         Task<bool> ChangePasswordAsync(int userId, ChangePasswordDto changePasswordDto);
         Task<string> GenerateJwtToken(UserDto user);
         Task<bool> ValidateTokenAsync(string token);
+        Task<EmailVerificationResponseDto> VerifyEmailAsync(VerifyEmailDto verifyEmailDto);
+        Task<bool> ResendVerificationCodeAsync(ResendVerificationDto resendVerificationDto);
+        Task<bool> SendEmailVerificationCodeAsync(string email);
     }
 
     public interface IUserService
@@ -22,18 +25,49 @@ namespace RoyalBidz.Server.Services.Interfaces
         Task<UserDto?> UpdateUserAsync(int id, UpdateUserDto updateUserDto);
         Task<bool> DeleteUserAsync(int id);
         Task<bool> UpdateUserStatusAsync(int id, UserStatus status);
+        Task<bool> ChangePasswordAsync(int userId, string currentPassword, string newPassword);
+        Task<PaymentMethodDto> AddPaymentMethodAsync(int userId, CreatePaymentMethodDto createPaymentMethodDto);
+        Task<IEnumerable<PaymentMethodDto>> GetPaymentMethodsAsync(int userId);
     }
 
-    public interface IJewelryService
+    public interface IProfileService
     {
-        Task<JewelryItemDto?> GetJewelryItemByIdAsync(int id);
-        Task<IEnumerable<JewelryItemDto>> GetAllJewelryItemsAsync();
-        Task<IEnumerable<JewelryItemDto>> SearchJewelryItemsAsync(string searchTerm);
-        Task<IEnumerable<JewelryItemDto>> GetJewelryByTypeAsync(JewelryType type);
-        Task<IEnumerable<JewelryItemDto>> GetJewelryByMaterialAsync(JewelryMaterial material);
-        Task<JewelryItemDto> CreateJewelryItemAsync(CreateJewelryItemDto createJewelryItemDto);
-        Task<JewelryItemDto?> UpdateJewelryItemAsync(int id, UpdateJewelryItemDto updateJewelryItemDto);
-        Task<bool> DeleteJewelryItemAsync(int id);
-        Task<JewelryItemDto?> GetJewelryItemWithImagesAsync(int id);
+        Task<ProfileSummaryDto?> GetProfileSummaryAsync(int userId);
+        Task<UserDto?> UpdateProfileAsync(int userId, UpdateUserDto updateUserDto);
+        Task<UserPreferencesDto> GetUserPreferencesAsync(int userId);
+        Task<UserPreferencesDto> UpdateUserPreferencesAsync(int userId, UpdateUserPreferencesDto updatePreferencesDto);
+        Task<ProfileStatsDto> GetProfileStatsAsync(int userId);
+        Task<IEnumerable<UserActivityDto>> GetUserActivitiesAsync(int userId, int page, int pageSize, string? activityType);
+        Task LogUserActivityAsync(int userId, LogActivityDto logActivityDto);
+        Task<string> UploadProfileImageAsync(int userId, IFormFile file);
+        Task<bool> DeleteAccountAsync(int userId, string password);
+        
+        // Wishlist methods
+        Task<IEnumerable<WishlistDto>> GetUserWishlistAsync(int userId);
+        Task<WishlistDto> AddToWishlistAsync(int userId, int jewelryItemId);
+        Task<bool> RemoveFromWishlistAsync(int userId, int jewelryItemId);
+        Task<bool> IsInWishlistAsync(int userId, int jewelryItemId);
+        
+        // Payment methods
+        Task<IEnumerable<PaymentMethodDto>> GetUserPaymentMethodsAsync(int userId);
+        Task<PaymentMethodDto> AddPaymentMethodAsync(int userId, CreatePaymentMethodDto createPaymentMethodDto);
+        Task<PaymentMethodDto?> UpdatePaymentMethodAsync(int userId, int paymentMethodId, UpdatePaymentMethodDto updatePaymentMethodDto);
+        Task<bool> DeletePaymentMethodAsync(int userId, int paymentMethodId);
+        Task<bool> SetDefaultPaymentMethodAsync(int userId, int paymentMethodId);
+    }
+
+    public interface IContactService
+    {
+        Task<ContactInquiryResponseDto> CreateInquiryAsync(CreateContactInquiryDto createContactInquiryDto);
+        Task<ContactInquiryDto?> GetInquiryByIdAsync(int id);
+        Task<IEnumerable<ContactInquiryDto>> GetAllInquiriesAsync();
+        Task<IEnumerable<ContactInquiryDto>> GetInquiriesByStatusAsync(ContactInquiryStatus status);
+        Task<IEnumerable<ContactInquiryDto>> GetInquiriesByPriorityAsync(ContactInquiryPriority priority);
+        Task<IEnumerable<ContactInquiryDto>> GetPendingInquiriesAsync();
+        Task<IEnumerable<ContactInquiryDto>> GetRecentInquiriesAsync(int days = 30);
+        Task<ContactInquiryDto?> UpdateInquiryAsync(int id, UpdateContactInquiryDto updateContactInquiryDto);
+        Task<bool> DeleteInquiryAsync(int id);
+        Task<bool> AssignInquiryAsync(int id, int userId);
+        Task<ContactInquiryStatsDto> GetInquiryStatsAsync();
     }
 }

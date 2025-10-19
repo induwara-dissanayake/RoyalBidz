@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using RoyalBidz.Server.DTOs;
+using RoyalBidz.Server.Hubs;
 using RoyalBidz.Server.Services.Interfaces;
 using System.Security.Claims;
 
@@ -12,11 +14,19 @@ namespace RoyalBidz.Server.Controllers
     public class BidsController : ControllerBase
     {
         private readonly IBidService _bidService;
+        private readonly IHubContext<AuctionHub> _hubContext;
+        private readonly IUserNotificationService _userNotificationService;
+        private readonly IAuctionService _auctionService;
         private readonly ILogger<BidsController> _logger;
 
-        public BidsController(IBidService bidService, ILogger<BidsController> logger)
+        public BidsController(IBidService bidService, IHubContext<AuctionHub> hubContext, 
+            IUserNotificationService userNotificationService, IAuctionService auctionService,
+            ILogger<BidsController> logger)
         {
             _bidService = bidService;
+            _hubContext = hubContext;
+            _userNotificationService = userNotificationService;
+            _auctionService = auctionService;
             _logger = logger;
         }
 
@@ -26,7 +36,44 @@ namespace RoyalBidz.Server.Controllers
             try
             {
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+                var userName = User.FindFirst(ClaimTypes.Name)?.Value ?? "Anonymous";
+
                 var bid = await _bidService.PlaceBidAsync(userId, createBidDto);
+                
+                // Create notification for bid placement
+                try
+                {
+                    var auction = await _auctionService.GetAuctionByIdAsync(createBidDto.AuctionId);
+                    if (auction != null)
+                    {
+                        await _userNotificationService.CreateBidPlacedNotificationAsync(userId, auction.Title, bid.Amount);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Failed to create bid placement notification for user {UserId}", userId);
+                }
+                
+                // Notify all users in the auction group about the new bid. Do not let hub failures bubble
+                // up and turn into 500 responses for the API caller (fire-and-log on failure).
+                try
+                {
+                    await _hubContext.Clients.Group($"auction_{createBidDto.AuctionId}")
+                        .SendAsync("BidUpdate", new
+                        {
+                            AuctionId = createBidDto.AuctionId,
+                            Amount = bid.Amount,
+                            BidderName = userName,
+                            BidderId = userId,
+                            Timestamp = DateTime.UtcNow,
+                            IsAutomaticBid = bid.IsAutomaticBid
+                        });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Failed to send SignalR BidUpdate notification for auction {AuctionId}", createBidDto.AuctionId);
+                }
+
                 return CreatedAtAction(nameof(GetBid), new { id = bid.Id }, bid);
             }
             catch (InvalidOperationException ex)

@@ -138,6 +138,26 @@ namespace RoyalBidz.Server.Controllers
             }
         }
 
+        [HttpPost("process")]
+        public async Task<ActionResult<PaymentDto>> ProcessAuctionPayment([FromBody] ProcessPaymentDto processPaymentDto)
+        {
+            try
+            {
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+                var payment = await _paymentService.ProcessAuctionPaymentAsync(userId, processPaymentDto);
+                return Ok(payment);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing auction payment");
+                return StatusCode(500, new { message = "An error occurred while processing the payment" });
+            }
+        }
+
         [HttpPut("{id}/status")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<PaymentDto>> UpdatePaymentStatus(int id, [FromBody] UpdatePaymentDto updatePaymentDto)

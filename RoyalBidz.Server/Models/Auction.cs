@@ -47,7 +47,9 @@ namespace RoyalBidz.Server.Models
         
         public decimal CurrentBid { get; set; } = 0;
         
-        public int? WinningBidderId { get; set; }
+    public int? WinningBidderId { get; set; }
+    // Current leading bidder while auction is live (not final winner until auction ends)
+    public int? LeadingBidderId { get; set; }
         
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         
@@ -56,7 +58,8 @@ namespace RoyalBidz.Server.Models
         // Navigation properties
         public virtual JewelryItem JewelryItem { get; set; } = null!;
         public virtual User Seller { get; set; } = null!;
-        public virtual User? WinningBidder { get; set; }
+    public virtual User? WinningBidder { get; set; }
+    public virtual User? LeadingBidder { get; set; }
         public virtual ICollection<Bid> Bids { get; set; } = new List<Bid>();
         public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
     }

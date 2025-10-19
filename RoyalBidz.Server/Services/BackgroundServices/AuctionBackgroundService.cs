@@ -35,12 +35,28 @@ namespace RoyalBidz.Server.Services.BackgroundServices
         {
             using var scope = _serviceProvider.CreateScope();
             var auctionService = scope.ServiceProvider.GetRequiredService<IAuctionService>();
-            var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+            var notificationService = scope.ServiceProvider.GetRequiredService<IUserNotificationService>();
 
             try
             {
-                // Process ended auctions
-                await auctionService.ProcessEndedAuctionsAsync();
+                // Process ended auctions (set status = Ended and set final winner)
+                var activeToEnd = await auctionService.GetEndingSoonAuctionsAsync(0); // immediate ended
+                foreach (var a in activeToEnd)
+                {
+                    // Finalize winner from leading bidder
+                    if (a.LeadingBidderId.HasValue)
+                    {
+                        await auctionService.AssignWinningBidderAsync(a.Id, a.LeadingBidderId.Value);
+                        
+                        // Send auction won notification with payment action
+                        await notificationService.CreateAuctionWonWithPaymentNotificationAsync(
+                            a.LeadingBidderId.Value,
+                            a.Title,
+                            a.CurrentBid,
+                            a.Id
+                        );
+                    }
+                }
 
                 // Get auctions ending soon (within 1 hour)
                 var endingSoonAuctions = await auctionService.GetEndingSoonAuctionsAsync(1);
@@ -49,8 +65,14 @@ namespace RoyalBidz.Server.Services.BackgroundServices
                 {
                     _logger.LogInformation("Auction {AuctionId} '{Title}' is ending soon", auction.Id, auction.Title);
                     
-                    // Send notification for auctions ending soon
-                    await notificationService.SendAuctionEndNotificationAsync(auction.Id);
+                    // Send notification for auctions ending soon to the current leading bidder
+                    if (auction.LeadingBidderId.HasValue)
+                    {
+                        await notificationService.CreateAuctionEndingNotificationAsync(
+                            auction.LeadingBidderId.Value, 
+                            auction.Title, 
+                            auction.EndTime);
+                    }
                 }
 
                 _logger.LogDebug("Auction background processing completed successfully");

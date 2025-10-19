@@ -25,6 +25,7 @@ namespace RoyalBidz.Server.Repositories.Implementations
             return await _dbSet
                 .Include(b => b.Auction)
                 .ThenInclude(a => a.JewelryItem)
+                .ThenInclude(j => j.Images)
                 .Where(b => b.BidderId == userId)
                 .OrderByDescending(b => b.BidTime)
                 .ToListAsync();
@@ -45,6 +46,7 @@ namespace RoyalBidz.Server.Repositories.Implementations
             return await _dbSet
                 .Include(b => b.Auction)
                 .ThenInclude(a => a.JewelryItem)
+                .ThenInclude(j => j.Images)
                 .Where(b => b.BidderId == userId && b.Status == BidStatus.Won)
                 .OrderByDescending(b => b.BidTime)
                 .ToListAsync();

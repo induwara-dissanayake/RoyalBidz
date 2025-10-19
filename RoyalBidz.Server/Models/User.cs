@@ -22,11 +22,7 @@ namespace RoyalBidz.Server.Models
         
         [Required]
         [StringLength(100)]
-        public string FirstName { get; set; } = string.Empty;
-        
-        [Required]
-        [StringLength(100)]
-        public string LastName { get; set; } = string.Empty;
+        public string Username { get; set; } = string.Empty;
         
         [Required]
         [EmailAddress]
@@ -40,20 +36,28 @@ namespace RoyalBidz.Server.Models
         [StringLength(20)]
         public string? PhoneNumber { get; set; }
         
-        [StringLength(500)]
-        public string? Address { get; set; }
-        
         public UserRole Role { get; set; } = UserRole.Buyer;
         
         public UserStatus Status { get; set; } = UserStatus.Active;
+        
+        public bool EmailVerified { get; set; } = false;
+        
+        public string? EmailVerificationCode { get; set; }
+        
+        public DateTime? EmailVerificationCodeExpiry { get; set; }
         
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         
         public DateTime? LastLogin { get; set; }
         
+        public DateTime? UpdatedAt { get; set; }
+        
         // Navigation properties
+        public virtual UserProfile? Profile { get; set; }
         public virtual ICollection<Auction> CreatedAuctions { get; set; } = new List<Auction>();
         public virtual ICollection<Bid> Bids { get; set; } = new List<Bid>();
         public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+        public virtual UserPreferences? Preferences { get; set; }
+        public virtual ICollection<UserActivity> Activities { get; set; } = new List<UserActivity>();
     }
 }
