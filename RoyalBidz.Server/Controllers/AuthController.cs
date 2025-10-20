@@ -82,6 +82,43 @@ namespace RoyalBidz.Server.Controllers
             }
         }
 
+        [HttpPost("change-password")]
+        [Authorize]
+        public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ?? User.FindFirst("sub") ?? User.FindFirst("id");
+                if (userIdClaim == null)
+                {
+                    return BadRequest(new { message = "Invalid token - no user ID found" });
+                }
+
+                if (!int.TryParse(userIdClaim.Value, out int userId))
+                {
+                    return BadRequest(new { message = "Invalid user ID in token" });
+                }
+
+                var result = await _authService.ChangePasswordAsync(userId, changePasswordDto);
+                
+                if (result)
+                {
+                    return Ok(new { message = "Password changed successfully" });
+                }
+                
+                return NotFound(new { message = "User not found" });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error changing password for user");
+                return StatusCode(500, new { message = "An error occurred while changing password" });
+            }
+        }
+
        
     }
 }
