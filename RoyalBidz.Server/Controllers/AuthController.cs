@@ -22,24 +22,7 @@ namespace RoyalBidz.Server.Controllers
             _logger = logger;
         }
 
-        [HttpPost("login")]
-        public async Task<ActionResult<LoginResponseDto>> Login([FromBody] LoginDto loginDto)
-        {
-            try
-            {
-                var result = await _authService.LoginAsync(loginDto);
-                return Ok(result);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error during login for email {Email}", loginDto.Email);
-                return StatusCode(500, new { message = "An error occurred during login" });
-            }
-        }
+        
 
         [HttpPost("register")]
         public async Task<ActionResult<LoginResponseDto>> Register([FromBody] CreateUserDto createUserDto)
