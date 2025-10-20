@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
+import AdminDashboard from "../components/AdminDashboard";
 import {
   User,
   DollarSign,
@@ -19,6 +20,7 @@ import {
   Crown,
   Star,
   LogOut,
+  BarChart3,
 } from "lucide-react";
 
 // Add CSS for loading animation
@@ -2188,6 +2190,13 @@ const Profile = () => {
     }
   }, [user]);
 
+  // Handle admin navigation properly
+  useEffect(() => {
+    if (activeTab === "admin") {
+      navigate("/admin");
+    }
+  }, [activeTab, navigate]);
+
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
       logout();
@@ -2203,6 +2212,10 @@ const Profile = () => {
     { id: "payments", label: "Payment History", icon: DollarSign },
     { id: "methods", label: "Payment Methods", icon: CreditCard },
     { id: "settings", label: "Settings", icon: Settings },
+    // Add Admin Dashboard for admin users (role 2)
+    ...(user?.Role === 2 || user?.role === 2 || user?.Role === "Admin"
+      ? [{ id: "admin", label: "Admin Dashboard", icon: BarChart3 }]
+      : []),
   ];
 
   const renderTabContent = () => {
@@ -2354,6 +2367,8 @@ const Profile = () => {
             onChangePassword={() => setShowChangePasswordModal(true)}
           />
         );
+      case "admin":
+        return null;
       default:
         return null;
     }
@@ -2560,42 +2575,48 @@ const Profile = () => {
                 );
               })}
 
-              {/* Logout Button */}
-              <div
-                style={{
-                  marginTop: "20px",
-                  paddingTop: "20px",
-                  borderTop: "1px solid #f3f4f6",
-                }}
-              >
-                <button
-                  onClick={handleLogout}
+              {/* Logout Button - Only show for non-admin users */}
+              {!(
+                user?.Role === 2 ||
+                user?.role === 2 ||
+                user?.Role === "Admin"
+              ) && (
+                <div
                   style={{
-                    width: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "12px",
-                    padding: "12px 16px",
-                    border: "none",
-                    borderRadius: "10px",
-                    background: "transparent",
-                    color: "#ef4444",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#fef2f2";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "transparent";
+                    marginTop: "20px",
+                    paddingTop: "20px",
+                    borderTop: "1px solid #f3f4f6",
                   }}
                 >
-                  <LogOut size={18} />
-                  Logout
-                </button>
-              </div>
+                  <button
+                    onClick={handleLogout}
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      padding: "12px 16px",
+                      border: "none",
+                      borderRadius: "10px",
+                      background: "transparent",
+                      color: "#ef4444",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#fef2f2";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "transparent";
+                    }}
+                  >
+                    <LogOut size={18} />
+                    Logout
+                  </button>
+                </div>
+              )}
             </nav>
           </div>
 

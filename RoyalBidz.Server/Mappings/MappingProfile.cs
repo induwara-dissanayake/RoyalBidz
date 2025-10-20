@@ -94,6 +94,11 @@ namespace RoyalBidz.Server.Mappings
             CreateMap<CreatePaymentDto, Payment>();
             CreateMap<UpdatePaymentDto, Payment>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            // SocialShare mappings
+            CreateMap<SocialShare, SocialShareDto>()
+                .ForMember(dest => dest.AuctionTitle, opt => opt.MapFrom(src => src.Auction != null ? src.Auction.Title : null));
+            CreateMap<CreateSocialShareDto, SocialShare>();
         }
     }
 }
