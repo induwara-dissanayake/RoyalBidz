@@ -1,5 +1,3 @@
-Absolutely! Here's a **fully formatted, attractive, GitHub-ready README** for **RoyalBidz** in one complete file. All your original content is preserved, but now it’s visually appealing, well-structured, and easy to read.
-
 ---
 
 # 👑 RoyalBidz - Jewelry Auction Platform
