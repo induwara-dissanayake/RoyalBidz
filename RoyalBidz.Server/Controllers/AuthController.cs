@@ -119,6 +119,21 @@ namespace RoyalBidz.Server.Controllers
             }
         }
 
-       
+        [HttpPost("validate-token")]
+        public async Task<ActionResult> ValidateToken([FromBody] string token)
+        {
+            try
+            {
+                var isValid = await _authService.ValidateTokenAsync(token);
+                return Ok(new { isValid });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error validating token");
+                
+            }
+        }
+
+        
     }
 }
