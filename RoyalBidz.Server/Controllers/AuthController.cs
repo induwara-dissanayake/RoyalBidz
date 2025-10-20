@@ -134,6 +134,21 @@ namespace RoyalBidz.Server.Controllers
             }
         }
 
+        [HttpPost("verify-email")]
+        public async Task<ActionResult<EmailVerificationResponseDto>> VerifyEmail([FromBody] VerifyEmailDto verifyEmailDto)
+        {
+            try
+            {
+                var result = await _authService.VerifyEmailAsync(verifyEmailDto);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error verifying email for {Email}", verifyEmailDto.Email);
+                return StatusCode(500, new { message = "An error occurred while verifying email" });
+            }
+        }
+
         
     }
 }
