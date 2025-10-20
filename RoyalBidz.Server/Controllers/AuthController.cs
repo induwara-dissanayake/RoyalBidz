@@ -130,7 +130,7 @@ namespace RoyalBidz.Server.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error validating token");
-                
+                return Ok(new { isValid = false });
             }
         }
 
