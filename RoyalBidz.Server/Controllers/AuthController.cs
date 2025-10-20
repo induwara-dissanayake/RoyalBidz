@@ -149,6 +149,25 @@ namespace RoyalBidz.Server.Controllers
             }
         }
 
-        
+        [HttpPost("resend-verification")]
+        public async Task<ActionResult> ResendVerificationCode([FromBody] ResendVerificationDto resendVerificationDto)
+        {
+            try
+            {
+                var result = await _authService.ResendVerificationCodeAsync(resendVerificationDto);
+                
+                if (result)
+                {
+                    return Ok(new { message = "Verification code sent successfully" });
+                }
+                
+                return BadRequest(new { message = "Failed to send verification code" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error resending verification code for {Email}", resendVerificationDto.Email);
+                return StatusCode(500, new { message = "An error occurred while sending verification code" });
+            }
+        }
     }
 }
