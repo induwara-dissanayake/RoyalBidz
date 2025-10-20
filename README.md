@@ -92,9 +92,7 @@ Frontend will run on: `https://localhost:3117`
 
 ### Development Configuration
 
-* Copy `appsettings.Example.json` → `appsettings.Development.json`
-* Set your **MySQL connection string**
-* Set a secure **JWT SecretKey** (min. 32 characters)
+* Create RoyalBidz.Server/appsettings.Development.json:{ "ConnectionStrings": { "DefaultConnection": "Server=localhost;Database=RoyalBidz;User=root;Password=your-password;Port=3306;Convert Zero Datetime=True;" }, "JwtSettings": { "SecretKey": "your-super-secure-jwt-secret-key-at-least-32-characters-long", "Issuer": "RoyalBidz", "Audience": "RoyalBidzUsers" } }
 
 ### Production Deployment
 
@@ -213,20 +211,6 @@ npm run build
 
 ---
 
-## 📜 License
 
-This project is for **educational purposes**.
-
----
-
-✅ **Enhancements made:**
-
-* Emojis to highlight sections
-* Tables for accounts and architecture
-* Code blocks for commands and config
-* GitHub-friendly headings and structure
-* Clean, modern layout
-
----
 
 
