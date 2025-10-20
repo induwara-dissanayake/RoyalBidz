@@ -41,10 +41,47 @@ namespace RoyalBidz.Server.Controllers
             }
         }
 
-        
+        [HttpPost("register")]
+        public async Task<ActionResult<LoginResponseDto>> Register([FromBody] CreateUserDto createUserDto)
+        {
+            try
+            {
+                var user = await _authService.RegisterAsync(createUserDto);
+                
+                // Generate JWT token for the new user
+                var token = await _authService.GenerateJwtToken(user);
+                var expiresAt = DateTime.UtcNow.AddHours(24);
+                
+                var loginResponse = new LoginResponseDto
+                {
+                    Token = token,
+                    User = user,
+                    ExpiresAt = expiresAt
+                };
+                
+                // Send welcome email (don't block registration if this fails)
+                try
+                {
+                    await _notificationService.SendWelcomeEmailAsync(user.Email, user.Username);
+                }
+                catch (Exception emailEx)
+                {
+                    _logger.LogWarning(emailEx, "Failed to send welcome email to {Email}", user.Email);
+                }
+                
+                return CreatedAtAction(nameof(Register), new { id = user.Id }, loginResponse);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during registration for email {Email}", createUserDto.Email);
+                return StatusCode(500, new { message = "An error occurred during registration" });
+            }
+        }
 
-        
-
-        
+       
     }
 }
