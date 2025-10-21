@@ -221,7 +221,7 @@ const AppContent = () => {
                   id: 8,
                   name: "Ruby Statement Ring",
                   price: 2750,
-                  imageSrc: "/src/img/itme8.png",
+                  imageSrc: "/src/img/itme1.png",
                 },
               ].map((item) => (
                 <Item key={item.id} item={item} />
@@ -229,8 +229,6 @@ const AppContent = () => {
             </div>
           </div>
         </section>
-
-        <Footer />
       </div>
     );
   };
@@ -310,6 +308,9 @@ const AppContent = () => {
           />
         </Routes>
       </main>
+
+      {/* Add Footer to all pages except admin */}
+      {!isAdminPage && <Footer />}
     </div>
   );
 };

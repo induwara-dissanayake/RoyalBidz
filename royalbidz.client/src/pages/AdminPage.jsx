@@ -962,12 +962,17 @@ const AdminPage = () => {
             </tr>
           </thead>
           <tbody>
-            {inquiries.map((inquiry) => (
-              <tr key={inquiry.id}>
-                <td>{inquiry.id}</td>
-                <td>{inquiry.name}</td>
-                <td>{inquiry.email}</td>
-                <td>{inquiry.subject}</td>
+            {inquiries.map((inquiry, index) => (
+              <tr key={inquiry.id || inquiry.Id || `inquiry-${index}`}>
+                <td>{inquiry.id || inquiry.Id}</td>
+                <td>{inquiry.name || inquiry.Name}</td>
+                <td>{inquiry.email || inquiry.Email}</td>
+                <td>
+                  {inquiry.enquiry ||
+                    inquiry.Enquiry ||
+                    inquiry.subject ||
+                    inquiry.Subject}
+                </td>
                 <td>
                   <span
                     className={`status-badge ${
