@@ -1,4 +1,4 @@
-/* Register Page Styles - Professional Split Design */
+/* Register Page Styles */
 .register-page {
   min-height: 120vh;
   display: flex;
@@ -9,8 +9,8 @@
 
 /* Modal Mode Styles */
 .register-page.modal-mode {
-  /* Make register modal behave like SignIn modal: fixed overlay centered */
-  min-height: 100vh; /* override base 120vh so overlay centers properly */
+  
+  min-height: 100vh; 
   position: fixed;
   top: 0;
   left: 0;

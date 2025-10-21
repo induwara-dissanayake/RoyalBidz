@@ -1,3 +1,4 @@
+/*verfyEmail.jsx*/
 import React from 'react';
 import './VerifyEmail.css';
 
@@ -79,7 +80,7 @@ const VerifyEmail = () => {
   };
 
   const handleCodeChange = (e) => {
-    const value = e.target.value.replace(/\D/g, ""); // Only allow digits
+    const value = e.target.value.replace(/\D/g, ""); 
     if (value.length <= 6) {
       setVerificationCode(value);
       setError("");

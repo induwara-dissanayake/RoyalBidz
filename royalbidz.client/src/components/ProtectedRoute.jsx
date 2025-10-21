@@ -1,14 +1,19 @@
+// src/components/ProtectedRoute.jsx
+
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom"; // <-- useNavigate import කරා
 import { useAuth } from "../contexts/AuthContext";
-import RegisterForm from "./RegisterForm";
-import SignIn from "../pages/SignIn";
+import RegisterForm from "./RegisterForm"; // RegisterForm එකේ path එක නිවැරදිද කියලා බලන්න
+import SignIn from "../pages/SignIn"; // SignIn page එකේ path එක නිවැරදිද කියලා බලන්න
+
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
-  const location = useLocation();
-  const [showRegisterForm, setShowRegisterForm] = useState(true);
-  const [showSignIn, setShowSignIn] = useState(false);
+  const location = useLocation(); // දැනට අවශ්‍ය නැති වුණත්, තියාගමු
+  const navigate = useNavigate(); // <-- useNavigate hook එක initialize කරා
+
+  const [showRegisterForm, setShowRegisterForm] = useState(true); // Default to showing register form
+  const [showSignIn, setShowSignIn] = useState(false); // Default to not showing sign in
 
   // Show loading state while checking authentication
   if (loading) {
@@ -34,8 +39,16 @@ const ProtectedRoute = ({ children }) => {
               borderTop: "3px solid #E0AF62",
               borderRadius: "50%",
               margin: "0 auto 16px",
+              animation: "spin 1s linear infinite", // <-- Loading spinner animation එකක් එකතු කරා
             }}
           ></div>
+          {/* Add basic spin animation for the spinner */}
+          <style jsx>{`
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          `}</style>
           <span style={{ color: "#6b7280" }}>Checking authentication...</span>
         </div>
       </div>
@@ -54,23 +67,25 @@ const ProtectedRoute = ({ children }) => {
             position: "relative",
           }}
         >
-          {/* Dimmed background content */}
+          {/* Dimmed background content - This part will act as the visible content behind the modal */}
           <div
             style={{
-              opacity: 0.3,
-              pointerEvents: "none",
+              // opacity: 0.3, // You generally don't dim the entire background unless it's a static image
+              pointerEvents: "none", // Prevent interaction with background elements
               minHeight: "100vh",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              // Optional: Add some generic content here if you want to show a dimmed version of the actual page
             }}
           >
+            {/* You can replace this with a dimmed version of your main AppContent if needed */}
             <div style={{ textAlign: "center", padding: "40px" }}>
               <h2 style={{ color: "#4a5568", marginBottom: "16px" }}>
                 Authentication Required
               </h2>
               <p style={{ color: "#718096" }}>
-                Please sign in to access this page
+                Please sign in or register to access this page.
               </p>
             </div>
           </div>
@@ -84,16 +99,16 @@ const ProtectedRoute = ({ children }) => {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              zIndex: 2000,
-              overflow: "hidden",
+              zIndex: 9999, // <-- Higher z-index for the modal
+              // overflow: "hidden", // This should be on the modal content itself, not the overlay
             }}
           >
-            <div style={{ maxHeight: "95vh", overflow: "hidden" }}>
+            {/* Modal content wrapper - ensures scrolling only for the modal if it's too tall */}
+            <div style={{ maxHeight: "95vh", overflowY: "auto", borderRadius: "8px", boxShadow: "0 4px 20px rgba(0,0,0,0.2)" }}>
               {showRegisterForm ? (
                 <RegisterForm
                   onClose={() => {
-                    // On close, redirect to home page
-                    window.location.href = "/";
+                    navigate("/"); // <-- Corrected: Use navigate for SPA routing
                   }}
                   onShowSignIn={() => {
                     setShowRegisterForm(false);
@@ -103,8 +118,7 @@ const ProtectedRoute = ({ children }) => {
               ) : showSignIn ? (
                 <SignIn
                   onClose={() => {
-                    // On close, redirect to home page
-                    window.location.href = "/";
+                    navigate("/"); // <-- Corrected: Use navigate for SPA routing
                   }}
                   onShowRegister={() => {
                     setShowSignIn(false);
