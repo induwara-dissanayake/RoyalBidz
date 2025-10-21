@@ -13,13 +13,16 @@ namespace RoyalBidz.Server.Controllers
     {
         private readonly IAuctionService _auctionService;
         private readonly IBidService _bidService;
+        private readonly IUserNotificationService _userNotificationService;
         private readonly ILogger<AuctionsController> _logger;
 
         public AuctionsController(IAuctionService auctionService, IBidService bidService, 
+            IUserNotificationService userNotificationService,
             ILogger<AuctionsController> logger)
         {
             _auctionService = auctionService;
             _bidService = bidService;
+            _userNotificationService = userNotificationService;
             _logger = logger;
         }
 
@@ -76,11 +79,15 @@ namespace RoyalBidz.Server.Controllers
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<ActionResult<AuctionDto>> GetAuction(int id)
+        public async Task<ActionResult<AuctionDetailDto>> GetAuction(int id)
         {
             try
             {
-                var auction = await _auctionService.GetAuctionWithDetailsAsync(id);
+                var userId = User.Identity?.IsAuthenticated == true 
+                    ? int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0") 
+                    : (int?)null;
+                
+                var auction = await _auctionService.GetAuctionDetailAsync(id, userId);
                 if (auction == null)
                 {
                     return NotFound(new { message = "Auction not found" });
@@ -95,6 +102,51 @@ namespace RoyalBidz.Server.Controllers
             }
         }
 
+        [HttpGet("by-jewelry/{jewelryItemId}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<AuctionDto>> GetAuctionByJewelryItem(int jewelryItemId)
+        {
+            try
+            {
+                _logger.LogInformation("Looking for auction with jewelry item ID: {JewelryItemId}", jewelryItemId);
+                
+                // Search for active or scheduled auction with this jewelry item
+                var searchDto = new AuctionSearchDto
+                {
+                    Page = 1,
+                    PageSize = 100, // Increase to make sure we get all auctions for this jewelry item
+                    Status = null // Search all statuses
+                };
+
+                var auctions = await _auctionService.SearchAuctionsAsync(searchDto);
+                _logger.LogInformation("Found {Count} total auctions", auctions.Items.Count);
+                
+                var auction = auctions.Items.FirstOrDefault(a => a.JewelryItemId == jewelryItemId && 
+                    (a.Status == AuctionStatus.Active || a.Status == AuctionStatus.Scheduled));
+
+                if (auction == null)
+                {
+                    _logger.LogInformation("No active/scheduled auction found, looking for any auction");
+                    // Look for any auction with this jewelry item
+                    auction = auctions.Items.FirstOrDefault(a => a.JewelryItemId == jewelryItemId);
+                }
+
+                if (auction == null)
+                {
+                    _logger.LogInformation("No auction found for jewelry item {JewelryItemId}", jewelryItemId);
+                    return NotFound(new { message = "No auction found for this jewelry item" });
+                }
+
+                _logger.LogInformation("Found auction {AuctionId} for jewelry item {JewelryItemId}", auction.Id, jewelryItemId);
+                return Ok(auction);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting auction by jewelry item {JewelryItemId}", jewelryItemId);
+                return StatusCode(500, new { message = "An error occurred while retrieving the auction" });
+            }
+        }
+
         [HttpPost]
         [Authorize(Roles = "Seller,Admin")]
         public async Task<ActionResult<AuctionDto>> CreateAuction([FromBody] CreateAuctionDto createAuctionDto)
@@ -103,6 +155,17 @@ namespace RoyalBidz.Server.Controllers
             {
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
                 var auction = await _auctionService.CreateAuctionAsync(userId, createAuctionDto);
+                
+                // Create notification for auction creation
+                try
+                {
+                    await _userNotificationService.CreateAuctionCreatedNotificationAsync(userId, auction.Title);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Failed to create auction creation notification for user {UserId}", userId);
+                }
+                
                 return CreatedAtAction(nameof(GetAuction), new { id = auction.Id }, auction);
             }
             catch (InvalidOperationException ex)

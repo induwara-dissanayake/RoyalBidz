@@ -1,124 +1,134 @@
 import React, { useState } from 'react';
-import './ForYou.css';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import '../components/Footer.css';
+import './Foryou.css'; 
 
-
-const ForYou = () => {
-  const [jewelryName, setJewelryName] = useState('');
-  const [aboutJewelry, setAboutJewelry] = useState('');
-  const [details, setDetails] = useState('');
-  const [images, setImages] = useState([null, null, null, null]);
-
-  const handleImageChange = (index, e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const newImages = [...images];
-      newImages[index] = URL.createObjectURL(file);
-      setImages(newImages);
-    }
-  };
-
-  const handleAddItem = () => {
-    console.log('Adding Item:', {
-      jewelryName,
-      aboutJewelry,
-      details,
-      images: images.filter(img => img !== null),
+const Foryou = () => {
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        productName: '', 
+        message: '',
+        images: [] 
     });
-    setJewelryName('');
-    setAboutJewelry('');
-    setDetails('');
-    setImages([null, null, null, null]);
-    alert('Item added successfully! (Check console for data)');
-  };
 
-  return (
-    <div className="for-you-page-wrapper">
-      <Navbar />
-      <div className="for-you-header-banner">
-        <div className="banner-content">
-          <p className="banner-text">Add shine of gold</p>
-          <p className="banner-subtext">to your precious bonds</p>
-        </div>
-      </div>
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prevData => ({
+            ...prevData,
+            [name]: value
+        }));
+    };
 
-      <div className="for-you-content-area">
-        <div className="for-you-intro-section">
-          <h2>For You</h2>
-          <p>Our platform allows you to insert your item quickly and easily. Customers can place bids, giving you the opportunity to win at the best possible price. This unique system benefits both sellers and buyers, ensuring fairness, transparency, and the chance to get the true value for your items.</p>
-        </div>
+    const handleImageChange = (e) => {
+        setFormData(prevData => ({
+            ...prevData,
+            images: [...prevData.images, ...Array.from(e.target.files)]
+        }));
+    };
 
-        <div className="item-input-form-section">
-          <div className="form-group">
-            <label htmlFor="jewelryName">Jewelry Name</label>
-            <input
-              type="text"
-              id="jewelryName"
-              placeholder="Enter Jewelry Name"
-              value={jewelryName}
-              onChange={(e) => setJewelryName(e.target.value)}
-            />
-          </div>
+    const handleSubmit = (e) => {
+        e.preventDefault();
+       
+        console.log('Form submitted:', formData);
+        alert('Your request has been submitted!');
+        // Clear form after submission (optional)
+        setFormData({
+            name: '',
+            email: '',
+            productName: '',
+            message: '',
+            images: []
+        });
+    };
 
-          <div className="form-group">
-            <label>Insert Item Image</label>
-            <div className="image-upload-container">
-              {images.map((image, index) => (
-                <div key={index} className="image-upload-box">
-                  <input
-                    type="file"
-                    id={`imageUpload${index}`}
-                    accept="image/*"
-                    onChange={(e) => handleImageChange(index, e)}
-                    style={{ display: 'none' }}
-                  />
-                  <label htmlFor={`imageUpload${index}`} className="image-upload-label">
-                    {image ? (
-                      <img src={image} alt={`Item Preview ${index + 1}`} className="image-preview" />
-                    ) : (
-                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M15 10a3 3 0 1 0-3-3 3 3 0 0 0 3 3z"></path>
-                        <path d="M20 18v-5h-7v5a2 2 0 0 0 2 2h3a2 2 0 0 0 2-2z"></path>
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                      </svg>
-                    )}
-                  </label>
+    return (
+        <div className="foryou-container">
+            <h1 className="foryou-title">Tell them of all that's precious to your precious 'bidz!</h1>
+            <p className="foryou-description">
+                This publication allows us to learn more from specially curated items submitted by valued clients, giving you the opportunity to sell or make your dream possible here. This unique platform benefits both parties; sellers gain exposure while buyers discover exclusive items.
+            </p>
+
+            <form className="foryou-form" onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <label htmlFor="name">Jewelry Item Name</label>
+                    <input
+                        type="text"
+                        id="productName"
+                        name="productName"
+                        value={formData.productName}
+                        onChange={handleChange}
+                        placeholder="Insert Item Name"
+                        required
+                    />
                 </div>
-              ))}
-            </div>
-          </div>
 
-          <div className="form-group">
-            <label htmlFor="aboutJewelry">About the jewelry</label>
-            <textarea
-              id="aboutJewelry"
-              placeholder="Enter about the jewelry."
-              value={aboutJewelry}
-              onChange={(e) => setAboutJewelry(e.target.value)}
-            ></textarea>
-          </div>
+                <div className="form-group">
+                    <label>Upload Item Images</label>
+                    <div className="image-upload-area">
+                        {/* Dummy image placeholders */}
+                        <div className="image-placeholder">
+                            
+                            <span className="upload-icon">+</span>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                onChange={handleImageChange}
+                                className="hidden-file-input"
+                            />
+                        </div>
+                        <div className="image-placeholder">
+                            <span className="upload-icon">+</span>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                onChange={handleImageChange}
+                                className="hidden-file-input"
+                            />
+                        </div>
+                        <div className="image-placeholder">
+                            <span className="upload-icon">+</span>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                onChange={handleImageChange}
+                                className="hidden-file-input"
+                            />
+                        </div>
+                    </div>
+                </div>
 
-          <div className="form-group">
-            <label htmlFor="details">Details & Specifications</label>
-            <textarea
-              id="details"
-              placeholder="Enter details & specifications."
-              value={details}
-              onChange={(e) => setDetails(e.target.value)}
-            ></textarea>
-          </div>
+                <div className="form-group">
+                    <label htmlFor="message">Tell about the 'bidz</label>
+                    <textarea
+                        id="message"
+                        name="message"
+                        value={formData.message}
+                        onChange={handleChange}
+                        placeholder="Tell about the 'bidz"
+                        rows="5"
+                        required
+                    ></textarea>
+                </div>
 
-          <button className="add-items-button" onClick={handleAddItem}>
-            Add Items
-          </button>
+                <div className="form-group">
+                    <label htmlFor="name">Details & Restrictions</label>
+                    <textarea
+                        id="details"
+                        name="details"
+                        value={formData.details}
+                        onChange={handleChange}
+                        placeholder="Details & Restrictions"
+                        rows="5"
+                        required
+                    ></textarea>
+                </div>
+
+                <button type="submit" className="submit-button">Submit</button>
+            </form>
         </div>
-      </div>
-
-      <Footer />
-    </div>
-  );
+    );
 };
 
-export default ForYou;
+export default Foryou;

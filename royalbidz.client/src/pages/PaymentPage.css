@@ -1,0 +1,602 @@
+/* Payment Page Styles */
+.payment-page {
+    min-height: 100vh;
+    background: white;
+    padding: 2rem 0;
+    font-family: "Times New Roman", serif;
+}
+
+.payment-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.payment-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.payment-header h1 {
+    color: #E0AF62;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.payment-deadline {
+    margin-top: 1rem;
+}
+
+.deadline-warning {
+    background: linear-gradient(135deg, #ff6b35, #ff8f65);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    display: inline-block;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.payment-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    max-width: 1200px;
+}
+
+.auction-summary,
+.payment-form {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(224, 175, 98, 0.2);
+}
+
+.auction-summary h2,
+.payment-form h2 {
+    color: #E0AF62;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    border-bottom: 2px solid #E0AF62;
+    padding-bottom: 0.5rem;
+}
+
+.auction-details {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.auction-image {
+    flex-shrink: 0;
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid #E0AF62;
+}
+
+.auction-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.auction-info {
+    flex: 1;
+}
+
+.auction-info h3 {
+    color: #333;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.winning-bid {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+.winning-bid .amount {
+    color: #E0AF62;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.payment-breakdown {
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+}
+
+.breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    color: #333;
+}
+
+.breakdown-row.total {
+    border-top: 1px solid #E0AF62;
+    padding-top: 0.75rem;
+    margin-top: 0.5rem;
+    font-weight: 700;
+    color: #E0AF62;
+    font-size: 1.1rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.form-input,
+.form-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: "Times New Roman", serif;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.form-input:focus,
+.form-select:focus {
+    outline: none;
+    border-color: #E0AF62;
+    box-shadow: 0 0 0 3px rgba(224, 175, 98, 0.1);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+}
+
+.test-cards {
+    margin-top: 0.5rem;
+}
+
+.test-cards small {
+    color: #666;
+    font-size: 0.8rem;
+}
+
+.payment-form h3 {
+    color: #E0AF62;
+    font-size: 1.2rem;
+    margin: 2rem 0 1rem 0;
+    font-weight: 600;
+}
+
+.paypal-notice {
+    background: #f8f9fa;
+    border: 1px solid #E0AF62;
+    border-radius: 6px;
+    padding: 1rem;
+    text-align: center;
+    color: #333;
+}
+
+.payment-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+}
+
+.btn {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: "Times New Roman", serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-cancel {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    color: white;
+    border: 2px solid transparent;
+}
+
+.btn-cancel:hover:not(:disabled) {
+    background: linear-gradient(135deg, #5a6268, #495057);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+}
+
+.btn-pay {
+    background: linear-gradient(135deg, #E0AF62, #d4a556);
+    color: white;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-pay:hover:not(:disabled) {
+    background: linear-gradient(135deg, #d4a556, #c89a4a);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(224, 175, 98, 0.4);
+}
+
+.btn-pay:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 15px rgba(224, 175, 98, 0.3);
+}
+
+.error-message {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+}
+
+.loading-spinner {
+    text-align: center;
+    padding: 3rem;
+    font-size: 1.2rem;
+    color: #E0AF62;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .payment-content {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .auction-details {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .auction-image {
+        align-self: center;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .payment-actions {
+        flex-direction: column;
+    }
+    
+    .payment-header h1 {
+        font-size: 2rem;
+    }
+}
+
+/* Payment Method Selection Styles */
+.payment-method-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.payment-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.payment-option:hover {
+    border-color: #E0AF62;
+    background-color: rgba(224, 175, 98, 0.1);
+}
+
+.payment-option input[type="radio"]:checked + span {
+    color: #E0AF62;
+    font-weight: 600;
+}
+
+.saved-payment-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.payment-method-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.payment-method-card:hover {
+    border-color: #E0AF62;
+    box-shadow: 0 4px 12px rgba(224, 175, 98, 0.2);
+}
+
+.payment-method-card input[type="radio"]:checked {
+    accent-color: #E0AF62;
+}
+
+.payment-method-info {
+    flex: 1;
+}
+
+.method-type {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+}
+
+.method-details {
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+.default-badge {
+    background: #E0AF62;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.add-payment-method-btn {
+    background: linear-gradient(135deg, #E0AF62, #d4a054);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.add-payment-method-btn:hover {
+    background: linear-gradient(135deg, #d4a054, #c19348);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(224, 175, 98, 0.3);
+}
+
+/* Compact payment method list (profile-like) */
+.payment-method-compact {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    cursor: pointer;
+}
+
+.payment-method-compact input[type="radio"] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: #E0AF62;
+}
+
+.compact-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.compact-line {
+    font-size: 0.95rem;
+    color: #111827;
+}
+
+.compact-line.small {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.add-payment-method-link {
+    background: none;
+    border: none;
+    color: #1f2937;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0.25rem 0;
+    margin-top: 0.5rem;
+}
+
+.add-payment-method-link:hover {
+    color: #E0AF62;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content h3 {
+    color: #E0AF62;
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: #374151;
+    font-size: 0.9rem;
+}
+
+.checkbox-label input[type="checkbox"] {
+    accent-color: #E0AF62;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+}
+
+.btn-cancel {
+    padding: 0.75rem 1.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: white;
+    color: #374151;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.btn-save {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #E0AF62, #d4a054);
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-save:hover {
+    background: linear-gradient(135deg, #d4a054, #c19348);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(224, 175, 98, 0.3);
+}
+
+.form-input.error {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.error-text {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+@media (max-width: 480px) {
+    .payment-container {
+        padding: 0 0.5rem;
+    }
+    
+    .auction-summary,
+    .payment-form {
+        padding: 1.5rem;
+    }
+    
+    .payment-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .modal-content {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+    }
+}

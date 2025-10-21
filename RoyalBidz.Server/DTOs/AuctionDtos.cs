@@ -19,6 +19,7 @@ namespace RoyalBidz.Server.DTOs
         public AuctionStatus Status { get; set; }
         public decimal CurrentBid { get; set; }
         public int? WinningBidderId { get; set; }
+        public int? LeadingBidderId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
@@ -26,6 +27,7 @@ namespace RoyalBidz.Server.DTOs
         public JewelryItemDto? JewelryItem { get; set; }
         public UserDto? Seller { get; set; }
         public UserDto? WinningBidder { get; set; }
+        public UserDto? LeadingBidder { get; set; }
         public List<BidDto> Bids { get; set; } = new();
         public int TotalBids { get; set; }
         public TimeSpan? TimeRemaining { get; set; }

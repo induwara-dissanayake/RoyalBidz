@@ -124,6 +124,37 @@ namespace RoyalBidz.Server.Controllers
             }
         }
 
+        [HttpPut("me")]
+        public async Task<ActionResult<UserDto>> UpdateCurrentUser([FromBody] UpdateUserDto updateUserDto)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ?? User.FindFirst("sub") ?? User.FindFirst("id");
+                if (userIdClaim == null)
+                {
+                    return BadRequest(new { message = "Invalid token - no user ID found" });
+                }
+
+                if (!int.TryParse(userIdClaim.Value, out int userId))
+                {
+                    return BadRequest(new { message = "Invalid user ID in token" });
+                }
+
+                var user = await _userService.UpdateUserAsync(userId, updateUserDto);
+                if (user == null)
+                {
+                    return NotFound(new { message = "User not found" });
+                }
+
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating current user");
+                return StatusCode(500, new { message = "An error occurred while updating user information" });
+            }
+        }
+
         [HttpPut("{id}")]
         public async Task<ActionResult<UserDto>> UpdateUser(int id, [FromBody] UpdateUserDto updateUserDto)
         {
@@ -183,6 +214,92 @@ namespace RoyalBidz.Server.Controllers
             {
                 _logger.LogError(ex, "Error updating user status {UserId}", id);
                 return StatusCode(500, new { message = "An error occurred while updating user status" });
+            }
+        }
+
+        [HttpPost("change-password")]
+        [Authorize]
+        public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ?? User.FindFirst("sub") ?? User.FindFirst("id");
+                if (userIdClaim == null)
+                {
+                    return Unauthorized(new { message = "Invalid token - no user ID found" });
+                }
+
+                if (!int.TryParse(userIdClaim.Value, out int userId))
+                {
+                    return Unauthorized(new { message = "Invalid user ID in token" });
+                }
+
+                var result = await _userService.ChangePasswordAsync(userId, changePasswordDto.CurrentPassword, changePasswordDto.NewPassword);
+                if (!result)
+                {
+                    return BadRequest(new { message = "Current password is incorrect" });
+                }
+
+                return Ok(new { message = "Password changed successfully" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error changing password for user");
+                return StatusCode(500, new { message = "An error occurred while changing password" });
+            }
+        }
+
+        [HttpPost("payment-methods")]
+        [Authorize]
+        public async Task<ActionResult> AddPaymentMethod([FromBody] CreatePaymentMethodDto createPaymentMethodDto)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ?? User.FindFirst("sub") ?? User.FindFirst("id");
+                if (userIdClaim == null)
+                {
+                    return Unauthorized(new { message = "Invalid token - no user ID found" });
+                }
+
+                if (!int.TryParse(userIdClaim.Value, out int userId))
+                {
+                    return Unauthorized(new { message = "Invalid user ID in token" });
+                }
+
+                var paymentMethod = await _userService.AddPaymentMethodAsync(userId, createPaymentMethodDto);
+                return CreatedAtAction(nameof(GetPaymentMethods), new { }, paymentMethod);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adding payment method for user");
+                return StatusCode(500, new { message = "An error occurred while adding payment method" });
+            }
+        }
+
+        [HttpGet("payment-methods")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<PaymentMethodDto>>> GetPaymentMethods()
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ?? User.FindFirst("sub") ?? User.FindFirst("id");
+                if (userIdClaim == null)
+                {
+                    return Unauthorized(new { message = "Invalid token - no user ID found" });
+                }
+
+                if (!int.TryParse(userIdClaim.Value, out int userId))
+                {
+                    return Unauthorized(new { message = "Invalid user ID in token" });
+                }
+
+                var paymentMethods = await _userService.GetPaymentMethodsAsync(userId);
+                return Ok(paymentMethods);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting payment methods for user");
+                return StatusCode(500, new { message = "An error occurred while getting payment methods" });
             }
         }
     }

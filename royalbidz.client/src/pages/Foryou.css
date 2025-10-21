@@ -1,107 +1,53 @@
+/* Foryou.css */
 
-.for-you-page-wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: #f0f2f5; 
+.foryou-container {
+    max-width: 900px; 
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #ffffff; /* Dark background */
+    color: #fff; /* White text */
+    font-family: Arial, sans-serif;
+    border-radius: 8px; /* Slightly rounded corners */
 }
 
-
-.for-you-header-banner {
-  width: 100%;
-  height: 300px;
-  background-image: url('/img/s2.png');
-  background-position: center;
-  display: flex;
-  align-items: center; 
-  justify-content: flex-end; 
-  color: white; 
-  padding-right: 5%; 
-  text-align: right; 
+.foryou-title {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #ffd700; /* Gold-like color for title */
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-.banner-content {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+.foryou-description {
+    font-size: 1em;
+    color: #ccc;
+    text-align: center;
+    margin-bottom: 40px;
+    line-height: 1.6;
 }
 
-.banner-text {
-  font-family: 'Georgia', serif; 
-  font-size: 3em;
-  font-weight: bold;
-  margin: 0;
-  line-height: 1.1;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+.foryou-form .form-group {
+    margin-bottom: 25px;
 }
 
-.banner-subtext {
-  font-family: 'Georgia', serif; 
-  font-size: 1.8em;
-  margin: 0;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+.foryou-form label {
+    display: block;
+    font-size: 0.9em;
+    color: #ffd700; /* Gold color for labels */
+    margin-bottom: 8px;
+    font-weight: bold;
 }
 
-
-.for-you-content-area {
-  flex-grow: 1; 
-  width: 100%;
-  max-width: 1200px; 
-  margin: 20px auto; 
-  padding: 0 20px;
-  box-sizing: border-box; 
-}
-
-
-.for-you-intro-section {
-  background-color: white;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 30px;
-}
-
-.for-you-intro-section h2 {
-  font-size: 2em;
-  color: #333;
-  margin-bottom: 15px;
-}
-
-.for-you-intro-section p {
-  font-size: 1.1em;
-  color: #555;
-  line-height: 1.6;
-}
-
-
-.item-input-form-section {
-  background-color: white;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.form-group {
-  margin-bottom: 25px;
-}
-
-.form-group label {
-  display: block;
-  font-size: 1.1em;
-  color: #333;
-  margin-bottom: 10px;
-  font-weight: bold;
-}
-
-.form-group input[type="text"],
-.form-group textarea {
-  width: calc(100% - 20px); 
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 1em;
-  color: #333;
-  box-sizing: border-box; 
+.foryou-form input[type="text"],
+.foryou-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #555; /* Darker border */
+    border-radius: 5px;
+    background-color: #222; /* Darker input background */
+    color: #eee; /* Light text in inputs */
+    font-size: 1em;
+    box-sizing: border-box; /* Include padding in width */
 }
 
 .form-group textarea {
@@ -138,6 +84,58 @@
   cursor: pointer;
 }
 
+/* Image Preview Styles */
+.image-preview {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid #e5e7eb;
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.remove-image {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.remove-image:hover {
+    background-color: #dc2626;
+}
+
+.primary-badge {
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    background-color: #ffd700;
+    color: #000;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: bold;
+}
+
 .image-upload-box svg {
   color: #ccc; 
   stroke-width: 1.5;
@@ -166,4 +164,106 @@
 
 .add-items-button:hover {
   background-color: #333333; 
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .foryou-container {
+        margin: 20px auto;
+        padding: 20px;
+        max-width: calc(100% - 40px);
+    }
+
+    .foryou-title {
+        font-size: 1.8em;
+    }
+
+    .foryou-description {
+        font-size: 1em;
+        margin-bottom: 30px;
+    }
+
+    .form-section {
+        padding: 20px;
+    }
+
+    .form-section h2 {
+        font-size: 1.2em;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .image-upload-area {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .submit-button {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .foryou-container {
+        margin: 10px;
+        padding: 16px;
+        max-width: calc(100% - 20px);
+        border-radius: 8px;
+    }
+
+    .foryou-title {
+        font-size: 1.6em;
+        margin-bottom: 12px;
+    }
+
+    .foryou-description {
+        font-size: 0.95em;
+        margin-bottom: 24px;
+    }
+
+    .form-section {
+        padding: 16px;
+        margin-bottom: 20px;
+    }
+
+    .form-section h2 {
+        font-size: 1.1em;
+        margin-bottom: 16px;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 10px 12px;
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+
+    .image-placeholder {
+        width: 100px;
+        height: 100px;
+    }
+
+    .image-preview {
+        width: 100px;
+        height: 100px;
+    }
+
+    .image-upload-area {
+        gap: 8px;
+    }
+
+    .submit-button {
+        margin-top: 24px;
+        padding: 14px;
+        font-size: 1em;
+    }
 }

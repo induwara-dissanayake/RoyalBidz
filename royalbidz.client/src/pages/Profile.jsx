@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import AdminDashboard from "../components/AdminDashboard";
+import "./Profile.css";
 import {
   User,
   DollarSign,
@@ -19,7 +21,24 @@ import {
   Crown,
   Star,
   LogOut,
+  BarChart3,
 } from "lucide-react";
+
+// Add CSS for loading animation
+const styles = `
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
+
+// Inject styles
+if (typeof document !== "undefined") {
+  const styleSheet = document.createElement("style");
+  styleSheet.type = "text/css";
+  styleSheet.innerText = styles;
+  document.head.appendChild(styleSheet);
+}
 
 // Helper function for status colors
 const getStatusColor = (status) => {
@@ -138,12 +157,24 @@ const AccountDetailsTab = ({
   setProfileData,
   isEditing,
   setIsEditing,
+  updateProfile,
 }) => {
   const [formData, setFormData] = useState(profileData);
+  const [saving, setSaving] = useState(false);
 
-  const handleSave = () => {
-    setProfileData(formData);
-    setIsEditing(false);
+  useEffect(() => {
+    setFormData(profileData);
+  }, [profileData]);
+
+  const handleSave = async () => {
+    setSaving(true);
+    const success = await updateProfile(formData);
+    if (success) {
+      setProfileData(formData);
+      setIsEditing(false);
+    }
+    // Error message is handled in updateProfile function
+    setSaving(false);
   };
 
   return (
@@ -175,22 +206,24 @@ const AccountDetailsTab = ({
         </h2>
         <button
           onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
+          disabled={saving}
           style={{
             background: isEditing ? "#10b981" : "#E0AF62",
             color: "white",
             border: "none",
             borderRadius: "8px",
             padding: "8px 16px",
-            cursor: "pointer",
+            cursor: saving ? "not-allowed" : "pointer",
             display: "flex",
             alignItems: "center",
             gap: "8px",
             fontSize: "14px",
             fontWeight: "500",
+            opacity: saving ? 0.7 : 1,
           }}
         >
           {isEditing ? <Save size={16} /> : <Edit3 size={16} />}
-          {isEditing ? "Save Changes" : "Edit Profile"}
+          {saving ? "Saving..." : isEditing ? "Save Changes" : "Edit Profile"}
         </button>
       </div>
 
@@ -273,6 +306,68 @@ const AccountDetailsTab = ({
               color: "#374151",
             }}
           >
+            First Name
+          </label>
+          <input
+            type="text"
+            value={formData.firstName}
+            onChange={(e) =>
+              setFormData({ ...formData, firstName: e.target.value })
+            }
+            disabled={!isEditing}
+            style={{
+              width: "100%",
+              padding: "12px 16px",
+              border: "2px solid #e5e7eb",
+              borderRadius: "8px",
+              fontSize: "14px",
+              backgroundColor: isEditing ? "white" : "#f9fafb",
+              color: "#2d3748",
+            }}
+          />
+        </div>
+
+        <div>
+          <label
+            style={{
+              display: "block",
+              marginBottom: "8px",
+              fontSize: "14px",
+              fontWeight: "500",
+              color: "#374151",
+            }}
+          >
+            Last Name
+          </label>
+          <input
+            type="text"
+            value={formData.lastName}
+            onChange={(e) =>
+              setFormData({ ...formData, lastName: e.target.value })
+            }
+            disabled={!isEditing}
+            style={{
+              width: "100%",
+              padding: "12px 16px",
+              border: "2px solid #e5e7eb",
+              borderRadius: "8px",
+              fontSize: "14px",
+              backgroundColor: isEditing ? "white" : "#f9fafb",
+              color: "#2d3748",
+            }}
+          />
+        </div>
+
+        <div>
+          <label
+            style={{
+              display: "block",
+              marginBottom: "8px",
+              fontSize: "14px",
+              fontWeight: "500",
+              color: "#374151",
+            }}
+          >
             Phone Number
           </label>
           <input
@@ -281,6 +376,66 @@ const AccountDetailsTab = ({
             onChange={(e) =>
               setFormData({ ...formData, phoneNumber: e.target.value })
             }
+            disabled={!isEditing}
+            style={{
+              width: "100%",
+              padding: "12px 16px",
+              border: "2px solid #e5e7eb",
+              borderRadius: "8px",
+              fontSize: "14px",
+              backgroundColor: isEditing ? "white" : "#f9fafb",
+              color: "#2d3748",
+            }}
+          />
+        </div>
+
+        <div>
+          <label
+            style={{
+              display: "block",
+              marginBottom: "8px",
+              fontSize: "14px",
+              fontWeight: "500",
+              color: "#374151",
+            }}
+          >
+            Address
+          </label>
+          <input
+            type="text"
+            value={formData.address}
+            onChange={(e) =>
+              setFormData({ ...formData, address: e.target.value })
+            }
+            disabled={!isEditing}
+            style={{
+              width: "100%",
+              padding: "12px 16px",
+              border: "2px solid #e5e7eb",
+              borderRadius: "8px",
+              fontSize: "14px",
+              backgroundColor: isEditing ? "white" : "#f9fafb",
+              color: "#2d3748",
+            }}
+          />
+        </div>
+
+        <div>
+          <label
+            style={{
+              display: "block",
+              marginBottom: "8px",
+              fontSize: "14px",
+              fontWeight: "500",
+              color: "#374151",
+            }}
+          >
+            City
+          </label>
+          <input
+            type="text"
+            value={formData.city}
+            onChange={(e) => setFormData({ ...formData, city: e.target.value })}
             disabled={!isEditing}
             style={{
               width: "100%",
@@ -349,87 +504,136 @@ const BidHistoryTab = ({ bidHistory }) => (
       Bid History
     </h2>
     <div style={{ display: "grid", gap: "16px" }}>
-      {bidHistory.map((bid) => (
-        <div
-          key={bid.id}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "16px",
-            padding: "20px",
-            border: "1px solid #f3f4f6",
-            borderRadius: "12px",
-            transition: "all 0.2s ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "#f9fafb";
-            e.currentTarget.style.borderColor = "#E0AF62";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "transparent";
-            e.currentTarget.style.borderColor = "#f3f4f6";
-          }}
-        >
-          <img
-            src={bid.image}
-            alt={bid.auctionTitle}
-            style={{
-              width: "80px",
-              height: "80px",
-              borderRadius: "8px",
-              objectFit: "cover",
-            }}
-          />
-          <div style={{ flex: 1 }}>
-            <h3
-              style={{
-                margin: "0 0 8px 0",
-                fontSize: "1.1rem",
-                fontWeight: "600",
-                color: "#1f2937",
-              }}
-            >
-              {bid.auctionTitle}
-            </h3>
-            <div style={{ display: "flex", gap: "16px", marginBottom: "8px" }}>
-              <span style={{ fontSize: "14px", color: "#6b7280" }}>
-                Your Bid:{" "}
-                <strong>
-                  {new Intl.NumberFormat("en-US", {
-                    style: "currency",
-                    currency: "USD",
-                  }).format(bid.myBid)}
-                </strong>
-              </span>
-              <span style={{ fontSize: "14px", color: "#6b7280" }}>
-                Current:{" "}
-                <strong>
-                  {new Intl.NumberFormat("en-US", {
-                    style: "currency",
-                    currency: "USD",
-                  }).format(bid.currentBid)}
-                </strong>
-              </span>
-            </div>
-            <div style={{ fontSize: "14px", color: "#6b7280" }}>
-              Ends: {new Date(bid.endTime).toLocaleDateString()}
-            </div>
-          </div>
+      {bidHistory.length > 0 ? (
+        bidHistory.map((bid, index) => (
           <div
+            key={`${bid.id || "bid"}-${bid.auctionTitle || "auction"}-${index}`}
             style={{
-              padding: "6px 12px",
-              borderRadius: "20px",
-              fontSize: "12px",
-              fontWeight: "500",
-              color: getStatusColor(bid.status),
-              backgroundColor: `${getStatusColor(bid.status)}15`,
-              textTransform: "capitalize",
+              display: "flex",
+              alignItems: "center",
+              gap: "16px",
+              padding: "20px",
+              border: "1px solid #f3f4f6",
+              borderRadius: "12px",
+              transition: "all 0.2s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#f9fafb";
+              e.currentTarget.style.borderColor = "#E0AF62";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.borderColor = "#f3f4f6";
             }}
           >
-            {bid.status}
+            <img
+              src={bid.image}
+              alt={bid.auctionTitle}
+              style={{
+                width: "80px",
+                height: "80px",
+                borderRadius: "8px",
+                objectFit: "cover",
+              }}
+            />
+            <div style={{ flex: 1 }}>
+              <h3
+                style={{
+                  margin: "0 0 8px 0",
+                  fontSize: "1.1rem",
+                  fontWeight: "600",
+                  color: "#1f2937",
+                }}
+              >
+                {bid.auctionTitle}
+              </h3>
+              <div
+                style={{ display: "flex", gap: "16px", marginBottom: "8px" }}
+              >
+                <span style={{ fontSize: "14px", color: "#6b7280" }}>
+                  Your Bid:{" "}
+                  <strong>
+                    {new Intl.NumberFormat("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                    }).format(bid.myBid)}
+                  </strong>
+                </span>
+                <span style={{ fontSize: "14px", color: "#6b7280" }}>
+                  Current:{" "}
+                  <strong>
+                    {new Intl.NumberFormat("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                    }).format(bid.currentBid)}
+                  </strong>
+                </span>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "12px",
+                  marginBottom: "4px",
+                  fontSize: "12px",
+                  color: "#6b7280",
+                }}
+              >
+                <span>
+                  Type: <strong>{bid.type || "N/A"}</strong>
+                </span>
+                <span>
+                  Material: <strong>{bid.material || "N/A"}</strong>
+                </span>
+                <span>
+                  Condition: <strong>{bid.condition || "N/A"}</strong>
+                </span>
+              </div>
+              <div style={{ fontSize: "14px", color: "#6b7280" }}>
+                Ends:{" "}
+                {bid.endTime
+                  ? new Date(bid.endTime).toLocaleDateString()
+                  : "No end date"}
+              </div>
+            </div>
+            <div
+              style={{
+                padding: "6px 12px",
+                borderRadius: "20px",
+                fontSize: "12px",
+                fontWeight: "500",
+                color: getStatusColor(bid.status),
+                backgroundColor: `${getStatusColor(bid.status)}15`,
+                textTransform: "capitalize",
+              }}
+            >
+              {bid.status}
+            </div>
           </div>
+        ))
+      ) : (
+        <div style={{ textAlign: "center", padding: "40px", color: "#6b7280" }}>
+          <Gavel size={48} style={{ marginBottom: "16px", opacity: 0.5 }} />
+          <h3 style={{ margin: "0 0 8px 0", color: "#4a5568" }}>No bids yet</h3>
+          <p style={{ margin: "0 0 20px 0" }}>
+            Start bidding on auctions to see your history here
+          </p>
+          <button
+            onClick={() => (window.location.href = "/auctions")}
+            style={{
+              background: "#E0AF62",
+              color: "white",
+              border: "none",
+              borderRadius: "8px",
+              padding: "12px 20px",
+              cursor: "pointer",
+              fontSize: "14px",
+              fontWeight: "500",
+            }}
+          >
+            Browse Auctions
+          </button>
         </div>
-      ))}
+      )}
     </div>
   </div>
 );
@@ -454,96 +658,111 @@ const PaymentHistoryTab = ({ paymentHistory }) => (
       Payment History
     </h2>
     <div style={{ display: "grid", gap: "16px" }}>
-      {paymentHistory.map((payment) => (
-        <div
-          key={payment.id}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "20px",
-            border: "1px solid #f3f4f6",
-            borderRadius: "12px",
-            transition: "background-color 0.2s ease",
-          }}
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.backgroundColor = "#f9fafb")
-          }
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.backgroundColor = "transparent")
-          }
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <div
-              style={{
-                width: "48px",
-                height: "48px",
-                borderRadius: "12px",
-                background: "#10b98115",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#10b981",
-              }}
-            >
-              <CheckCircle size={24} />
-            </div>
-            <div>
-              <h3
+      {paymentHistory.length > 0 ? (
+        paymentHistory.map((payment) => (
+          <div
+            key={payment.id}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "20px",
+              border: "1px solid #f3f4f6",
+              borderRadius: "12px",
+              transition: "background-color 0.2s ease",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "#f9fafb")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "transparent")
+            }
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+              <div
                 style={{
-                  margin: "0 0 4px 0",
-                  fontSize: "1rem",
+                  width: "48px",
+                  height: "48px",
+                  borderRadius: "12px",
+                  background: "#10b98115",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#10b981",
+                }}
+              >
+                <CheckCircle size={24} />
+              </div>
+              <div>
+                <h3
+                  style={{
+                    margin: "0 0 4px 0",
+                    fontSize: "1rem",
+                    fontWeight: "600",
+                    color: "#1f2937",
+                  }}
+                >
+                  {payment.auctionTitle}
+                </h3>
+                <div
+                  style={{
+                    fontSize: "14px",
+                    color: "#6b7280",
+                    marginBottom: "4px",
+                  }}
+                >
+                  {payment.paymentMethod}
+                </div>
+                <div style={{ fontSize: "12px", color: "#6b7280" }}>
+                  {new Date(payment.date).toLocaleDateString()}
+                </div>
+              </div>
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <div
+                style={{
+                  fontSize: "1.1rem",
                   fontWeight: "600",
                   color: "#1f2937",
                 }}
               >
-                {payment.auctionTitle}
-              </h3>
+                {new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                }).format(payment.amount)}
+              </div>
               <div
                 style={{
-                  fontSize: "14px",
-                  color: "#6b7280",
-                  marginBottom: "4px",
+                  fontSize: "12px",
+                  fontWeight: "500",
+                  color: "#10b981",
+                  textTransform: "uppercase",
                 }}
               >
-                {payment.paymentMethod}
-              </div>
-              <div style={{ fontSize: "12px", color: "#6b7280" }}>
-                {new Date(payment.date).toLocaleDateString()}
+                {payment.status}
               </div>
             </div>
           </div>
-          <div style={{ textAlign: "right" }}>
-            <div
-              style={{
-                fontSize: "1.1rem",
-                fontWeight: "600",
-                color: "#1f2937",
-              }}
-            >
-              {new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
-              }).format(payment.amount)}
-            </div>
-            <div
-              style={{
-                fontSize: "12px",
-                fontWeight: "500",
-                color: "#10b981",
-                textTransform: "uppercase",
-              }}
-            >
-              {payment.status}
-            </div>
-          </div>
+        ))
+      ) : (
+        <div style={{ textAlign: "center", padding: "40px", color: "#6b7280" }}>
+          <DollarSign
+            size={48}
+            style={{ marginBottom: "16px", opacity: 0.5 }}
+          />
+          <h3 style={{ margin: "0 0 8px 0", color: "#4a5568" }}>
+            No payments yet
+          </h3>
+          <p style={{ margin: 0 }}>
+            Your payment history will appear here after you win auctions
+          </p>
         </div>
-      ))}
+      )}
     </div>
   </div>
 );
 
-const PaymentMethodsTab = ({ paymentMethods }) => (
+const PaymentMethodsTab = ({ paymentMethods, onAddPaymentMethod }) => (
   <div
     style={{
       background: "white",
@@ -571,6 +790,7 @@ const PaymentMethodsTab = ({ paymentMethods }) => (
         Payment Methods
       </h2>
       <button
+        onClick={() => onAddPaymentMethod()}
         style={{
           background: "#E0AF62",
           color: "white",
@@ -590,9 +810,9 @@ const PaymentMethodsTab = ({ paymentMethods }) => (
       </button>
     </div>
     <div style={{ display: "grid", gap: "16px" }}>
-      {paymentMethods.map((method) => (
+      {paymentMethods.map((method, index) => (
         <div
-          key={method.id}
+          key={method.id || index}
           style={{
             display: "flex",
             alignItems: "center",
@@ -692,7 +912,7 @@ const ActivityTab = ({ recentActivity }) => (
   </div>
 );
 
-const SettingsTab = () => (
+const SettingsTab = ({ onChangePassword }) => (
   <div style={{ display: "grid", gap: "24px" }}>
     {/* Notification Settings */}
     <div
@@ -763,6 +983,7 @@ const SettingsTab = () => (
       </h3>
       <div style={{ display: "grid", gap: "16px" }}>
         <button
+          onClick={() => onChangePassword()}
           style={{
             background: "#E0AF62",
             color: "white",
@@ -836,53 +1057,16 @@ const SettingsTab = () => (
   </div>
 );
 
-const AuctionsTab = ({ navigate }) => {
-  // Mock auction data - in real app this would come from backend
-  const mockAuctions = [
-    {
-      id: 1,
-      title: "Vintage Diamond Ring",
-      description: "Beautiful vintage diamond ring from 1920s",
-      currentBid: 1750,
-      totalBids: 8,
-      status: "active",
-      endTime: "2024-03-15T18:00:00Z",
-      image: "/public/img/bid1.png",
-      createdAt: "2024-02-20",
-    },
-    {
-      id: 2,
-      title: "Gold Necklace Set",
-      description: "Elegant 18k gold necklace with matching earrings",
-      finalBid: 850,
-      totalBids: 5,
-      status: "sold",
-      endTime: "2024-02-25T15:00:00Z",
-      image: "/public/img/bid2.png",
-      createdAt: "2024-02-15",
-    },
-    {
-      id: 3,
-      title: "Pearl Bracelet",
-      description: "Classic freshwater pearl bracelet",
-      currentBid: 320,
-      totalBids: 3,
-      status: "draft",
-      endTime: null,
-      image: "/public/img/bid3.png",
-      createdAt: "2024-02-28",
-    },
-  ];
-
+const AuctionsTab = ({ navigate, userAuctions }) => {
   const getStatusColor = (status) => {
     switch (status) {
-      case "active":
+      case "Active":
         return "#3b82f6";
-      case "sold":
+      case "Completed":
         return "#10b981";
-      case "draft":
+      case "Draft":
         return "#f59e0b";
-      case "expired":
+      case "Cancelled":
         return "#ef4444";
       default:
         return "#6b7280";
@@ -890,18 +1074,7 @@ const AuctionsTab = ({ navigate }) => {
   };
 
   const getStatusLabel = (status) => {
-    switch (status) {
-      case "active":
-        return "Active";
-      case "sold":
-        return "Sold";
-      case "draft":
-        return "Draft";
-      case "expired":
-        return "Expired";
-      default:
-        return status;
-    }
+    return status || "Unknown";
   };
 
   return (
@@ -979,7 +1152,7 @@ const AuctionsTab = ({ navigate }) => {
           <div
             style={{ fontSize: "24px", fontWeight: "bold", color: "#3b82f6" }}
           >
-            {mockAuctions.filter((a) => a.status === "active").length}
+            {userAuctions.filter((a) => a.status === "Active").length}
           </div>
           <div style={{ fontSize: "14px", color: "#6b7280" }}>
             Active Auctions
@@ -996,7 +1169,7 @@ const AuctionsTab = ({ navigate }) => {
           <div
             style={{ fontSize: "24px", fontWeight: "bold", color: "#10b981" }}
           >
-            {mockAuctions.filter((a) => a.status === "sold").length}
+            {userAuctions.filter((a) => a.status === "Completed").length}
           </div>
           <div style={{ fontSize: "14px", color: "#6b7280" }}>Sold Items</div>
         </div>
@@ -1011,7 +1184,7 @@ const AuctionsTab = ({ navigate }) => {
           <div
             style={{ fontSize: "24px", fontWeight: "bold", color: "#f59e0b" }}
           >
-            {mockAuctions.filter((a) => a.status === "draft").length}
+            {userAuctions.filter((a) => a.status === "Draft").length}
           </div>
           <div style={{ fontSize: "14px", color: "#6b7280" }}>Draft Items</div>
         </div>
@@ -1027,8 +1200,8 @@ const AuctionsTab = ({ navigate }) => {
             style={{ fontSize: "24px", fontWeight: "bold", color: "#E0AF62" }}
           >
             $
-            {mockAuctions
-              .reduce((sum, a) => sum + (a.finalBid || a.currentBid || 0), 0)
+            {userAuctions
+              .reduce((sum, a) => sum + (a.currentBid || a.startingBid || 0), 0)
               .toLocaleString()}
           </div>
           <div style={{ fontSize: "14px", color: "#6b7280" }}>
@@ -1039,9 +1212,9 @@ const AuctionsTab = ({ navigate }) => {
 
       {/* Auctions List */}
       <div style={{ display: "grid", gap: "16px" }}>
-        {mockAuctions.map((auction) => (
+        {userAuctions.map((auction) => (
           <div
-            key={auction.id}
+            key={auction.Id || auction.id || Math.random()}
             style={{
               display: "flex",
               alignItems: "center",
@@ -1061,8 +1234,11 @@ const AuctionsTab = ({ navigate }) => {
             }}
           >
             <img
-              src={auction.image}
-              alt={auction.title}
+              src={
+                auction.jewelryItem?.images?.[0]?.imageUrl ||
+                "/public/img/bid1.png"
+              }
+              alt={auction.jewelryItem?.title || "Auction Item"}
               style={{
                 width: "80px",
                 height: "80px",
@@ -1079,7 +1255,11 @@ const AuctionsTab = ({ navigate }) => {
                   color: "#1f2937",
                 }}
               >
-                {auction.title}
+                {(auction.JewelryItem || auction.jewelryItem)?.Name ||
+                  (auction.JewelryItem || auction.jewelryItem)?.name ||
+                  auction.Title ||
+                  auction.title ||
+                  "Unknown Item"}
               </h3>
               <p
                 style={{
@@ -1088,11 +1268,16 @@ const AuctionsTab = ({ navigate }) => {
                   color: "#6b7280",
                 }}
               >
-                {auction.description}
+                {(auction.JewelryItem || auction.jewelryItem)?.Description ||
+                  (auction.JewelryItem || auction.jewelryItem)?.description ||
+                  auction.Description ||
+                  auction.description ||
+                  "No description available"}
               </p>
               <div style={{ display: "flex", gap: "16px", fontSize: "14px" }}>
                 <span style={{ color: "#6b7280" }}>
-                  <strong>{auction.totalBids}</strong> bids
+                  <strong>{(auction.Bids || auction.bids)?.length || 0}</strong>{" "}
+                  bids
                 </span>
                 <span style={{ color: "#6b7280" }}>
                   Created: {new Date(auction.createdAt).toLocaleDateString()}
@@ -1114,7 +1299,13 @@ const AuctionsTab = ({ navigate }) => {
                 }}
               >
                 $
-                {(auction.finalBid || auction.currentBid || 0).toLocaleString()}
+                {(
+                  auction.CurrentBid ||
+                  auction.currentBid ||
+                  auction.StartingBid ||
+                  auction.startingBid ||
+                  0
+                ).toLocaleString()}
               </div>
               <div
                 style={{
@@ -1122,19 +1313,21 @@ const AuctionsTab = ({ navigate }) => {
                   borderRadius: "20px",
                   fontSize: "12px",
                   fontWeight: "500",
-                  color: getStatusColor(auction.status),
-                  backgroundColor: `${getStatusColor(auction.status)}15`,
+                  color: getStatusColor(auction.Status || auction.status),
+                  backgroundColor: `${getStatusColor(
+                    auction.Status || auction.status
+                  )}15`,
                   textTransform: "capitalize",
                 }}
               >
-                {getStatusLabel(auction.status)}
+                {getStatusLabel(auction.Status || auction.status)}
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      {mockAuctions.length === 0 && (
+      {userAuctions.length === 0 && (
         <div style={{ textAlign: "center", padding: "40px", color: "#6b7280" }}>
           <Plus size={48} style={{ marginBottom: "16px", opacity: 0.5 }} />
           <h3 style={{ margin: "0 0 8px 0", color: "#4a5568" }}>
@@ -1170,118 +1363,847 @@ const Profile = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
   const [profileData, setProfileData] = useState({
-    username: user?.username || "johndoe",
-    email: user?.email || "john.doe@example.com",
-    phoneNumber: user?.phoneNumber || "+1 (555) 123-4567",
+    username: user?.username || "",
+    email: user?.email || "",
+    phoneNumber: "",
     role: user?.role || "Buyer",
+    firstName: "",
+    lastName: "",
+    address: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    country: "",
+    dateOfBirth: "",
+    profileImage: "",
   });
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    totalBids: 0,
+    wonAuctions: 0,
+    totalSpent: 0,
+    activeBids: 0,
+  });
+  const [bidHistory, setBidHistory] = useState([]);
+  const [paymentHistory, setPaymentHistory] = useState([]);
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [recentActivity, setRecentActivity] = useState([]);
+  const [userAuctions, setUserAuctions] = useState([]);
+
+  // Modal states
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+  const [showAddPaymentModal, setShowAddPaymentModal] = useState(false);
+
+  // Notification states
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [paymentData, setPaymentData] = useState({
+    cardNumber: "",
+    expiryDate: "",
+    cvv: "",
+    cardholderName: "",
+    isDefault: false,
+  });
+
+  const [paymentErrors, setPaymentErrors] = useState({});
+
+  // Payment validation functions
+  const validateCardNumber = (cardNumber) => {
+    // Remove spaces and hyphens
+    const cleaned = cardNumber.replace(/[\s-]/g, "");
+
+    // Check if empty
+    if (!cleaned) {
+      return "Card number is required";
+    }
+
+    // Check if it's all digits
+    if (!/^\d+$/.test(cleaned)) {
+      return "Card number must contain only digits";
+    }
+
+    // Check length (13-19 digits for most cards)
+    if (cleaned.length < 13 || cleaned.length > 19) {
+      return "Card number must be between 13-19 digits";
+    }
+
+    // Luhn algorithm validation
+    let sum = 0;
+    let isEven = false;
+
+    for (let i = cleaned.length - 1; i >= 0; i--) {
+      let digit = parseInt(cleaned[i]);
+
+      if (isEven) {
+        digit *= 2;
+        if (digit > 9) {
+          digit -= 9;
+        }
+      }
+
+      sum += digit;
+      isEven = !isEven;
+    }
+
+    if (sum % 10 !== 0) {
+      return "Invalid card number (use test cards: 4532015112830366, 5555555555554444, or 378282246310005)";
+    }
+
+    return null;
+  };
+
+  const validateExpiryDate = (expiryDate) => {
+    // Check format MM/YY
+    const expiryRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
+    if (!expiryRegex.test(expiryDate)) {
+      return "Expiry date must be in MM/YY format";
+    }
+
+    // Check if date is not in the past
+    const [month, year] = expiryDate.split("/");
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear() % 100; // Get last 2 digits
+    const currentMonth = currentDate.getMonth() + 1; // 0-indexed month
+
+    const expYear = parseInt(year);
+    const expMonth = parseInt(month);
+
+    if (
+      expYear < currentYear ||
+      (expYear === currentYear && expMonth < currentMonth)
+    ) {
+      return "Card has expired";
+    }
+
+    return null;
+  };
+
+  const validateCVV = (cvv) => {
+    if (!/^\d{3,4}$/.test(cvv)) {
+      return "CVV must be 3 or 4 digits";
+    }
+    return null;
+  };
+
+  const validateCardholderName = (name) => {
+    if (!name.trim()) {
+      return "Cardholder name is required";
+    }
+    if (name.trim().length < 2) {
+      return "Cardholder name must be at least 2 characters";
+    }
+    if (!/^[a-zA-Z\s.-]+$/.test(name)) {
+      return "Cardholder name must contain only letters, spaces, dots, and hyphens";
+    }
+    return null;
+  };
+
+  const validatePaymentForm = () => {
+    const errors = {};
+
+    const cardNumberError = validateCardNumber(paymentData.cardNumber);
+    if (cardNumberError) errors.cardNumber = cardNumberError;
+
+    const expiryError = validateExpiryDate(paymentData.expiryDate);
+    if (expiryError) errors.expiryDate = expiryError;
+
+    const cvvError = validateCVV(paymentData.cvv);
+    if (cvvError) errors.cvv = cvvError;
+
+    const nameError = validateCardholderName(paymentData.cardholderName);
+    if (nameError) errors.cardholderName = nameError;
+
+    setPaymentErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  // Helper function to format card number input
+  const formatCardNumber = (value) => {
+    // Remove all non-digit characters
+    const digitsOnly = value.replace(/\D/g, "");
+
+    // Add spaces every 4 digits
+    const formatted = digitsOnly.replace(/(\d{4})(?=\d)/g, "$1 ");
+
+    // Limit to 19 digits max
+    return formatted.substr(0, 23); // 19 digits + 4 spaces
+  };
+
+  // Helper function to format expiry date input
+  const formatExpiryDate = (value) => {
+    // Remove all non-digit characters
+    const digitsOnly = value.replace(/\D/g, "");
+
+    // Add slash after 2 digits
+    if (digitsOnly.length >= 2) {
+      return digitsOnly.substr(0, 2) + "/" + digitsOnly.substr(2, 2);
+    }
+
+    return digitsOnly;
+  };
+
+  // API call functions
+  const fetchProfile = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/profile/summary", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Update profile data with API response if available
+        setProfileData((prev) => ({
+          ...prev,
+          ...data,
+        }));
+      }
+      // If API fails, we already have user data loaded in useEffect
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      // Fallback to user data already loaded in useEffect
+    }
+  };
+
+  const fetchStats = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      // First, try to get stats from the profile API
+      try {
+        const response = await fetch("/api/profile/stats", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setStats({
+            totalBids: data.TotalBids ?? data.totalBids ?? 0,
+            wonAuctions: data.WonAuctions ?? data.wonAuctions ?? 0,
+            totalSpent: data.TotalSpent ?? data.totalSpent ?? 0,
+            activeBids: data.ActiveBids ?? data.activeBids ?? 0,
+          });
+          return; // Success, exit early
+        }
+      } catch (error) {
+        console.log("Profile stats API not available, calculating manually");
+      }
+
+      // Fallback: Fetch stats from multiple endpoints
+      const [bidsResponse, auctionsResponse] = await Promise.allSettled([
+        fetch("/api/bids/my-bids", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }),
+        fetch("/api/auctions/my-auctions", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }),
+      ]);
+
+      let totalBids = 0;
+      let wonAuctions = 0;
+      let totalSpent = 0;
+      let activeBids = 0;
+
+      if (bidsResponse.status === "fulfilled" && bidsResponse.value.ok) {
+        const bids = await bidsResponse.value.json();
+        totalBids = bids.length;
+        activeBids = bids.filter((bid) => {
+          const status =
+            bid.auction?.status ??
+            bid.Auction?.Status ??
+            bid.auctionStatus ??
+            bid.status;
+          return (status || "").toString().toLowerCase() === "active";
+        }).length;
+
+        // Calculate total spent and won auctions using flexible keys
+        const winningBids = bids.filter((bid) => {
+          const auctionWinningBidderId =
+            bid.auctionWinningBidderId ??
+            bid.AuctionWinningBidderId ??
+            bid.auction?.winningBidderId ??
+            bid.Auction?.WinningBidderId ??
+            null;
+          const currentUserId = user?.Id ?? user?.id;
+          const auctionStatus = (
+            bid.auctionStatus ??
+            bid.AuctionStatus ??
+            bid.auction?.status ??
+            bid.Auction?.Status ??
+            ""
+          ).toLowerCase();
+
+          return (
+            auctionWinningBidderId &&
+            Number(auctionWinningBidderId) === Number(currentUserId) &&
+            auctionStatus === "ended"
+          );
+        });
+
+        // Get total spent from payments for accuracy
+        try {
+          const paymentsResponse = await fetch("/api/payments/my-payments", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (paymentsResponse.ok) {
+            const paymentsData = await paymentsResponse.json();
+            totalSpent = paymentsData
+              .filter(
+                (p) =>
+                  (p.status ?? p.Status ?? "").toLowerCase() === "completed"
+              )
+              .reduce(
+                (sum, payment) =>
+                  sum + Number(payment.amount ?? payment.Amount ?? 0),
+                0
+              );
+          } else {
+            // Fallback to winning bids amount
+            totalSpent = winningBids.reduce(
+              (sum, bid) => sum + Number(bid.amount ?? bid.Amount ?? 0),
+              0
+            );
+          }
+        } catch (error) {
+          // Fallback to winning bids amount
+          totalSpent = winningBids.reduce(
+            (sum, bid) => sum + Number(bid.amount ?? bid.Amount ?? 0),
+            0
+          );
+        }
+
+        wonAuctions = winningBids.length;
+      }
+
+      setStats({
+        totalBids,
+        wonAuctions,
+        totalSpent,
+        activeBids,
+      });
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+      // Keep default stats (zeros) if error occurs
+    }
+  };
+
+  // Normalized fetchBidHistory: supports PascalCase/camelCase and safe number formatting
+  const fetchBidHistory = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/bids/my-bids", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const normalized = data.map((raw) => {
+          const b = raw || {};
+          const id = b.id ?? b.Id ?? null;
+          const auctionTitle =
+            b.auctionTitle ??
+            b.AuctionTitle ??
+            b.jewelryItemName ??
+            b.JewelryItemName ??
+            b.auction?.title ??
+            b.Auction?.Title ??
+            "Unknown Item";
+          const myBid = Number(b.amount ?? b.Amount ?? b.myBid ?? 0);
+          const auctionCurrentBid = Number(
+            b.auctionCurrentBid ??
+              b.AuctionCurrentBid ??
+              b.auctionCurrentBid ??
+              b.Auction?.CurrentBid ??
+              b.auction?.currentBid ??
+              b.currentBid ??
+              b.CurrentBid ??
+              myBid
+          );
+          const auctionStatus =
+            b.auctionStatus ??
+            b.AuctionStatus ??
+            b.status ??
+            b.auction?.status ??
+            b.Auction?.Status ??
+            null;
+          const auctionWinningBidderId =
+            b.auctionWinningBidderId ??
+            b.AuctionWinningBidderId ??
+            b.auctionWinningBidderId ??
+            b.Auction?.WinningBidderId ??
+            b.auction?.winningBidderId ??
+            null;
+          const auctionWinningAmount = Number(
+            b.auctionWinningAmount ??
+              b.AuctionWinningAmount ??
+              b.auction?.winningBidAmount ??
+              b.Auction?.CurrentBid ??
+              b.auction?.currentBid ??
+              null
+          );
+          const endTime =
+            b.auctionEndTime ??
+            b.AuctionEndTime ??
+            b.endTime ??
+            b.EndTime ??
+            b.auction?.endTime ??
+            b.Auction?.EndTime ??
+            null;
+          const image =
+            b.jewelryItemImageUrl ??
+            b.JewelryItemImageUrl ??
+            b.image ??
+            b.Image ??
+            b.jewelryItem?.images?.[0]?.imageUrl ??
+            b.JewelryItem?.Images?.[0]?.ImageUrl ??
+            "/img/bid1.png";
+          const type =
+            b.jewelryItemType ??
+            b.JewelryItemType ??
+            b.type ??
+            b.Type ??
+            "Fine Jewelry";
+          const material =
+            b.jewelryItemMaterial ??
+            b.JewelryItemMaterial ??
+            b.material ??
+            b.Material ??
+            "Precious Metal";
+          const condition =
+            b.jewelryItemCondition ??
+            b.JewelryItemCondition ??
+            b.condition ??
+            b.Condition ??
+            "Pre-owned";
+
+          // Determine status from multiple sources
+          let status = "outbid";
+
+          // First check if bid has its own status
+          const bidStatus = (
+            b.status ??
+            b.Status ??
+            b.bidStatus ??
+            b.BidStatus ??
+            ""
+          )
+            .toString()
+            .toLowerCase();
+
+          const auctionStatusLower = (auctionStatus ?? "")
+            .toString()
+            .toLowerCase();
+          const isAuctionActive = auctionStatusLower === "active";
+          const isAuctionEnded =
+            auctionStatusLower === "ended" ||
+            (endTime ? new Date(endTime) <= new Date() : false);
+
+          // Use bid's own status if available and meaningful
+          if (bidStatus === "won") {
+            status = "won";
+          } else if (bidStatus === "winning" || bidStatus === "active") {
+            status = isAuctionActive ? "active" : "outbid";
+          } else if (bidStatus === "outbid" || bidStatus === "lost") {
+            status = "outbid";
+          } else {
+            // Fallback to auction-based logic
+            if (isAuctionActive) {
+              status = "active";
+            } else if (isAuctionEnded) {
+              // Check if this user won the auction
+              const currentUserId = user?.id ?? user?.Id;
+
+              if (
+                auctionWinningBidderId &&
+                Number(auctionWinningBidderId) === Number(currentUserId)
+              ) {
+                status = "won";
+              } else {
+                status = "outbid";
+              }
+            }
+          }
+
+          return {
+            id,
+            auctionTitle,
+            myBid: Number.isFinite(myBid) ? myBid : 0,
+            currentBid: Number.isFinite(auctionCurrentBid)
+              ? auctionCurrentBid
+              : myBid,
+            status,
+            endTime,
+            image,
+            type,
+            material,
+            condition,
+          };
+        });
+
+        setBidHistory(normalized);
+      }
+    } catch (error) {
+      console.error("Error fetching bid history:", error);
+    }
+  };
+
+  // Fetch saved payment methods
+  const fetchPaymentMethods = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/users/payment-methods", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Normalize payment method data to handle different case conventions
+        const normalized = (data || []).map((pm) => ({
+          id: pm.id ?? pm.Id,
+          type: pm.type ?? pm.Type ?? "Credit Card",
+          brand: pm.brand ?? pm.Brand,
+          last4: pm.last4 ?? pm.Last4,
+          expiry: pm.expiryDate ?? pm.ExpiryDate ?? pm.expiry,
+          email: pm.email ?? pm.Email,
+          isDefault: pm.isDefault ?? pm.IsDefault ?? false,
+          isActive: pm.isActive ?? pm.IsActive ?? true,
+        }));
+        setPaymentMethods(normalized);
+      }
+    } catch (error) {
+      console.error("Error fetching payment methods:", error);
+    }
+  };
+
+  // Fetch user's payment history (payments made)
+  const fetchPaymentHistory = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/payments/my-payments", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Normalize minimal fields used by the UI
+        const normalized = (data || []).map((p) => ({
+          id: p.id ?? p.Id,
+          auctionTitle:
+            p.bid?.auction?.jewelryItem?.title ??
+            p.auctionTitle ??
+            p.auction?.title ??
+            "Unknown Item",
+          amount: Number(p.amount ?? p.Amount ?? 0),
+          paymentMethod: p.paymentMethod ?? p.PaymentMethod ?? "",
+          status: (p.status ?? p.Status ?? "").toString().toLowerCase(),
+          date: p.paymentDate ?? p.createdAt ?? p.date ?? null,
+        }));
+        setPaymentHistory(normalized);
+      } else if (response.status === 401 || response.status === 403) {
+        // Not authorized - show empty history without spamming console
+        setPaymentHistory([]);
+      } else {
+        console.error("Failed to fetch payment history:", response.status);
+        setPaymentHistory([]);
+      }
+    } catch (error) {
+      console.error("Error fetching payment history:", error);
+      setPaymentHistory([]);
+    }
+  };
+
+  const fetchRecentActivity = async () => {
+    try {
+      // For now, we'll generate activity from bids and payments
+      // since there's no specific activity endpoint
+      setRecentActivity([
+        {
+          action: "Welcome to RoyalBidz!",
+          time: "Recently",
+          amount: "",
+          icon: Star,
+          color: "#E0AF62",
+        },
+      ]);
+    } catch (error) {
+      console.error("Error fetching recent activity:", error);
+    }
+  };
+
+  const fetchUserAuctions = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/auctions/my-auctions", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUserAuctions(data);
+      }
+    } catch (error) {
+      console.error("Error fetching user auctions:", error);
+      // Keep empty array if error occurs
+    }
+  };
+
+  const updateProfile = async (updatedData) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      // Define allowed fields that match UpdateUserDto
+      const allowedFields = [
+        "username",
+        "phoneNumber",
+        "firstName",
+        "lastName",
+        "address",
+        "city",
+        "state",
+        "zipCode",
+        "country",
+        "profileImageUrl",
+        "dateOfBirth",
+        "bio",
+      ];
+
+      // Filter to only include allowed fields and remove empty values
+      const validData = {};
+      allowedFields.forEach((field) => {
+        if (
+          updatedData[field] !== "" &&
+          updatedData[field] !== null &&
+          updatedData[field] !== undefined
+        ) {
+          validData[field] = updatedData[field];
+        }
+      });
+
+      console.log("Sending profile update data:", validData); // Debug log
+
+      const response = await fetch("/api/profile/update", {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(validData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setProfileData((prev) => ({ ...prev, ...data }));
+        setSuccess("Profile updated successfully!");
+        setTimeout(() => setSuccess(""), 5000);
+        return true;
+      } else {
+        const errorData = await response.json();
+        console.error("Profile update error:", errorData);
+        setError(
+          `Failed to update profile: ${
+            errorData.title || errorData.message || "Unknown error"
+          }`
+        );
+        setTimeout(() => setError(""), 5000);
+        return false;
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      setError("Failed to update profile. Please try again.");
+      setTimeout(() => setError(""), 5000);
+      return false;
+    }
+  };
+
+  // Change Password Handler
+  const handleChangePassword = async () => {
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setError("New passwords don't match!");
+      setTimeout(() => setError(""), 5000);
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/users/change-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword,
+        }),
+      });
+
+      if (response.ok) {
+        setSuccess("Password changed successfully!");
+        setShowChangePasswordModal(false);
+        setPasswordData({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
+        setTimeout(() => setSuccess(""), 5000);
+      } else {
+        const error = await response.text();
+        setError(`Failed to change password: ${error}`);
+        setTimeout(() => setError(""), 5000);
+      }
+    } catch (error) {
+      console.error("Error changing password:", error);
+      setError("Failed to change password. Please try again.");
+      setTimeout(() => setError(""), 5000);
+    }
+  };
+
+  // Add Payment Method Handler
+  const handleAddPaymentMethod = async () => {
+    // Clear previous errors
+    setPaymentErrors({});
+
+    // Validate form
+    if (!validatePaymentForm()) {
+      return; // Stop if validation fails
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+
+      // Prepare data for API (remove formatting from card number)
+      const apiData = {
+        ...paymentData,
+        cardNumber: paymentData.cardNumber.replace(/\s/g, ""), // Remove spaces
+      };
+
+      const response = await fetch("/api/users/payment-methods", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(apiData),
+      });
+
+      if (response.ok) {
+        setSuccess("Payment method added successfully!");
+        setShowAddPaymentModal(false);
+        setPaymentData({
+          cardNumber: "",
+          expiryDate: "",
+          cvv: "",
+          cardholderName: "",
+          isDefault: false,
+        });
+        setPaymentErrors({});
+        // Refresh payment methods
+        await fetchPaymentMethods();
+
+        // Clear success message after 5 seconds
+        setTimeout(() => setSuccess(""), 5000);
+      } else {
+        const error = await response.text();
+        setError(`Failed to add payment method: ${error}`);
+        setTimeout(() => setError(""), 5000);
+      }
+    } catch (error) {
+      console.error("Error adding payment method:", error);
+      setError("Failed to add payment method. Please try again.");
+      setTimeout(() => setError(""), 5000);
+    }
+  };
+
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+
+      // Always load profile data from user context first
+      if (user) {
+        setProfileData({
+          username: user.Username || user.username || "",
+          email: user.Email || user.email || "",
+          phoneNumber: user.PhoneNumber || user.phoneNumber || "",
+          role: user.Role || user.role || "Buyer",
+          firstName: user.FirstName || user.firstName || "",
+          lastName: user.LastName || user.lastName || "",
+          address: user.Address || user.address || "",
+          city: user.City || user.city || "",
+          state: user.State || user.state || "",
+          zipCode: user.ZipCode || user.zipCode || "",
+          country: user.Country || user.country || "",
+          dateOfBirth: user.DateOfBirth || user.dateOfBirth || "",
+          profileImage: user.ProfileImage || user.profileImage || "",
+        });
+      }
+
+      // Then try to load additional data from API endpoints
+      await Promise.allSettled([
+        fetchProfile(),
+        fetchStats(),
+        fetchBidHistory(),
+        fetchPaymentHistory(),
+        fetchPaymentMethods(),
+        fetchRecentActivity(),
+        fetchUserAuctions(),
+      ]);
+
+      setLoading(false);
+    };
+
+    if (user) {
+      loadData();
+    }
+  }, [user]);
+
+  // Handle admin navigation properly
+  useEffect(() => {
+    if (activeTab === "admin") {
+      navigate("/admin");
+    }
+  }, [activeTab, navigate]);
 
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
       logout();
-      // Redirect to home page after logout
       navigate("/");
     }
   };
-
-  // Mock data
-  const stats = {
-    totalBids: 156,
-    wonAuctions: 12,
-    totalSpent: 24500,
-    activeBids: 8,
-  };
-
-  const bidHistory = [
-    {
-      id: 1,
-      auctionTitle: "Vintage Diamond Ring",
-      myBid: 1500,
-      currentBid: 1750,
-      status: "outbid",
-      endTime: "2024-02-15",
-      image: "/public/img/bid1.png",
-    },
-    {
-      id: 2,
-      auctionTitle: "Gold Necklace Set",
-      myBid: 850,
-      currentBid: 850,
-      status: "winning",
-      endTime: "2024-02-20",
-      image: "/public/img/bid2.png",
-    },
-    {
-      id: 3,
-      auctionTitle: "Pearl Earrings",
-      myBid: 650,
-      currentBid: 650,
-      status: "won",
-      endTime: "2024-02-10",
-      image: "/public/img/bid3.png",
-    },
-  ];
-
-  const paymentHistory = [
-    {
-      id: 1,
-      auctionTitle: "Pearl Earrings",
-      amount: 650,
-      paymentMethod: "Visa ****1234",
-      status: "completed",
-      date: "2024-02-10",
-    },
-    {
-      id: 2,
-      auctionTitle: "Silver Bracelet",
-      amount: 320,
-      paymentMethod: "PayPal",
-      status: "completed",
-      date: "2024-02-05",
-    },
-  ];
-
-  const paymentMethods = [
-    {
-      id: 1,
-      type: "Credit Card",
-      brand: "Visa",
-      last4: "1234",
-      expiry: "12/26",
-      isDefault: true,
-    },
-    {
-      id: 2,
-      type: "PayPal",
-      email: "john.doe@example.com",
-      isDefault: false,
-    },
-  ];
-
-  const recentActivity = [
-    {
-      action: "Won auction for Pearl Earrings",
-      time: "2 hours ago",
-      amount: "$650",
-      icon: Star,
-      color: "#10b981",
-    },
-    {
-      action: "Placed bid on Vintage Diamond Ring",
-      time: "1 day ago",
-      amount: "$1,500",
-      icon: Gavel,
-      color: "#3b82f6",
-    },
-    {
-      action: "Payment processed successfully",
-      time: "3 days ago",
-      amount: "$320",
-      icon: CheckCircle,
-      color: "#10b981",
-    },
-  ];
 
   const tabs = [
     { id: "overview", label: "Overview", icon: Activity },
@@ -1291,9 +2213,44 @@ const Profile = () => {
     { id: "payments", label: "Payment History", icon: DollarSign },
     { id: "methods", label: "Payment Methods", icon: CreditCard },
     { id: "settings", label: "Settings", icon: Settings },
+    // Add Admin Dashboard for admin users (role 2)
+    ...(user?.Role === 2 || user?.role === 2 || user?.Role === "Admin"
+      ? [{ id: "admin", label: "Admin Dashboard", icon: BarChart3 }]
+      : []),
   ];
 
   const renderTabContent = () => {
+    if (loading) {
+      return (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "400px",
+            background: "white",
+            borderRadius: "16px",
+            boxShadow: "0 4px 16px rgba(0, 0, 0, 0.08)",
+          }}
+        >
+          <div style={{ textAlign: "center" }}>
+            <div
+              style={{
+                width: "40px",
+                height: "40px",
+                border: "4px solid #f3f4f6",
+                borderTop: "4px solid #E0AF62",
+                borderRadius: "50%",
+                animation: "spin 1s linear infinite",
+                margin: "0 auto 16px",
+              }}
+            ></div>
+            <p style={{ color: "#6b7280", fontSize: "16px" }}>Loading...</p>
+          </div>
+        </div>
+      );
+    }
+
     switch (activeTab) {
       case "overview":
         return (
@@ -1355,50 +2312,31 @@ const Profile = () => {
                 Recent Activity
               </h2>
               <div style={{ display: "grid", gap: "12px" }}>
-                {recentActivity.slice(0, 5).map((activity, index) => (
-                  <ActivityCard key={index} activity={activity} />
-                ))}
+                {recentActivity.length > 0 ? (
+                  recentActivity
+                    .slice(0, 5)
+                    .map((activity, index) => (
+                      <ActivityCard key={index} activity={activity} />
+                    ))
+                ) : (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      padding: "40px",
+                      color: "#6b7280",
+                    }}
+                  >
+                    <Activity
+                      size={48}
+                      style={{ marginBottom: "16px", opacity: 0.5 }}
+                    />
+                    <p style={{ margin: 0 }}>No recent activity to show</p>
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Quick Actions */}
-            <div
-              style={{
-                background: "linear-gradient(135deg, #FAD08D 0%, #E0AF62 100%)",
-                borderRadius: "16px",
-                padding: "32px",
-                color: "white",
-                textAlign: "center",
-              }}
-            >
-              <h2
-                style={{
-                  margin: "0 0 16px 0",
-                  fontSize: "1.5rem",
-                  fontWeight: "600",
-                }}
-              >
-                Ready to Find Your Next Treasure?
-              </h2>
-              <p style={{ margin: "0 0 24px 0", opacity: 0.9 }}>
-                Explore our latest jewelry auctions and place your bids
-              </p>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "16px",
-                  justifyContent: "center",
-                  flexWrap: "wrap",
-                }}
-              >
-                <a href="/auctions" className="btn btn-secondary">
-                  <Gavel size={16} /> Browse Auctions
-                </a>
-                <a href="/jewelry" className="btn btn-outline">
-                  <Crown size={16} /> View Jewelry
-                </a>
-              </div>
-            </div>
+            {/* Quick Actions CTA removed per request */}
           </div>
         );
       case "account":
@@ -1408,18 +2346,30 @@ const Profile = () => {
             setProfileData={setProfileData}
             isEditing={isEditing}
             setIsEditing={setIsEditing}
+            updateProfile={updateProfile}
           />
         );
       case "bids":
         return <BidHistoryTab bidHistory={bidHistory} />;
       case "auctions":
-        return <AuctionsTab navigate={navigate} />;
+        return <AuctionsTab navigate={navigate} userAuctions={userAuctions} />;
       case "payments":
         return <PaymentHistoryTab paymentHistory={paymentHistory} />;
       case "methods":
-        return <PaymentMethodsTab paymentMethods={paymentMethods} />;
+        return (
+          <PaymentMethodsTab
+            paymentMethods={paymentMethods}
+            onAddPaymentMethod={() => setShowAddPaymentModal(true)}
+          />
+        );
       case "settings":
-        return <SettingsTab />;
+        return (
+          <SettingsTab
+            onChangePassword={() => setShowChangePasswordModal(true)}
+          />
+        );
+      case "admin":
+        return null;
       default:
         return null;
     }
@@ -1434,6 +2384,81 @@ const Profile = () => {
           "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
       }}
     >
+      {/* Notifications */}
+      {error && (
+        <div
+          style={{
+            position: "fixed",
+            top: "20px",
+            right: "20px",
+            zIndex: 1000,
+            background: "#fee2e2",
+            border: "1px solid #fca5a5",
+            borderRadius: "8px",
+            padding: "12px 16px",
+            color: "#dc2626",
+            fontSize: "14px",
+            fontWeight: "500",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          ❌ {error}
+          <button
+            onClick={() => setError("")}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#dc2626",
+              fontSize: "16px",
+              cursor: "pointer",
+              marginLeft: "8px",
+            }}
+          >
+            ×
+          </button>
+        </div>
+      )}
+
+      {success && (
+        <div
+          style={{
+            position: "fixed",
+            top: "20px",
+            right: "20px",
+            zIndex: 1000,
+            background: "#d1fae5",
+            border: "1px solid #6ee7b7",
+            borderRadius: "8px",
+            padding: "12px 16px",
+            color: "#059669",
+            fontSize: "14px",
+            fontWeight: "500",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          ✅ {success}
+          <button
+            onClick={() => setSuccess("")}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#059669",
+              fontSize: "16px",
+              cursor: "pointer",
+              marginLeft: "8px",
+            }}
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       {/* Header */}
       <div
         style={{
@@ -1459,7 +2484,9 @@ const Profile = () => {
                 fontWeight: "bold",
               }}
             >
-              {profileData.username[0].toUpperCase()}
+              {(profileData.firstName ||
+                profileData.username ||
+                "U")[0].toUpperCase()}
             </div>
             <div>
               <h1
@@ -1469,7 +2496,8 @@ const Profile = () => {
                   fontWeight: "bold",
                 }}
               >
-                Welcome back, {profileData.username}!
+                Welcome back,{" "}
+                {profileData.firstName || profileData.username || "User"}!
               </h1>
               <p style={{ margin: 0, opacity: 0.9, fontSize: "1.1rem" }}>
                 Manage your account and track your auction activity
@@ -1548,42 +2576,48 @@ const Profile = () => {
                 );
               })}
 
-              {/* Logout Button */}
-              <div
-                style={{
-                  marginTop: "20px",
-                  paddingTop: "20px",
-                  borderTop: "1px solid #f3f4f6",
-                }}
-              >
-                <button
-                  onClick={handleLogout}
+              {/* Logout Button - Only show for non-admin users */}
+              {!(
+                user?.Role === 2 ||
+                user?.role === 2 ||
+                user?.Role === "Admin"
+              ) && (
+                <div
                   style={{
-                    width: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "12px",
-                    padding: "12px 16px",
-                    border: "none",
-                    borderRadius: "10px",
-                    background: "transparent",
-                    color: "#ef4444",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#fef2f2";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "transparent";
+                    marginTop: "20px",
+                    paddingTop: "20px",
+                    borderTop: "1px solid #f3f4f6",
                   }}
                 >
-                  <LogOut size={18} />
-                  Logout
-                </button>
-              </div>
+                  <button
+                    onClick={handleLogout}
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      padding: "12px 16px",
+                      border: "none",
+                      borderRadius: "10px",
+                      background: "transparent",
+                      color: "#ef4444",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#fef2f2";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "transparent";
+                    }}
+                  >
+                    <LogOut size={18} />
+                    Logout
+                  </button>
+                </div>
+              )}
             </nav>
           </div>
 
@@ -1600,6 +2634,520 @@ const Profile = () => {
           </div>
         </div>
       </div>
+
+      {/* Change Password Modal */}
+      {showChangePasswordModal && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+          onClick={() => setShowChangePasswordModal(false)}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "16px",
+              padding: "32px",
+              maxWidth: "400px",
+              width: "90%",
+              boxShadow: "0 20px 25px rgba(0, 0, 0, 0.1)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2
+              style={{
+                margin: "0 0 24px 0",
+                fontSize: "1.25rem",
+                fontWeight: "600",
+                color: "#1f2937",
+              }}
+            >
+              Change Password
+            </h2>
+            <div style={{ display: "grid", gap: "16px" }}>
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    marginBottom: "8px",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    color: "#374151",
+                  }}
+                >
+                  Current Password
+                </label>
+                <input
+                  type="password"
+                  value={passwordData.currentPassword}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      currentPassword: e.target.value,
+                    })
+                  }
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    border: "1px solid #d1d5db",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    marginBottom: "8px",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    color: "#374151",
+                  }}
+                >
+                  New Password
+                </label>
+                <input
+                  type="password"
+                  value={passwordData.newPassword}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      newPassword: e.target.value,
+                    })
+                  }
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    border: "1px solid #d1d5db",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    marginBottom: "8px",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    color: "#374151",
+                  }}
+                >
+                  Confirm New Password
+                </label>
+                <input
+                  type="password"
+                  value={passwordData.confirmPassword}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      confirmPassword: e.target.value,
+                    })
+                  }
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    border: "1px solid #d1d5db",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                marginTop: "24px",
+                justifyContent: "flex-end",
+              }}
+            >
+              <button
+                onClick={() => setShowChangePasswordModal(false)}
+                style={{
+                  padding: "12px 24px",
+                  border: "1px solid #d1d5db",
+                  borderRadius: "8px",
+                  background: "white",
+                  color: "#374151",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleChangePassword}
+                style={{
+                  padding: "12px 24px",
+                  border: "none",
+                  borderRadius: "8px",
+                  background: "#E0AF62",
+                  color: "white",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                }}
+              >
+                Change Password
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Payment Method Modal */}
+      {showAddPaymentModal && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+          onClick={() => setShowAddPaymentModal(false)}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "16px",
+              padding: "32px",
+              maxWidth: "400px",
+              width: "90%",
+              boxShadow: "0 20px 25px rgba(0, 0, 0, 0.1)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2
+              style={{
+                margin: "0 0 24px 0",
+                fontSize: "1.25rem",
+                fontWeight: "600",
+                color: "#1f2937",
+              }}
+            >
+              Add Payment Method
+            </h2>
+            <div style={{ display: "grid", gap: "16px" }}>
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    marginBottom: "8px",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    color: "#374151",
+                  }}
+                >
+                  Cardholder Name
+                </label>
+                <input
+                  type="text"
+                  value={paymentData.cardholderName}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setPaymentData({
+                      ...paymentData,
+                      cardholderName: value,
+                    });
+
+                    // Clear error when user starts typing
+                    if (paymentErrors.cardholderName) {
+                      setPaymentErrors({
+                        ...paymentErrors,
+                        cardholderName: null,
+                      });
+                    }
+                  }}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    border: paymentErrors.cardholderName
+                      ? "1px solid #ef4444"
+                      : "1px solid #d1d5db",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    boxSizing: "border-box",
+                  }}
+                  placeholder="John Doe"
+                />
+                {paymentErrors.cardholderName && (
+                  <div
+                    style={{
+                      color: "#ef4444",
+                      fontSize: "12px",
+                      marginTop: "4px",
+                    }}
+                  >
+                    {paymentErrors.cardholderName}
+                  </div>
+                )}
+              </div>
+              <div>
+                <label
+                  style={{
+                    display: "block",
+                    marginBottom: "8px",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    color: "#374151",
+                  }}
+                >
+                  Card Number
+                </label>
+                <input
+                  type="text"
+                  value={paymentData.cardNumber}
+                  onChange={(e) => {
+                    const formattedValue = formatCardNumber(e.target.value);
+                    setPaymentData({
+                      ...paymentData,
+                      cardNumber: formattedValue,
+                    });
+
+                    // Clear error when user starts typing
+                    if (paymentErrors.cardNumber) {
+                      setPaymentErrors({
+                        ...paymentErrors,
+                        cardNumber: null,
+                      });
+                    }
+                  }}
+                  placeholder="1234 5678 9012 3456"
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    border: paymentErrors.cardNumber
+                      ? "1px solid #ef4444"
+                      : "1px solid #d1d5db",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    boxSizing: "border-box",
+                  }}
+                />
+                {paymentErrors.cardNumber && (
+                  <div
+                    style={{
+                      color: "#ef4444",
+                      fontSize: "12px",
+                      marginTop: "4px",
+                    }}
+                  >
+                    {paymentErrors.cardNumber}
+                  </div>
+                )}
+              </div>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "12px",
+                }}
+              >
+                <div>
+                  <label
+                    style={{
+                      display: "block",
+                      marginBottom: "8px",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: "#374151",
+                    }}
+                  >
+                    Expiry Date
+                  </label>
+                  <input
+                    type="text"
+                    value={paymentData.expiryDate}
+                    onChange={(e) => {
+                      const formattedValue = formatExpiryDate(e.target.value);
+                      setPaymentData({
+                        ...paymentData,
+                        expiryDate: formattedValue,
+                      });
+
+                      // Clear error when user starts typing
+                      if (paymentErrors.expiryDate) {
+                        setPaymentErrors({
+                          ...paymentErrors,
+                          expiryDate: null,
+                        });
+                      }
+                    }}
+                    placeholder="MM/YY"
+                    maxLength="5"
+                    style={{
+                      width: "100%",
+                      padding: "12px",
+                      border: paymentErrors.expiryDate
+                        ? "1px solid #ef4444"
+                        : "1px solid #d1d5db",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                  {paymentErrors.expiryDate && (
+                    <div
+                      style={{
+                        color: "#ef4444",
+                        fontSize: "12px",
+                        marginTop: "4px",
+                      }}
+                    >
+                      {paymentErrors.expiryDate}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <label
+                    style={{
+                      display: "block",
+                      marginBottom: "8px",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: "#374151",
+                    }}
+                  >
+                    CVV
+                  </label>
+                  <input
+                    type="text"
+                    value={paymentData.cvv}
+                    onChange={(e) => {
+                      // Only allow digits and limit to 4 characters
+                      const value = e.target.value
+                        .replace(/\D/g, "")
+                        .substr(0, 4);
+                      setPaymentData({
+                        ...paymentData,
+                        cvv: value,
+                      });
+
+                      // Clear error when user starts typing
+                      if (paymentErrors.cvv) {
+                        setPaymentErrors({
+                          ...paymentErrors,
+                          cvv: null,
+                        });
+                      }
+                    }}
+                    placeholder="123"
+                    maxLength="4"
+                    style={{
+                      width: "100%",
+                      padding: "12px",
+                      border: paymentErrors.cvv
+                        ? "1px solid #ef4444"
+                        : "1px solid #d1d5db",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                  {paymentErrors.cvv && (
+                    <div
+                      style={{
+                        color: "#ef4444",
+                        fontSize: "12px",
+                        marginTop: "4px",
+                      }}
+                    >
+                      {paymentErrors.cvv}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "8px" }}
+              >
+                <input
+                  type="checkbox"
+                  id="isDefault"
+                  checked={paymentData.isDefault}
+                  onChange={(e) =>
+                    setPaymentData({
+                      ...paymentData,
+                      isDefault: e.target.checked,
+                    })
+                  }
+                  style={{ cursor: "pointer" }}
+                />
+                <label
+                  htmlFor="isDefault"
+                  style={{
+                    fontSize: "14px",
+                    color: "#374151",
+                    cursor: "pointer",
+                  }}
+                >
+                  Set as default payment method
+                </label>
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                marginTop: "24px",
+                justifyContent: "flex-end",
+              }}
+            >
+              <button
+                onClick={() => setShowAddPaymentModal(false)}
+                style={{
+                  padding: "12px 24px",
+                  border: "1px solid #d1d5db",
+                  borderRadius: "8px",
+                  background: "white",
+                  color: "#374151",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddPaymentMethod}
+                style={{
+                  padding: "12px 24px",
+                  border: "none",
+                  borderRadius: "8px",
+                  background: "#E0AF62",
+                  color: "white",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                }}
+              >
+                Add Payment Method
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
