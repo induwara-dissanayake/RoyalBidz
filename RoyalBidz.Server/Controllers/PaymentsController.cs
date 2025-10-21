@@ -6,6 +6,7 @@ using System.Security.Claims;
 
 namespace RoyalBidz.Server.Controllers
 {
+    // API controller & define  route & authorization
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
@@ -20,6 +21,7 @@ namespace RoyalBidz.Server.Controllers
             _logger = logger;
         }
 
+        //retrieve specific payment by its ID
         [HttpGet("{id}")]
         public async Task<ActionResult<PaymentDto>> GetPayment(int id)
         {
@@ -39,7 +41,8 @@ namespace RoyalBidz.Server.Controllers
                 return StatusCode(500, new { message = "An error occurred while retrieving the payment" });
             }
         }
-
+        
+//retrieve all payments made by the authenticated users(currently logged user)
         [HttpGet("my-payments")]
         public async Task<ActionResult<IEnumerable<PaymentDto>>> GetMyPayments()
         {
@@ -56,6 +59,7 @@ namespace RoyalBidz.Server.Controllers
             }
         }
 
+//retrieve payment details for a specific auction
         [HttpGet("auction/{auctionId}")]
         public async Task<ActionResult<PaymentDto>> GetPaymentByAuction(int auctionId)
         {
@@ -76,6 +80,7 @@ namespace RoyalBidz.Server.Controllers
             }
         }
 
+//create new payment reco
         [HttpPost]
         public async Task<ActionResult<PaymentDto>> CreatePayment([FromBody] CreatePaymentDto createPaymentDto)
         {
@@ -96,6 +101,7 @@ namespace RoyalBidz.Server.Controllers
             }
         }
 
+//init a payment process for a specific auction
         [HttpPost("auction/{auctionId}")]
         public async Task<ActionResult<PaymentDto>> InitiateAuctionPayment(int auctionId)
         {
@@ -116,6 +122,7 @@ namespace RoyalBidz.Server.Controllers
             }
         }
 
+//specific payment by using ID
         [HttpPost("{id}/process")]
         public async Task<ActionResult> ProcessPayment(int id)
         {
@@ -138,6 +145,8 @@ namespace RoyalBidz.Server.Controllers
             }
         }
 
+
+//process auction payment using provided details
         [HttpPost("process")]
         public async Task<ActionResult<PaymentDto>> ProcessAuctionPayment([FromBody] ProcessPaymentDto processPaymentDto)
         {
@@ -158,6 +167,7 @@ namespace RoyalBidz.Server.Controllers
             }
         }
 
+//update payment status(admin only)
         [HttpPut("{id}/status")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<PaymentDto>> UpdatePaymentStatus(int id, [FromBody] UpdatePaymentDto updatePaymentDto)
@@ -179,6 +189,8 @@ namespace RoyalBidz.Server.Controllers
             }
         }
 
+        //retieve all pending payments
+
         [HttpGet("pending")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<PaymentDto>>> GetPendingPayments()
@@ -195,6 +207,8 @@ namespace RoyalBidz.Server.Controllers
             }
         }
 
+        // calculate & retrieve all total revenue
+        
         [HttpGet("revenue")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<decimal>> GetTotalRevenue([FromQuery] DateTime? fromDate, [FromQuery] DateTime? toDate)
