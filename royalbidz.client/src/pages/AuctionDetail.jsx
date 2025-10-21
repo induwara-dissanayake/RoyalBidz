@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import * as signalR from "@microsoft/signalr";
 import api from "../utils/api";
+import ShareModal from "../components/ShareModal";
 import {
   Gavel,
   Clock,
@@ -41,6 +42,7 @@ const AuctionDetail = () => {
   const [activeUsers, setActiveUsers] = useState(0);
   const [isWatchlisted, setIsWatchlisted] = useState(false);
   const [mainImageIndex, setMainImageIndex] = useState(0);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   // Helper functions to format jewelry details
   const getJewelryTypeName = (type) => {
@@ -766,7 +768,11 @@ const AuctionDetail = () => {
                     {isWatchlisted ? "Watching" : "Watch"}
                   </button>
 
-                  <button className="action-btn" title="Share Auction">
+                  <button
+                    className="action-btn"
+                    onClick={() => setShowShareModal(true)}
+                    title="Share Auction"
+                  >
                     <Share2 size={20} />
                     Share
                   </button>
@@ -1114,6 +1120,24 @@ const AuctionDetail = () => {
             </div>
           </div>
         </div>
+
+        {/* Share Modal */}
+        <ShareModal
+          isOpen={showShareModal}
+          onClose={() => setShowShareModal(false)}
+          shareData={{
+            title: auction?.title || "Amazing Jewelry Auction",
+            url: `${window.location.origin}/auctions/${id}`,
+            description: `Check out this beautiful ${
+              auction?.jewelryItem?.name
+            } on RoyalBidz! Current bid: $${Number(
+              auction?.currentBid || 0
+            ).toLocaleString()}`,
+            imageUrl: getJewelryImageUrl(auction?.jewelryItem, 0),
+            auctionId: parseInt(id),
+          }}
+          type="auction"
+        />
       </div>
     </>
   );

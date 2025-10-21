@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using RoyalBidz.Server.Services.Interfaces;
 using RoyalBidz.Server.Repositories.Interfaces;
 using RoyalBidz.Server.Data;
@@ -20,6 +21,69 @@ namespace RoyalBidz.Server.Controllers
             _auctionService = auctionService;
             _bidRepository = bidRepository;
             _context = context;
+        }
+
+        // Development-only endpoints to help debug admin UI when auth isn't available
+        [HttpGet("auctions")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllAuctionsDebug()
+        {
+            try
+            {
+                var auctions = await _context.Auctions
+                    .Include(a => a.JewelryItem)
+                    .Include(a => a.Seller)
+                    .Select(a => new
+                    {
+                        a.Id,
+                        a.Title,
+                        a.Description,
+                        a.StartingBid,
+                        a.StartTime,
+                        a.EndTime,
+                        a.Status,
+                        CurrentBid = a.CurrentBid,
+                        Seller = new { a.Seller.Username, a.Seller.Email },
+                        JewelryItem = new { a.JewelryItem.Type, a.JewelryItem.PrimaryMaterial, a.JewelryItem.Weight }
+                    })
+                    .OrderByDescending(a => a.StartTime)
+                    .ToListAsync();
+
+                return Ok(auctions);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error fetching debug auctions", error = ex.Message });
+            }
+        }
+
+        [HttpGet("payments")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllPaymentsDebug()
+        {
+            try
+            {
+                var payments = await _context.Payments
+                    .Include(p => p.Auction)
+                    .Include(p => p.Payer)
+                    .Select(p => new
+                    {
+                        p.Id,
+                        p.Amount,
+                        ProcessedDate = p.ProcessedAt,
+                        p.Status,
+                        User = new { p.Payer.Username, p.Payer.Email },
+                        Auction = new { p.Auction.Title, p.Auction.Id }
+                    })
+                    .OrderByDescending(p => p.ProcessedDate)
+                    .ToListAsync();
+
+                return Ok(payments);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error fetching debug payments", error = ex.Message });
+            }
         }
 
         [HttpPost("finalize/{id}")]

@@ -1,0 +1,194 @@
+/* Profile Page Responsive Styles */
+
+/* Override some inline styles for better mobile experience */
+.profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Profile sections responsive design */
+.profile-sections {
+  display: grid;
+  gap: 24px;
+}
+
+.profile-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.profile-header {
+  padding: 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.profile-content {
+  padding: 24px;
+}
+
+/* Stats grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.stat-card {
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* Tables */
+.profile-table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.profile-table table {
+  width: 100%;
+  min-width: 600px;
+}
+
+/* Form elements */
+.profile-form {
+  display: grid;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+/* Buttons */
+.profile-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .profile-container {
+    padding: 16px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 12px;
+  }
+
+  .profile-header,
+  .profile-content {
+    padding: 16px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 12px;
+  }
+
+  .profile-table {
+    overflow-x: scroll;
+  }
+
+  .profile-actions {
+    flex-direction: column;
+  }
+
+  .profile-actions button,
+  .profile-actions a {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Make cards stack on mobile */
+  .profile-sections {
+    gap: 16px;
+  }
+
+  /* Responsive typography */
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.3rem; }
+  h3 { font-size: 1.1rem; }
+}
+
+@media (max-width: 480px) {
+  .profile-container {
+    padding: 8px;
+  }
+
+  .profile-header,
+  .profile-content {
+    padding: 12px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .stat-card {
+    padding: 8px;
+  }
+
+  /* Single column layout for very small screens */
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* Adjust font sizes for mobile */
+  h1 { font-size: 1.3rem; }
+  h2 { font-size: 1.2rem; }
+  h3 { font-size: 1rem; }
+
+  .profile-table table {
+    font-size: 0.9rem;
+  }
+}
+
+/* Utility classes for profile components */
+.mobile-hidden {
+  display: block;
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-hidden {
+    display: none;
+  }
+
+  .mobile-only {
+    display: block;
+  }
+}

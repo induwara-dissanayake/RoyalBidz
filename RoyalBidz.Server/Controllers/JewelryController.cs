@@ -164,6 +164,7 @@ namespace RoyalBidz.Server.Controllers
 
         [HttpPost("upload-image")]
         [Authorize(Roles = "Seller,Admin")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<JewelryImageDto>> UploadImage([FromForm] IFormFile file, 
             [FromForm] int jewelryItemId, [FromForm] string? altText, [FromForm] bool isPrimary = false, 
             [FromForm] int displayOrder = 0)

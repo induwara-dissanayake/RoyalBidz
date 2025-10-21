@@ -219,3 +219,105 @@
 .submit-button:hover {
     background-color: #e0b600; /* Slightly darker gold on hover */
 }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .foryou-container {
+        margin: 20px auto;
+        padding: 20px;
+        max-width: calc(100% - 40px);
+    }
+
+    .foryou-title {
+        font-size: 1.8em;
+    }
+
+    .foryou-description {
+        font-size: 1em;
+        margin-bottom: 30px;
+    }
+
+    .form-section {
+        padding: 20px;
+    }
+
+    .form-section h2 {
+        font-size: 1.2em;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .image-upload-area {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .submit-button {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .foryou-container {
+        margin: 10px;
+        padding: 16px;
+        max-width: calc(100% - 20px);
+        border-radius: 8px;
+    }
+
+    .foryou-title {
+        font-size: 1.6em;
+        margin-bottom: 12px;
+    }
+
+    .foryou-description {
+        font-size: 0.95em;
+        margin-bottom: 24px;
+    }
+
+    .form-section {
+        padding: 16px;
+        margin-bottom: 20px;
+    }
+
+    .form-section h2 {
+        font-size: 1.1em;
+        margin-bottom: 16px;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 10px 12px;
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+
+    .image-placeholder {
+        width: 100px;
+        height: 100px;
+    }
+
+    .image-preview {
+        width: 100px;
+        height: 100px;
+    }
+
+    .image-upload-area {
+        gap: 8px;
+    }
+
+    .submit-button {
+        margin-top: 24px;
+        padding: 14px;
+        font-size: 1em;
+    }
+}

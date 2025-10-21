@@ -219,48 +219,6 @@ const ContactUs = () => {
           </form>
         </div>
       </main>
-
-      {/* Footer - මෙයද වෙනම Component එකක් ලෙස තිබිය හැක */}
-      <footer className="footer">
-        <div className="footer-columns">
-          <div className="footer-col">
-            <h3>Our Pages</h3>
-            <ul>
-              <li>Home</li>
-              <li>For you</li>
-              <li>Items</li>
-              <li>Register</li>
-              <li>Sign in</li>
-              <li>Online artistsand</li>
-              <li>New collection</li>
-            </ul>
-          </div>
-          <div className="footer-col">
-            <h3>Explore</h3>
-            <ul>
-              <li>Design</li>
-              <li>Photography</li>
-              <li>Materials and texture</li>
-              <li>Design concepts</li>
-              <li>Digital art processes</li>
-              <li>Design process</li>
-              <li>Styles</li>
-            </ul>
-          </div>
-          <div className="footer-col">
-            <h3>Resources</h3>
-            <ul>
-              <li>Blog</li>
-              <li>Best practices</li>
-              <li>FAQs</li>
-              <li>Color wheel</li>
-              <li>Glossary</li>
-              <li>Developers</li>
-              <li>Resource library</li>
-            </ul>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };

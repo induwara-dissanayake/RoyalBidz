@@ -85,10 +85,12 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
-    port: parseInt(env.DEV_SERVER_PORT || "3117"),
-    https: {
-      key: fs.readFileSync(keyFilePath),
-      cert: fs.readFileSync(certFilePath),
-    },
+    port: parseInt(env.DEV_SERVER_PORT || "3000"),
+    host: "127.0.0.1", // Use IPv4 localhost instead of IPv6
+    // Commented out HTTPS for development to avoid permission issues
+    // https: {
+    //   key: fs.readFileSync(keyFilePath),
+    //   cert: fs.readFileSync(certFilePath),
+    // },
   },
 });
