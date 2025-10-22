@@ -30,7 +30,7 @@ const Foryou = () => {
        
         console.log('Form submitted:', formData);
         alert('Your request has been submitted!');
-        // Clear form after submission (optional)
+        // Clear form after submission 
         setFormData({
             name: '',
             email: '',
@@ -64,7 +64,7 @@ const Foryou = () => {
                 <div className="form-group">
                     <label>Upload Item Images</label>
                     <div className="image-upload-area">
-                        {/* Dummy image placeholders */}
+                        
                         <div className="image-placeholder">
                             
                             <span className="upload-icon">+</span>
