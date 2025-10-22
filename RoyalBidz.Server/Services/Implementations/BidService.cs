@@ -70,14 +70,19 @@ namespace RoyalBidz.Server.Services.Implementations
                 throw new InvalidOperationException("Auction not found");
             }
 
-            // Check if auction is active
-            if (auction.Status != AuctionStatus.Active)
+            // Allow bidding when auction is live based on start/end times.
+            // Do not rely on Auction.Status value — permit bidding if StartTime <= now < EndTime.
+            var now = DateTime.UtcNow;
+            // Ensure we compare UTC times — database values may be stored without UTC kind
+            var startUtc = auction.StartTime.Kind == DateTimeKind.Utc ? auction.StartTime : auction.StartTime.ToUniversalTime();
+            var endUtc = auction.EndTime.Kind == DateTimeKind.Utc ? auction.EndTime : auction.EndTime.ToUniversalTime();
+
+            if (startUtc > now)
             {
-                throw new InvalidOperationException("Auction is not active");
+                throw new InvalidOperationException("Auction is not live");
             }
 
-            // Check if auction has ended
-            if (auction.EndTime <= DateTime.UtcNow)
+            if (endUtc <= now)
             {
                 throw new InvalidOperationException("Auction has ended");
             }
@@ -120,9 +125,24 @@ namespace RoyalBidz.Server.Services.Implementations
             // Process automatic bids
             await ProcessAutomaticBidsAsync(auction.Id, bid.Amount);
 
-            // Send real-time notification
-            await _hubContext.Clients.Group($"auction_{auction.Id}")
-                .SendAsync("NewBid", new { AuctionId = auction.Id, Amount = bid.Amount, BidderId = userId });
+            // Send real-time notification (best-effort) - use same event name as controller
+            try
+            {
+                await _hubContext.Clients.Group($"auction_{auction.Id}")
+                    .SendAsync("BidUpdate", new { 
+                        AuctionId = auction.Id, 
+                        Amount = bid.Amount, 
+                        BidderId = userId,
+                        Id = bid.Id,
+                        BidTime = bid.BidTime,
+                        Timestamp = DateTime.UtcNow,
+                        IsAutomaticBid = bid.IsAutomaticBid
+                    });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to send BidUpdate SignalR notification for auction {AuctionId}", auction.Id);
+            }
 
             return _mapper.Map<BidDto>(bid);
         }
@@ -172,13 +192,20 @@ namespace RoyalBidz.Server.Services.Implementations
                     await _auctionRepository.UpdateCurrentBidAsync(auctionId, nextBidAmount, highestAutoBid.BidderId);
 
                     // Notify clients of automatic bid
-                    await _hubContext.Clients.Group($"auction_{auctionId}")
-                        .SendAsync("AutoBid", new { AuctionId = auctionId, Amount = nextBidAmount, BidderId = highestAutoBid.BidderId });
+                    try
+                    {
+                        await _hubContext.Clients.Group($"auction_{auctionId}")
+                            .SendAsync("AutoBid", new { AuctionId = auctionId, Amount = nextBidAmount, BidderId = highestAutoBid.BidderId });
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "Failed to send AutoBid SignalR notification for auction {AuctionId}", auctionId);
+                    }
                 }
             }
         }
 
-        public async Task<BidHistoryDto> GetBidHistoryAsync(int auctionId)
+        public async Task<List<BidHistoryDto>> GetBidHistoryAsync(int auctionId)
         {
             var auction = await _auctionRepository.GetByIdAsync(auctionId);
             if (auction == null)
@@ -187,16 +214,18 @@ namespace RoyalBidz.Server.Services.Implementations
             }
 
             var bids = await _bidRepository.GetBidsByAuctionAsync(auctionId);
-            var bidDtos = _mapper.Map<List<BidDto>>(bids);
+            var bidDtos = _mapper.Map<List<BidDto>>(bids.OrderByDescending(b => b.BidTime));
 
-            return new BidHistoryDto
+            var bidHistoryList = bidDtos.Select(bid => new BidHistoryDto
             {
                 AuctionId = auctionId,
                 AuctionTitle = auction.Title,
-                Bids = bidDtos,
-                HighestBid = bidDtos.Any() ? bidDtos.Max(b => b.Amount) : auction.StartingBid,
-                TotalBids = bidDtos.Count
-            };
+                Bids = new List<BidDto> { bid },
+                HighestBid = bid.Amount,
+                TotalBids = 1
+            }).ToList();
+
+            return bidHistoryList;
         }
     }
 }

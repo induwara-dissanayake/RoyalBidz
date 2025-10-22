@@ -12,7 +12,7 @@ namespace RoyalBidz.Server.Models
         Cancelled
     }
 
-    public enum PaymentMethod
+    public enum PaymentType
     {
         CreditCard,
         DebitCard,
@@ -42,7 +42,7 @@ namespace RoyalBidz.Server.Models
         [Range(0, double.MaxValue)]
         public decimal TotalAmount { get; set; }
         
-        public PaymentMethod Method { get; set; }
+        public PaymentType Method { get; set; }
         
         public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
         
@@ -56,8 +56,13 @@ namespace RoyalBidz.Server.Models
         
         public DateTime? ProcessedAt { get; set; }
         
+        public DateTime? PaymentDeadline { get; set; }
+        
+        public int? BidId { get; set; }
+        
         // Navigation properties
         public virtual Auction Auction { get; set; } = null!;
         public virtual User Payer { get; set; } = null!;
+        public virtual Bid? Bid { get; set; }
     }
 }
