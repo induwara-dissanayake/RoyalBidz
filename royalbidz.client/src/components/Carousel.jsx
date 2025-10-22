@@ -70,7 +70,6 @@ export default function Carousel() {
 
   const total = slides.length;
 
-  // Preload images for smooth carousel experience
   useEffect(() => {
     const imagePromises = slides.map(slide => {
       return new Promise((resolve) => {
@@ -91,7 +90,6 @@ export default function Carousel() {
       return;
     }
     setIsAnimating(true);
-    // allow CSS transition to start
     requestAnimationFrame(() => {
       setIndex(((newIndex % total) + total) % total);
       setTimeout(() => setIsAnimating(false), 600);
@@ -106,7 +104,6 @@ export default function Carousel() {
     goTo(index + 1);
   }
 
-  // Auto-loop with 4 seconds interval - only start after images are loaded
   useAutoplay(index, total, isPaused || !isLoaded, 4000, setIndex);
 
   return (

@@ -18,7 +18,8 @@ export default function Footer() {
       <div className="footer-main">
         <div className="footer-container">
           <div className="footer-grid">
-            {/* Brand Section */}
+            
+            {/* Brand  */}
             <div className="footer-brand">
               <div className="footer-logo">
                 <img
