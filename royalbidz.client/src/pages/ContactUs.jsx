@@ -176,7 +176,7 @@ const ContactUs = () => {
         </div>
       </main>
 
-      {/* Footer - මෙයද වෙනම Component එකක් ලෙස තිබිය හැක */}
+     
       <footer className="footer">
         <div className="footer-columns">
           <div className="footer-col">

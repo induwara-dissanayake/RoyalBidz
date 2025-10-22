@@ -17,7 +17,7 @@ import Content from "./components/Content";
 import BgImgContent from "./components/BgImgContent";
 import Item from "./components/Item";
 import Footer from "./components/Footer";
-import ProtectedRoute from "./components/ProtectedRoute"; // <-- NEW: ProtectedRoute import කරා
+import ProtectedRoute from "./components/ProtectedRoute"; 
 
 // Import pages
 import Dashboard from "./pages/Dashboard";
@@ -31,9 +31,9 @@ import Users from "./pages/Users";
 import Foryou from "./pages/Foryou";
 import Wishlist from "./pages/wishlist";
 import Notifications from "./pages/Notifications";
-import ContactUs from "./pages/ContactUs"; // <-- ContactUs page එකත් import කරලා තියෙනවා
+import ContactUs from "./pages/ContactUs"; 
 
-// <-- HomePage component එක AppContent එකෙන් එළියට ගත්තා
+
 // Helper functions to convert enum values to display names
 const getJewelryTypeName = (type) => {
   const types = {
@@ -226,15 +226,15 @@ function App() {
   );
 }
 
-// Separate component to use useLocation hook (No changes here)
+
 const AppContent = () => {
   const location = useLocation();
-  const isAdminPage = location.pathname.startsWith("/admin"); // <-- Changed to startsWith for flexibility
-  // Note: If you have a specific admin dashboard, you might need a dedicated layout component
+  const isAdminPage = location.pathname.startsWith("/admin"); 
+  
 
   return (
     <div className="app">
-      {!isAdminPage && <Navbar />} {/* Admin pages වල Navbar එක hide කරනවා */}
+      {!isAdminPage && <Navbar />} 
 
       <main className="main-content">
         <Routes>
@@ -279,20 +279,17 @@ const AppContent = () => {
               </ProtectedRoute>
             }
           />
-          {/* Add a login route for ProtectedRoute to redirect to */}
+         
           <Route path="/login" element={<div>Login Page (Implement your Login component here)</div>} />
-          {/* Admin Page Route - this would typically have its own layout */}
-          {/* You might want a separate AdminLayout component for all admin routes */}
-          {/* For now, just a placeholder for the /admin route */}
           <Route path="/admin/*" element={<div>Admin Dashboard (Implement your Admin component here)</div>} />
           
-          {/* If no route matches, display a 404 page (optional) */}
+         
           <Route path="*" element={<div>404 Not Found</div>} />
 
         </Routes>
       </main>
 
-      {!isAdminPage && <Footer />} {/* Admin pages වල Footer එක hide කරනවා */}
+      {!isAdminPage && <Footer />} 
     </div>
   );
 };
