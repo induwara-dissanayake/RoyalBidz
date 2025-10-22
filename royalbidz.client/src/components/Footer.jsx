@@ -11,7 +11,7 @@ export default function Footer() {
         <div className="footer-container">
           <div className="footer-grid">
             
-            {/* Brand Section */}
+            {/* Brand  */}
             <div className="footer-brand">
               <div className="footer-logo">
                 <img src={logoImage} alt="ROYALBIDZ JEWELRY" className="footer-logo-image" />

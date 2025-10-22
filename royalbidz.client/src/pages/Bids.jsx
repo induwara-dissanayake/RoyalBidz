@@ -30,7 +30,7 @@ export default function Bids() {
         if (typeof parsed.count === 'number') setLikesCount(parsed.count);
       }
     } catch (e) {
-      // ignore localStorage errors
+     
     }
   }, []);
 
@@ -45,7 +45,6 @@ export default function Bids() {
         return nextCount;
       });
 
-      // TODO: replace with API call to persist on server when available
       return next;
     });
   };

@@ -57,7 +57,7 @@ export default function Collage() {
               {/* Hover Overlay */}
               <div className="tile-overlay">
                 
-                {/* Heart Button - Top Right */}
+                {/* Heart Buttom */}
                 <div className="overlay-top">
                   <button
                     className="heart-btn"

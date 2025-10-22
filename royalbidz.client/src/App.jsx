@@ -82,7 +82,6 @@ function App() {
       }
     };
 
-    // Helper functions to convert enum values to display names
     const getJewelryTypeName = (type) => {
       const types = {
         0: "Rings",

@@ -162,14 +162,13 @@
   display: block;
 }
 
-/* Sidebar */
+
 .bids-sidebar {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-/* Bid Box */
 .bid-box {
   border: 1px solid #e2e8f0;
   border-radius: 8px;

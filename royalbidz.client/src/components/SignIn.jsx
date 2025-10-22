@@ -58,7 +58,7 @@ export default function SignIn({ onClose }) {
             ✕
           </button>
 
-          {/* Left Panel - Welcome */}
+          {/* Left Panel -  */}
           <div className="welcome-panel">
             <div className="welcome-content">
               <div className="logo-container">
