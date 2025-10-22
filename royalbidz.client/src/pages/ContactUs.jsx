@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import "./ContactUs.css";
-import { AlignLeft, Phone, Mail, MapPin, Send, Users } from "lucide-react";
-import image1 from "../images/ContactImg.png";
-import api from "../utils/api";
+import React from 'react';
+import './ContactUs.css'; 
+import { AlignLeft } from 'lucide-react';
+import image1 from '../images/ContactImg.png';
+
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -43,26 +43,13 @@ const ContactUs = () => {
 
   return (
     <div className="contact-us-page">
-      {/* Hero Section with Contact Us Title */}
+     {/* Hero Section with Contact Us Title */}
       <section className="hero-section">
-        <div className="hero-overlay"></div>
-        <img
-          src={image1}
-          alt="Contact us - RoyalBidz"
-          className="hero-background-image"
-        />
-        <div className="hero-content">
-          <h1 className="hero-title">
-            <span className="hero-title-main">CONTACT</span>
-            <span className="hero-title-accent">US</span>
-          </h1>
-          <p className="hero-subtitle">
-            We'd love to hear from you. Get in touch with our team!
-          </p>
-        </div>
+        <img src={image1} alt="Description of Image 1" className="new-image-class" />
+            <h1>CONTACT US</h1>
       </section>
 
-      {/* Main Content Area */}
+  
       <main className="contact-content">
         <div className="get-in-touch-section">
           <div className="section-header">
@@ -80,48 +67,17 @@ const ContactUs = () => {
 
         <div className="contact-form-section">
           <div className="connect-with-team">
-            <div className="team-header">
-              <h2>Connect with our Team</h2>
-              <p>Our team is happy to answer your questions.</p>
-            </div>
-
-            <div className="office-info">
-              <h3 className="office-title">
-                <MapPin className="contact-icon" size={20} />
-                Head Office - Homagama
-              </h3>
-
-              <div className="contact-details">
-                <div className="contact-item">
-                  <MapPin className="contact-icon" size={16} />
-                  <span>NSBM Green University of Sri Lanka</span>
-                </div>
-
-                <div className="contact-item">
-                  <Phone className="contact-icon" size={16} />
-                  <span>+94xxxxxxxxx</span>
-                </div>
-
-                <div className="contact-item">
-                  <Mail className="contact-icon" size={16} />
-                  <span>info@royalbidz.com</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="social-section">
-              <h4>Follow Us</h4>
-              <div className="social-icons">
-                <span className="social-icon twitter" title="Twitter">
-                  𝕏
-                </span>
-                <span className="social-icon linkedin" title="LinkedIn">
-                  in
-                </span>
-                <span className="social-icon instagram" title="Instagram">
-                  📷
-                </span>
-              </div>
+            <h2>Connect with our Team</h2>
+            <p>Our team is happy to answer your questions.</p>
+            <h3>Head Office - Homagama</h3>
+            <p>Address: NSBM Green University of Sri Lanka.</p>
+            <p>Tel: +94xxxxxxxxx</p>
+            <p>Email: info@royalbidz.com</p>
+            <div className="social-icons">
+              {/* Add social media icons here */}
+              <span>x</span>
+              <span>in</span>
+              <span>ig</span>
             </div>
           </div>
 
@@ -219,6 +175,48 @@ const ContactUs = () => {
           </form>
         </div>
       </main>
+
+     
+      <footer className="footer">
+        <div className="footer-columns">
+          <div className="footer-col">
+            <h3>Our Pages</h3>
+            <ul>
+              <li>Home</li>
+              <li>For you</li>
+              <li>Items</li>
+              <li>Register</li>
+              <li>Sign in</li>
+              <li>Online artistsand</li>
+              <li>New collection</li>
+            </ul>
+          </div>
+          <div className="footer-col">
+            <h3>Explore</h3>
+            <ul>
+              <li>Design</li>
+              <li>Photography</li>
+              <li>Materials and texture</li>
+              <li>Design concepts</li>
+              <li>Digital art processes</li>
+              <li>Design process</li>
+              <li>Styles</li>
+            </ul>
+          </div>
+          <div className="footer-col">
+            <h3>Resources</h3>
+            <ul>
+              <li>Blog</li>
+              <li>Best practices</li>
+              <li>FAQs</li>
+              <li>Color wheel</li>
+              <li>Glossary</li>
+              <li>Developers</li>
+              <li>Resource library</li>
+            </ul>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

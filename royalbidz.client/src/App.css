@@ -239,7 +239,7 @@
 
 /* Global mobile improvements */
 @media (hover: none) and (pointer: coarse) {
-  /* Remove hover effects on touch devices */
+
   *:hover {
     transition: none;
   }
