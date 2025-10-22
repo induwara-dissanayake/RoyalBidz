@@ -105,10 +105,11 @@ namespace RoyalBidz.Server.Services.Implementations
 
         public async Task<PagedResultDto<AuctionDto>> SearchAuctionsAsync(AuctionSearchDto searchDto)
         {
+            var sortBy = searchDto.SortBy ?? "EndTime";
             var auctions = await _auctionRepository.SearchAuctionsAsync(
                 searchDto.Search, searchDto.Type, searchDto.Material,
                 searchDto.MinPrice, searchDto.MaxPrice, searchDto.Status,
-                searchDto.Page, searchDto.PageSize, searchDto.SortBy, searchDto.SortDescending);
+                searchDto.Page, searchDto.PageSize, sortBy, searchDto.SortDescending);
 
             var totalCount = await _auctionRepository.GetSearchCountAsync(
                 searchDto.Search, searchDto.Type, searchDto.Material,

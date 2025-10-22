@@ -9,12 +9,20 @@
 
 /* Modal Mode Styles */
 .register-page.modal-mode {
-  min-height: auto;
+  /* Make register modal behave like SignIn modal: fixed overlay centered */
+  min-height: 100vh; /* override base 120vh so overlay centers properly */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
- 
-  padding: 0px;
+  z-index: 1000;
+  padding: 10px;
+  overflow: hidden;
 }
 
 /* Standalone Page Mode */
@@ -29,6 +37,68 @@
   width: 100%;
   max-width: 1000px;
   margin: 0 auto;
+}
+
+/* (removed earlier nudge rule to match SignIn centering) */
+
+/* Modal sizing & padding adjustments to match SignIn modal */
+.register-page.modal-mode .register-wrapper {
+  /* center the modal using flex so it's vertically centered like SignIn */
+  width: 100%;
+  max-width: 900px;
+  padding: 20px; /* keep gap from viewport */
+  position: relative;
+  height: calc(100vh - 40px);
+  max-height: 650px;
+  /* follow SignIn: do not set display:flex here; overlay centers this wrapper */
+}
+
+.register-page.modal-mode .register-container-modern {
+  position: relative;
+  display: flex;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.07),
+    0 10px 20px rgba(0, 0, 0, 0.1),
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  max-height: 95vh;
+  max-width: 1000px;
+}
+
+.register-page.modal-mode .welcome-panel {
+  /* use same left-panel paddings as SignIn */
+  padding: 40px;
+  flex: 1;
+
+}
+.register-page.modal-mode .form-panel {
+  /* use same right-panel paddings as SignIn so content height is balanced */
+  padding: 40px;
+  flex: 1;
+  overflow: auto;
+}
+
+@media (max-width: 768px) {
+  .register-page.modal-mode .register-wrapper {
+    margin: 0;
+    height: 100vh;
+    max-height: none;
+    max-width: none;
+  }
+  .register-page.modal-mode .register-container-modern {
+    flex-direction: column;
+    max-height: calc(100vh - 20px);
+  }
+  .register-page.modal-mode .welcome-panel,
+  .register-page.modal-mode .form-panel {
+    padding: 30px;
+  }
+ 
 }
 
 /* Main Container - 900px width */

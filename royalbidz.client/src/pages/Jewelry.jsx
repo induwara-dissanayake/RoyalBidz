@@ -525,7 +525,7 @@ const JewelryStore = () => {
       <section className="results-summary">
         <div className="container">
           <div className="results-info">
-            <p>{filteredAndSortedItems.length} jewellery items found</p>
+            <p>{filteredAndSortedItems.length} Auctions found</p>
             {(searchTerm ||
               selectedType !== "All" ||
               selectedMaterial !== "All") && (

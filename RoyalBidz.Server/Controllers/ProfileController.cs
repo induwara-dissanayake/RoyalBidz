@@ -201,6 +201,7 @@ namespace RoyalBidz.Server.Controllers
         }
 
         [HttpPost("upload-avatar")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult> UploadProfileImage(IFormFile file)
         {
             try

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { Share2 } from "lucide-react";
+import ShareModal from "../components/ShareModal";
 import "./PaymentSuccess.css";
 
 const PaymentSuccess = () => {
@@ -9,6 +11,7 @@ const PaymentSuccess = () => {
   const [payment, setPayment] = useState(null);
   const [auction, setAuction] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   useEffect(() => {
     fetchPaymentDetails();
@@ -273,6 +276,27 @@ const PaymentSuccess = () => {
             >
               View My Purchases
             </button>
+            <button
+              className="btn btn-share"
+              onClick={() => setShowShareModal(true)}
+              style={{
+                background: "linear-gradient(135deg, #E0AF62 0%, #d4a455 100%)",
+                color: "white",
+                border: "none",
+                padding: "12px 24px",
+                borderRadius: "8px",
+                fontSize: "1rem",
+                fontWeight: "600",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                transition: "all 0.2s ease",
+              }}
+            >
+              <Share2 size={18} />
+              Share My Win
+            </button>
             <button className="btn btn-primary" onClick={() => navigate("/")}>
               Continue Shopping
             </button>
@@ -285,6 +309,26 @@ const PaymentSuccess = () => {
             </p>
           </div>
         </div>
+
+        {/* Share Modal */}
+        <ShareModal
+          isOpen={showShareModal}
+          onClose={() => setShowShareModal(false)}
+          shareData={{
+            title: `🎉 I just won ${
+              auction?.title || "an amazing auction"
+            } on RoyalBidz!`,
+            url: `${window.location.origin}/auctions/${auctionId}`,
+            description: `I successfully won this beautiful ${
+              auction?.jewelryItem?.name
+            } for $${Number(
+              auction?.currentBid || 0
+            ).toLocaleString()}! Check out RoyalBidz for amazing jewelry auctions.`,
+            imageUrl: auction?.jewelryItem?.images?.[0]?.imageUrl || "",
+            auctionId: parseInt(auctionId),
+          }}
+          type="win"
+        />
       </div>
     </div>
   );

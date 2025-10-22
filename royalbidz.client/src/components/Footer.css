@@ -5,12 +5,10 @@
                'Helvetica Neue', Arial, sans-serif;
   position: relative;
   margin-top: 80px;
-}
-
-/* Main Footer Section */
+} Footer Section */
 .footer-main {
-  background: linear-gradient(235deg, #FAD08D 20%, #E0AF62 80%);
-  padding: 60px 0 40px;
+  background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+  padding: 20px 0 12px;
   position: relative;
 }
 
@@ -25,16 +23,16 @@
 }
 
 .footer-container {
-  max-width: 1300px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 0 16px;
 }
 
 /* Footer Grid */
 .footer-grid {
   display: grid;
   grid-template-columns: 1.8fr 1fr 1fr 1fr 1.2fr;
-  gap: 50px;
+  gap: 20px;
   align-items: start;
 }
 
@@ -42,7 +40,7 @@
 .footer-brand {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
 }
 
 .footer-logo {
@@ -56,9 +54,9 @@
 }
 
 .footer-tagline {
-  font-size: 15px;
-  line-height: 1.6;
-  color: #2c2c2c;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #d1d5db;
   margin: 0;
   max-width: 280px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', 
@@ -71,10 +69,10 @@
 }
 
 .social-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 12px;
+  color: #f9fafb;
+  margin-bottom: 10px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -85,23 +83,24 @@
 }
 
 .social-link {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #1a1a1a;
+  color: #d1d5db;
   text-decoration: none;
   transition: all 0.3s ease;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .social-link:hover {
-  background: #ffffff;
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: #fbbf24;
+  color: #1f2937;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
 }
 
 /* Footer Columns */
@@ -111,14 +110,14 @@
 }
 
 .footer-heading {
-  font-size: 16px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 20px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #f9fafb;
+  margin-bottom: 16px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   position: relative;
-  padding-bottom: 10px;
+  padding-bottom: 8px;
 }
 
 .footer-heading::after {
@@ -126,9 +125,9 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 40px;
+  width: 32px;
   height: 2px;
-  background: #1a1a1a;
+  background: #fbbf24;
 }
 
 /* Footer Menu */
@@ -146,9 +145,9 @@
 }
 
 .footer-menu a {
-  color: #2c2c2c;
+  color: #d1d5db;
   text-decoration: none;
-  font-size: 15px;
+  font-size: 14px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', 
                'Helvetica Neue', Arial, sans-serif;
   transition: all 0.3s ease;
@@ -163,13 +162,13 @@
   left: 0;
   width: 0;
   height: 2px;
-  background: #1a1a1a;
+  background: #fbbf24;
   transition: width 0.3s ease;
 }
 
 .footer-menu a:hover {
-  color: #1a1a1a;
-  transform: translateX(5px);
+  color: #fbbf24;
+  transform: translateX(4px);
 }
 
 .footer-menu a:hover::before {
@@ -200,23 +199,23 @@
 .footer-contact li svg {
   flex-shrink: 0;
   margin-top: 2px;
-  color: #1a1a1a;
+  color: #fbbf24;
 }
 
 .footer-contact a {
-  color: #2c2c2c;
+  color: #d1d5db;
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .footer-contact a:hover {
-  color: #1a1a1a;
+  color: #fbbf24;
   text-decoration: underline;
 }
 
 .footer-bottom {
-  background-color: #2c5f6b;
-  padding: 20px 0;
+  background-color: #111827;
+  padding: 8px 0;
 }
 
 .footer-bottom-content {
@@ -228,10 +227,11 @@
 }
 
 .copyright {
-  color: #ffffff;
-  font-size: 14px;
-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', 
-               'Helvetica Neue', Arial, sans-serif;  margin: 0;
+  color: #d1d5db;
+  font-size: 13px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', 
+               'Helvetica Neue', Arial, sans-serif;
+  margin: 0;
 }
 
 .footer-bottom-links {
@@ -289,35 +289,44 @@ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto',
 
 @media (max-width: 768px) {
   .footer-main {
-    padding: 50px 0 30px;
+    padding: 32px 0 20px;
   }
   
   .footer-container {
-    padding: 0 25px;
+    padding: 0 20px;
   }
   
   .footer-grid {
     grid-template-columns: 1fr;
-    gap: 35px;
+    gap: 24px;
   }
   
   .footer-logo-image {
-    width: 180px;
+    width: 160px;
   }
   
   .footer-heading {
-    font-size: 15px;
+    font-size: 14px;
+    margin-bottom: 12px;
   }
   
   .footer-menu a,
   .footer-contact li {
-    font-size: 14px;
+    font-size: 13px;
+  }
+
+  .footer-menu {
+    gap: 8px;
   }
   
   .footer-bottom-content {
     flex-direction: column;
     text-align: center;
-    gap: 10px;
+    gap: 8px;
+  }
+
+  .footer-bottom {
+    padding: 12px 0;
   }
 }
 

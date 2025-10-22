@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RoyalBidz.Server.Data;
+using RoyalBidz.Server.Filters;
 using RoyalBidz.Server.Hubs;
 using RoyalBidz.Server.Mappings;
 using RoyalBidz.Server.Models;
@@ -32,9 +33,9 @@ builder.Services.AddDbContext<RoyalBidzDbContext>(options =>
 
 // Configure JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var secretKey = jwtSettings["SecretKey"];
-var issuer = jwtSettings["Issuer"];
-var audience = jwtSettings["Audience"];
+var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey is not configured");
+var issuer = jwtSettings["Issuer"] ?? throw new InvalidOperationException("JWT Issuer is not configured");
+var audience = jwtSettings["Audience"] ?? throw new InvalidOperationException("JWT Audience is not configured");
 
 builder.Services.AddAuthentication(options =>
 {
@@ -154,6 +155,9 @@ builder.Services.AddSwaggerGen(c =>
             Array.Empty<string>()
         }
     });
+
+    // Configure file upload support
+    c.OperationFilter<FileUploadOperationFilter>();
 });
 
 var app = builder.Build();

@@ -1,9 +1,9 @@
--- phpMyAdmin SQL Dum
+-- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 19, 2025 at 06:23 PM
+-- Generation Time: Oct 21, 2025 at 11:35 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -201,6 +201,24 @@ CREATE TABLE `payment_methods` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `social_shares`
+--
+
+CREATE TABLE `social_shares` (
+  `Id` int(11) NOT NULL,
+  `UserId` int(11) DEFAULT NULL,
+  `AuctionId` int(11) DEFAULT NULL,
+  `Platform` varchar(50) NOT NULL,
+  `ShareType` varchar(20) NOT NULL,
+  `SharedUrl` varchar(500) NOT NULL,
+  `UserAgent` varchar(500) DEFAULT NULL,
+  `IpAddress` varchar(50) DEFAULT NULL,
+  `CreatedAt` datetime(6) NOT NULL DEFAULT current_timestamp(6)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -225,9 +243,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`Id`, `Username`, `Email`, `PasswordHash`, `PhoneNumber`, `Role`, `Status`, `CreatedAt`, `LastLogin`, `UpdatedAt`, `EmailVerified`, `EmailVerificationCode`, `EmailVerificationCodeExpiry`) VALUES
-(1, 'admin', 'admin@royalbidz.com', '$2a$11$z74G0vlVhZHSL9lJncHtd.6.EN1q./.4rESGjM8yC6f9PvqczAeTS', '+1234567890', 2, 0, '2024-01-01 00:00:00.000000', '2025-10-18 21:30:17.214136', '2025-10-18 08:01:38.589228', 0, NULL, NULL),
-(2, 'seller1', 'seller@royalbidz.com', '$2a$11$9yE3NmzviiJAITHM6XdsCuTYKflVwbmUveTDvqEd7Pt1MEfptMXcS', '+1234567891', 1, 0, '2024-01-01 00:00:00.000000', '2025-10-19 16:19:00.253599', NULL, 0, NULL, NULL),
-(3, 'buyer1', 'buyer@royalbidz.com', '$2a$11$y9pqcETt2c0NcIfYyAJcweER7tWnJpGUIGNm9dO.zr2DZDyHkkNpi', '+1234567892', 0, 0, '2024-01-01 00:00:00.000000', '2025-10-18 21:53:25.479744', '2025-10-18 09:48:07.747318', 0, NULL, NULL);
+(1, 'admin', 'admin@royalbidz.com', '$2a$11$z74G0vlVhZHSL9lJncHtd.6.EN1q./.4rESGjM8yC6f9PvqczAeTS', '+1234567890', 2, 0, '2024-01-01 00:00:00.000000', '2025-10-20 20:01:18.404911', '2025-10-18 08:01:38.589228', 0, NULL, NULL),
+(2, 'seller1', 'seller@royalbidz.com', '$2a$11$9yE3NmzviiJAITHM6XdsCuTYKflVwbmUveTDvqEd7Pt1MEfptMXcS', '+1234567891', 1, 0, '2024-01-01 00:00:00.000000', '2025-10-20 19:00:20.635190', '2025-10-20 19:50:54.219153', 0, NULL, NULL),
+(3, 'buyer1', 'buyer@royalbidz.com', '$2a$11$y9pqcETt2c0NcIfYyAJcweER7tWnJpGUIGNm9dO.zr2DZDyHkkNpi', '+1234567892', 0, 0, '2024-01-01 00:00:00.000000', '2025-10-20 10:55:13.887610', '2025-10-18 09:48:07.747318', 0, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -379,6 +397,17 @@ ALTER TABLE `payment_methods`
   ADD KEY `IX_PaymentMethods_UserId` (`UserId`);
 
 --
+-- Indexes for table `social_shares`
+--
+ALTER TABLE `social_shares`
+  ADD PRIMARY KEY (`Id`),
+  ADD KEY `IX_SocialShares_Platform` (`Platform`),
+  ADD KEY `IX_SocialShares_ShareType` (`ShareType`),
+  ADD KEY `IX_SocialShares_CreatedAt` (`CreatedAt`),
+  ADD KEY `IX_SocialShares_UserId_CreatedAt` (`UserId`,`CreatedAt`),
+  ADD KEY `IX_SocialShares_AuctionId_CreatedAt` (`AuctionId`,`CreatedAt`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -470,6 +499,12 @@ ALTER TABLE `payment_methods`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `social_shares`
+--
+ALTER TABLE `social_shares`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
@@ -497,7 +532,7 @@ ALTER TABLE `user_profiles`
 -- AUTO_INCREMENT for table `wishlists`
 --
 ALTER TABLE `wishlists`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables
@@ -548,6 +583,13 @@ ALTER TABLE `payments`
 --
 ALTER TABLE `payment_methods`
   ADD CONSTRAINT `FK_PaymentMethods_Users_UserId` FOREIGN KEY (`UserId`) REFERENCES `users` (`Id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `social_shares`
+--
+ALTER TABLE `social_shares`
+  ADD CONSTRAINT `FK_SocialShares_Auctions_AuctionId` FOREIGN KEY (`AuctionId`) REFERENCES `auctions` (`Id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `FK_SocialShares_Users_UserId` FOREIGN KEY (`UserId`) REFERENCES `users` (`Id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `user_activities`

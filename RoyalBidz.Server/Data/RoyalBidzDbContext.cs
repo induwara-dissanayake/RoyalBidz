@@ -22,6 +22,7 @@ namespace RoyalBidz.Server.Data
         public DbSet<Bid> Bids { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<ContactInquiry> ContactInquiries { get; set; }
+        public DbSet<SocialShare> SocialShares { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -243,6 +244,34 @@ namespace RoyalBidz.Server.Data
                     .OnDelete(DeleteBehavior.Cascade);
                     
                 entity.HasIndex(e => e.UserId);
+            });
+
+            // SocialShare configuration
+            modelBuilder.Entity<SocialShare>(entity =>
+            {
+                entity.ToTable("social_shares");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Platform).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.ShareType).IsRequired().HasMaxLength(20);
+                entity.Property(e => e.SharedUrl).IsRequired().HasMaxLength(500);
+                entity.Property(e => e.UserAgent).HasMaxLength(500);
+                entity.Property(e => e.IpAddress).HasMaxLength(50);
+                
+                entity.HasOne(d => d.User)
+                    .WithMany()
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.SetNull);
+                    
+                entity.HasOne(d => d.Auction)
+                    .WithMany()
+                    .HasForeignKey(d => d.AuctionId)
+                    .OnDelete(DeleteBehavior.SetNull);
+                    
+                entity.HasIndex(e => e.Platform);
+                entity.HasIndex(e => e.ShareType);
+                entity.HasIndex(e => e.CreatedAt);
+                entity.HasIndex(e => new { e.UserId, e.CreatedAt });
+                entity.HasIndex(e => new { e.AuctionId, e.CreatedAt });
             });
 
             // Seed data

@@ -12,17 +12,20 @@ namespace RoyalBidz.Server.Services.Implementations
         private readonly RoyalBidzDbContext _context;
         private readonly IMapper _mapper;
         private readonly IUserNotificationService _notificationService;
+        private readonly IEmailNotificationService _emailService;
         private readonly ILogger<PaymentService> _logger;
 
         public PaymentService(
             RoyalBidzDbContext context,
             IMapper mapper,
             IUserNotificationService notificationService,
+            IEmailNotificationService emailService,
             ILogger<PaymentService> logger)
         {
             _context = context;
             _mapper = mapper;
             _notificationService = notificationService;
+            _emailService = emailService;
             _logger = logger;
         }
 
@@ -110,12 +113,26 @@ namespace RoyalBidz.Server.Services.Implementations
             if (auction.Status != AuctionStatus.Ended)
                 throw new InvalidOperationException("Auction has not ended yet");
 
-            // Check if payment already exists
-            var existingPayment = await _context.Payments
-                .FirstOrDefaultAsync(p => p.AuctionId == auctionId && p.PayerId == userId);
+            // Check if payment already exists and clean up any duplicates
+            var existingPayments = await _context.Payments
+                .Where(p => p.AuctionId == auctionId && p.PayerId == userId)
+                .OrderBy(p => p.CreatedAt)
+                .ToListAsync();
 
-            if (existingPayment != null)
-                return await GetPaymentByIdAsync(existingPayment.Id) ?? throw new InvalidOperationException("Payment retrieval failed");
+            if (existingPayments.Count > 0)
+            {
+                // Use the first payment and remove any duplicates
+                var paymentToKeep = existingPayments.First();
+                if (existingPayments.Count > 1)
+                {
+                    var duplicatesToRemove = existingPayments.Skip(1).ToList();
+                    _context.Payments.RemoveRange(duplicatesToRemove);
+                    await _context.SaveChangesAsync();
+                    _logger.LogWarning("Removed {Count} duplicate payments during initiation for auction {AuctionId} and user {UserId}", 
+                        duplicatesToRemove.Count, auctionId, userId);
+                }
+                return await GetPaymentByIdAsync(paymentToKeep.Id) ?? throw new InvalidOperationException("Payment retrieval failed");
+            }
 
             var winningBid = await _context.Bids
                 .Where(b => b.AuctionId == auctionId)
@@ -155,25 +172,26 @@ namespace RoyalBidz.Server.Services.Implementations
             if (auction.WinningBidderId != userId)
                 throw new InvalidOperationException("You are not the winner of this auction");
 
-            // Create or find existing payment
-            var payment = await _context.Payments
-                .FirstOrDefaultAsync(p => p.AuctionId == processPaymentDto.AuctionId && p.PayerId == userId);
+            // Find existing payment (should already exist from auction initiation)
+            var payments = await _context.Payments
+                .Where(p => p.AuctionId == processPaymentDto.AuctionId && p.PayerId == userId)
+                .OrderBy(p => p.CreatedAt)
+                .ToListAsync();
 
-            if (payment == null)
+            if (payments.Count == 0)
+                throw new InvalidOperationException("No payment found for this auction. Payment must be initiated first.");
+
+            // If there are duplicate payments (due to previous bug), use the first pending one or the first one created
+            var payment = payments.FirstOrDefault(p => p.Status == PaymentStatus.Pending) ?? payments.First();
+            
+            // Clean up any duplicate payments (keep only the one we're processing)
+            if (payments.Count > 1)
             {
-                // Create new payment if it doesn't exist
-                var createDto = new CreatePaymentDto
-                {
-                    AuctionId = processPaymentDto.AuctionId,
-                    Amount = auction.CurrentBid,
-                    Method = processPaymentDto.PaymentMethod
-                };
-                payment = _mapper.Map<Payment>(await CreatePaymentAsync(userId, createDto));
-                payment = await _context.Payments.FindAsync(payment.Id);
+                var duplicatesToRemove = payments.Where(p => p.Id != payment.Id).ToList();
+                _context.Payments.RemoveRange(duplicatesToRemove);
+                _logger.LogWarning("Removed {Count} duplicate payments for auction {AuctionId} and user {UserId}", 
+                    duplicatesToRemove.Count, processPaymentDto.AuctionId, userId);
             }
-
-            if (payment == null)
-                throw new InvalidOperationException("Failed to create payment");
 
             // Validate card details for credit/debit cards
             if ((processPaymentDto.PaymentMethod == PaymentType.CreditCard || 
@@ -205,6 +223,19 @@ namespace RoyalBidz.Server.Services.Implementations
                 auction.Title,
                 payment.TotalAmount
             );
+
+            // Send payment success email
+            var user = await _context.Users.FindAsync(userId);
+            if (user != null)
+            {
+                await _emailService.SendPaymentSuccessEmailAsync(
+                    user.Email,
+                    user.Username,
+                    auction.Title,
+                    payment.TotalAmount,
+                    payment.TransactionId ?? "N/A"
+                );
+            }
 
             _logger.LogInformation("Payment {PaymentId} processed successfully for auction {AuctionId}", 
                 payment.Id, auction.Id);

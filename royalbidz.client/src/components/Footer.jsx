@@ -1,7 +1,15 @@
-import React from 'react';
-import './Footer.css';
-import logoImage from '../img/logo6.png';
-import { Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
+import React from "react";
+import "./Footer.css";
+import logoImage from "../img/logo6.png";
+import {
+  Twitter,
+  Instagram,
+  Youtube,
+  Linkedin,
+  Mail,
+  Phone,
+  MapPin,
+} from "lucide-react";
 
 export default function Footer() {
   return (
@@ -14,10 +22,15 @@ export default function Footer() {
             {/* Brand  */}
             <div className="footer-brand">
               <div className="footer-logo">
-                <img src={logoImage} alt="ROYALBIDZ JEWELRY" className="footer-logo-image" />
+                <img
+                  src={logoImage}
+                  alt="ROYALBIDZ JEWELRY"
+                  className="footer-logo-image"
+                />
               </div>
               <p className="footer-tagline">
-                Crafting timeless elegance with exceptional quality and purposeful design.
+                Crafting timeless elegance with exceptional quality and
+                purposeful design.
               </p>
               <div className="social-media">
                 <h4 className="social-title">Follow Us</h4>
@@ -42,12 +55,24 @@ export default function Footer() {
             <div className="footer-column">
               <h3 className="footer-heading">Quick Links</h3>
               <ul className="footer-menu">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">For You</a></li>
-                <li><a href="#">Items</a></li>
-                <li><a href="#">Register</a></li>
-                <li><a href="#">Sign In</a></li>
-                <li><a href="#">Contact Us</a></li>
+                <li>
+                  <a href="#">Home</a>
+                </li>
+                <li>
+                  <a href="#">For You</a>
+                </li>
+                <li>
+                  <a href="#">Items</a>
+                </li>
+                <li>
+                  <a href="#">Register</a>
+                </li>
+                <li>
+                  <a href="#">Sign In</a>
+                </li>
+                <li>
+                  <a href="#">Contact Us</a>
+                </li>
               </ul>
             </div>
 
@@ -55,12 +80,24 @@ export default function Footer() {
             <div className="footer-column">
               <h3 className="footer-heading">Collections</h3>
               <ul className="footer-menu">
-                <li><a href="#">Necklaces</a></li>
-                <li><a href="#">Pendants</a></li>
-                <li><a href="#">Rings</a></li>
-                <li><a href="#">Bangles</a></li>
-                <li><a href="#">Bracelets</a></li>
-                <li><a href="#">Earrings</a></li>
+                <li>
+                  <a href="#">Necklaces</a>
+                </li>
+                <li>
+                  <a href="#">Pendants</a>
+                </li>
+                <li>
+                  <a href="#">Rings</a>
+                </li>
+                <li>
+                  <a href="#">Bangles</a>
+                </li>
+                <li>
+                  <a href="#">Bracelets</a>
+                </li>
+                <li>
+                  <a href="#">Earrings</a>
+                </li>
               </ul>
             </div>
 
@@ -68,12 +105,24 @@ export default function Footer() {
             <div className="footer-column">
               <h3 className="footer-heading">Support</h3>
               <ul className="footer-menu">
-                <li><a href="#">Privacy Policy</a></li>
-                <li><a href="#">Terms & Conditions</a></li>
-                <li><a href="#">Services</a></li>
-                <li><a href="#">Quality Policy</a></li>
-                <li><a href="#">Shipping Info</a></li>
-                <li><a href="#">Returns</a></li>
+                <li>
+                  <a href="#">Privacy Policy</a>
+                </li>
+                <li>
+                  <a href="#">Terms & Conditions</a>
+                </li>
+                <li>
+                  <a href="#">Services</a>
+                </li>
+                <li>
+                  <a href="#">Quality Policy</a>
+                </li>
+                <li>
+                  <a href="#">Shipping Info</a>
+                </li>
+                <li>
+                  <a href="#">Returns</a>
+                </li>
               </ul>
             </div>
 
@@ -81,7 +130,6 @@ export default function Footer() {
             <div className="footer-column">
               <h3 className="footer-heading">Get In Touch</h3>
               <ul className="footer-contact">
-                
                 <li>
                   <Mail size={18} />
                   <a href="mailto:info@royalbidz.com">info@royalbidz.com</a>
@@ -91,23 +139,6 @@ export default function Footer() {
                   <a href="tel:+97171444444">+97 71 444 444</a>
                 </li>
               </ul>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-      {/* Footer Bottom */}
-      <div className="footer-bottom">
-        <div className="footer-container">
-          <div className="footer-bottom-content">
-            <p className="copyright">© 2025 Vogue Jewellers. All Rights Reserved.</p>
-            <div className="footer-bottom-links">
-              <a href="#">Privacy</a>
-              <span className="separator">•</span>
-              <a href="#">Terms</a>
-              <span className="separator">•</span>
-              <a href="#">Sitemap</a>
             </div>
           </div>
         </div>

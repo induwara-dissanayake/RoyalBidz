@@ -43,8 +43,6 @@ namespace RoyalBidz.Server.Services.Implementations
             }
 
             await _userRepository.UpdateLastLoginAsync(user.Id);
-
-            // Get the complete user data with profile information
             var userWithProfile = await _userRepository.GetWithProfileAsync(user.Id);
             var userDto = _mapper.Map<UserDto>(userWithProfile);
             var token = await GenerateJwtToken(userDto);
@@ -115,9 +113,9 @@ namespace RoyalBidz.Server.Services.Implementations
         public async Task<string> GenerateJwtToken(UserDto user)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
-            var secretKey = jwtSettings["SecretKey"];
-            var issuer = jwtSettings["Issuer"];
-            var audience = jwtSettings["Audience"];
+            var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey is not configured");
+            var issuer = jwtSettings["Issuer"] ?? throw new InvalidOperationException("JWT Issuer is not configured");
+            var audience = jwtSettings["Audience"] ?? throw new InvalidOperationException("JWT Audience is not configured");
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -146,7 +144,7 @@ namespace RoyalBidz.Server.Services.Implementations
             try
             {
                 var jwtSettings = _configuration.GetSection("JwtSettings");
-                var secretKey = jwtSettings["SecretKey"];
+                var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey is not configured");
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
 
                 var tokenHandler = new JwtSecurityTokenHandler();
