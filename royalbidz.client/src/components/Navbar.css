@@ -112,10 +112,10 @@ body {
 }
 
 .logo-image {
-  height: 60px; /* Slightly smaller logo for better balance */
+  height: 60px; 
   margin-left: 0; 
   width: auto;
-  filter: brightness(0) invert(1); /* Original filter for logo */
+  filter: brightness(0) invert(1); 
 }
 
 .logo-text {
@@ -123,14 +123,14 @@ body {
   flex-direction: column;
   align-items: flex-start;
   line-height: 1.1;
-  margin-left: 10px; /* Space between logo and text */
+  margin-left: 10px; 
 }
 
 .brand-name {
   font-family: 'Times New Roman', serif; /* Original font */
   font-size: 13px;
   font-weight: 700;
-  color: #ffffff; /* Original color */
+  color: #ffffff;
   letter-spacing: 0.7px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
@@ -149,11 +149,11 @@ body {
   display: flex;
   align-items: center;
   background-color: #ffffff;
-  border-radius: 30px; /* More rounded corners for modern look */
+  border-radius: 30px; 
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Lighter shadow */
-  width: 340px; /* Increased width by 20px (from 320px) */
-  height: 42px; /* Decreased height by 3px (from 45px) */
+  width: 340px; 
+  height: 42px; 
   transition: all 0.3s ease;
   margin-left: auto; /* Push search bar to align with nav */
   margin-right: 20px; /* Adjusted margin for less gap to Home */
@@ -168,9 +168,9 @@ body {
 }
 
 .search-button {
-  background-color: #2c5f6b; /* Original search button color */
+  background-color: #2c5f6b;
   border: none;
-  padding: 0 15px; /* Adjusted padding */
+  padding: 0 15px; 
   color: white;
   cursor: pointer;
   display: flex;
