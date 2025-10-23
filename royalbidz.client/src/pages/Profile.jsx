@@ -1,3 +1,4 @@
+/* Profile.jsx*/
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
@@ -151,7 +152,7 @@ const ActivityCard = ({ activity }) => (
   </div>
 );
 
-// Tab content components
+
 const AccountDetailsTab = ({
   profileData,
   setProfileData,
@@ -1529,19 +1530,19 @@ const Profile = () => {
     // Remove all non-digit characters
     const digitsOnly = value.replace(/\D/g, "");
 
-    // Add spaces every 4 digits
+    
     const formatted = digitsOnly.replace(/(\d{4})(?=\d)/g, "$1 ");
 
     // Limit to 19 digits max
-    return formatted.substr(0, 23); // 19 digits + 4 spaces
+    return formatted.substr(0, 23); 
   };
 
   // Helper function to format expiry date input
   const formatExpiryDate = (value) => {
-    // Remove all non-digit characters
+    
     const digitsOnly = value.replace(/\D/g, "");
 
-    // Add slash after 2 digits
+    
     if (digitsOnly.length >= 2) {
       return digitsOnly.substr(0, 2) + "/" + digitsOnly.substr(2, 2);
     }
@@ -1571,7 +1572,7 @@ const Profile = () => {
       // If API fails, we already have user data loaded in useEffect
     } catch (error) {
       console.error("Error fetching profile:", error);
-      // Fallback to user data already loaded in useEffect
+      
     }
   };
 
@@ -1579,7 +1580,7 @@ const Profile = () => {
     try {
       const token = localStorage.getItem("token");
 
-      // First, try to get stats from the profile API
+      
       try {
         const response = await fetch("/api/profile/stats", {
           headers: {
@@ -1706,7 +1707,7 @@ const Profile = () => {
       });
     } catch (error) {
       console.error("Error fetching stats:", error);
-      // Keep default stats (zeros) if error occurs
+      
     }
   };
 
@@ -1946,8 +1947,7 @@ const Profile = () => {
 
   const fetchRecentActivity = async () => {
     try {
-      // For now, we'll generate activity from bids and payments
-      // since there's no specific activity endpoint
+      
       setRecentActivity([
         {
           action: "Welcome to RoyalBidz!",
@@ -1978,7 +1978,7 @@ const Profile = () => {
       }
     } catch (error) {
       console.error("Error fetching user auctions:", error);
-      // Keep empty array if error occurs
+      
     }
   };
 
@@ -2811,7 +2811,7 @@ const Profile = () => {
         </div>
       )}
 
-      {/* Add Payment Method Modal */}
+      {/* Add Payment Method  */}
       {showAddPaymentModal && (
         <div
           style={{
@@ -2871,6 +2871,7 @@ const Profile = () => {
                       ...paymentData,
                       cardholderName: value,
                     });
+                    // Clear error when user starts typing
 
                     // Clear error when user starts typing
                     if (paymentErrors.cardholderName) {
@@ -2926,7 +2927,6 @@ const Profile = () => {
                       cardNumber: formattedValue,
                     });
 
-                    // Clear error when user starts typing
                     if (paymentErrors.cardNumber) {
                       setPaymentErrors({
                         ...paymentErrors,
@@ -2987,7 +2987,6 @@ const Profile = () => {
                         expiryDate: formattedValue,
                       });
 
-                      // Clear error when user starts typing
                       if (paymentErrors.expiryDate) {
                         setPaymentErrors({
                           ...paymentErrors,
@@ -3045,7 +3044,6 @@ const Profile = () => {
                         cvv: value,
                       });
 
-                      // Clear error when user starts typing
                       if (paymentErrors.cvv) {
                         setPaymentErrors({
                           ...paymentErrors,
