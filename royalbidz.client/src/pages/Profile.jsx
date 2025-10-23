@@ -2871,6 +2871,7 @@ const Profile = () => {
                       ...paymentData,
                       cardholderName: value,
                     });
+                    // Clear error when user starts typing
 
                     // Clear error when user starts typing
                     if (paymentErrors.cardholderName) {
