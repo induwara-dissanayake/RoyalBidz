@@ -2811,7 +2811,7 @@ const Profile = () => {
         </div>
       )}
 
-      {/* Add Payment Method Modal */}
+      {/* Add Payment Method  */}
       {showAddPaymentModal && (
         <div
           style={{
