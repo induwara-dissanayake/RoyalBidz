@@ -9,6 +9,7 @@ namespace RoyalBidz.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    // Controller for managing auctions
     public class AuctionsController : ControllerBase
     {
         private readonly IAuctionService _auctionService;
@@ -25,7 +26,7 @@ namespace RoyalBidz.Server.Controllers
             _userNotificationService = userNotificationService;
             _logger = logger;
         }
-
+// GET: api/auctions
         [HttpGet]
         [AllowAnonymous]
         public async Task<ActionResult<PagedResultDto<AuctionDto>>> GetAuctions([FromQuery] AuctionSearchDto? searchDto = null)
@@ -44,7 +45,7 @@ namespace RoyalBidz.Server.Controllers
                 return StatusCode(500, new { message = "An error occurred while retrieving auctions" });
             }
         }
-
+// GET: api/auctions/active
         [HttpGet("active")]
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<AuctionDto>>> GetActiveAuctions()
@@ -60,7 +61,7 @@ namespace RoyalBidz.Server.Controllers
                 return StatusCode(500, new { message = "An error occurred while retrieving active auctions" });
             }
         }
-
+// GET: api/auctions/ending-soon?hours=24
         [HttpGet("ending-soon")]
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<AuctionDto>>> GetEndingSoonAuctions([FromQuery] int hours = 24)
@@ -78,6 +79,7 @@ namespace RoyalBidz.Server.Controllers
         }
 
         [HttpGet("{id}")]
+        // Get auction details by ID
         [AllowAnonymous]
         public async Task<ActionResult<AuctionDetailDto>> GetAuction(int id)
         {
@@ -103,6 +105,7 @@ namespace RoyalBidz.Server.Controllers
         }
 
         [HttpGet("by-jewelry/{jewelryItemId}")]
+        // Get auction by jewelry item ID
         [AllowAnonymous]
         public async Task<ActionResult<AuctionDto>> GetAuctionByJewelryItem(int jewelryItemId)
         {
@@ -148,7 +151,10 @@ namespace RoyalBidz.Server.Controllers
         }
 
         [HttpPost]
+        // POST /api/auctions
+
         [Authorize(Roles = "Seller,Admin")]
+        //  Only accessible by users with Seller or Admin roles
         public async Task<ActionResult<AuctionDto>> CreateAuction([FromBody] CreateAuctionDto createAuctionDto)
         {
             try
@@ -180,6 +186,7 @@ namespace RoyalBidz.Server.Controllers
         }
 
         [HttpPut("{id}")]
+        // PUT /api/auctions/{id}
         [Authorize(Roles = "Seller,Admin")]
         public async Task<ActionResult<AuctionDto>> UpdateAuction(int id, [FromBody] UpdateAuctionDto updateAuctionDto)
         {
@@ -205,6 +212,7 @@ namespace RoyalBidz.Server.Controllers
         }
 
         [HttpDelete("{id}")]
+        // DELETE /api/auctions/{id}    
         [Authorize(Roles = "Seller,Admin")]
         public async Task<ActionResult> DeleteAuction(int id)
         {
@@ -230,6 +238,7 @@ namespace RoyalBidz.Server.Controllers
         }
 
         [HttpPost("{id}/start")]
+        // POST /api/auctions/{id}/start
         [Authorize(Roles = "Seller,Admin")]
         public async Task<ActionResult> StartAuction(int id)
         {
@@ -251,6 +260,7 @@ namespace RoyalBidz.Server.Controllers
         }
 
         [HttpPost("{id}/end")]
+        // POST /api/auctions/{id}/end
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> EndAuction(int id)
         {
@@ -272,6 +282,7 @@ namespace RoyalBidz.Server.Controllers
         }
 
         [HttpGet("my-auctions")]
+        // GET /api/auctions/my-auctions
         [Authorize(Roles = "Seller,Admin")]
         public async Task<ActionResult<IEnumerable<AuctionDto>>> GetMyAuctions()
         {
@@ -289,6 +300,7 @@ namespace RoyalBidz.Server.Controllers
         }
 
         [HttpGet("{id}/bids")]
+        // GET /api/auctions/{id}/bids
         [AllowAnonymous]
         public async Task<ActionResult<BidHistoryDto>> GetAuctionBids(int id)
         {
