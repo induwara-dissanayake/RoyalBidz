@@ -1,3 +1,4 @@
+/*PaymentPage.jsx*/
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./PaymentPage.css";
@@ -224,7 +225,7 @@ const PaymentPage = () => {
         // Simulate processing delay
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        // Create success notification (backend should also create one)
+        
         try {
           await fetch("/api/notifications", {
             method: "POST",
@@ -639,7 +640,7 @@ const PaymentPage = () => {
   );
 };
 
-// Add Payment Method Modal Component
+
 const AddPaymentMethodModal = ({ onSave, onClose }) => {
   const [paymentData, setPaymentData] = useState({
     cardNumber: "",
