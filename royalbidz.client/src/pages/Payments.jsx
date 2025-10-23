@@ -1,6 +1,7 @@
+//import nessary modules and components
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import axios from 'axios';
+import axios from 'axios'; // making API request
 import { 
   CreditCard, 
   LogIn, 
@@ -11,20 +12,24 @@ import {
   Calendar,
   RefreshCw,
   Hash
-} from 'lucide-react';
+} from 'lucide-react'; // icon library
 
+// Payments component
 const Payments = () => {
+  //get authorization status and user info
   const { user, isAuthenticated } = useAuth();
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  //load payment data when the user is authenticated
   useEffect(() => {
     if (isAuthenticated) {
       loadPayments();
     }
   }, [isAuthenticated]);
 
+  //function to load payment data from the backend
   const loadPayments = async () => {
     try {
       setLoading(true);
@@ -39,6 +44,7 @@ const Payments = () => {
     }
   };
 
+  //function to get badge class based on payment status
   const getStatusBadgeClass = (status) => {
     switch (status?.toLowerCase()) {
       case 'completed': return 'badge-active';
@@ -48,6 +54,7 @@ const Payments = () => {
     }
   };
 
+  //return appropriate icon based on payment status
   const getStatusIcon = (status) => {
     switch (status?.toLowerCase()) {
       case 'completed': return <CheckCircle size={14} />;
@@ -56,6 +63,7 @@ const Payments = () => {
     }
   };
 
+  //show login prompt if user is not authenticated
   if (!isAuthenticated) {
     return (
       <div className="page-container">
@@ -73,6 +81,7 @@ const Payments = () => {
     );
   }
 
+  //DISPLAY LOADING STATE
   if (loading) {
     return (
       <div className="page-container">
@@ -84,6 +93,7 @@ const Payments = () => {
     );
   }
 
+  //main ui rendering
   return (
     <div className="page-container">
       {/* Header */}
@@ -116,7 +126,7 @@ const Payments = () => {
             onClick={() => setError('')}
             style={{ float: 'right', background: 'none', border: 'none', fontSize: '16px' }}
           >
-            ×
+            ï¿½
           </button>
         </div>
       )}
@@ -271,5 +281,5 @@ const Payments = () => {
     </div>
   );
 };
-
+// export component
 export default Payments;
