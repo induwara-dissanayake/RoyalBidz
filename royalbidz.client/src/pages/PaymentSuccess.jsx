@@ -16,6 +16,7 @@ const PaymentSuccess = () => {
   useEffect(() => {
     fetchPaymentDetails();
     fetchAuctionDetails();
+    // On component mount or when auctionId changes, fetch payment and auction details
   }, [auctionId]);
 
   const fetchPaymentDetails = async () => {
@@ -30,6 +31,7 @@ const PaymentSuccess = () => {
 
         if (response.ok) {
           const data = await response.json();
+          //
           setPayment(data);
         }
       }
@@ -126,7 +128,7 @@ const PaymentSuccess = () => {
             🎉 Congratulations! Your payment has been processed successfully and
             your item is now yours!
           </p>
-
+          {/* Purchase Summary */}
           {auction && (
             <div className="purchase-summary">
               <h2>Purchase Summary</h2>
@@ -208,6 +210,7 @@ const PaymentSuccess = () => {
                       ${((Number(auction?.currentBid) || 0) * 1.03).toFixed(2)}
                     </span>
                   </div>
+                  {/* Payment Info */}
                   {payment && (
                     <>
                       <div className="detail-row">
@@ -232,7 +235,7 @@ const PaymentSuccess = () => {
               </div>
             </div>
           )}
-
+      {/* Purchase Summary */}
           <div className="next-steps">
             <h2>What happens next?</h2>
             <div className="steps-list">
